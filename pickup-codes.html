@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>取件码记录</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bottom: 80px; }
+
+.header { background: #007AFF; color: white; padding: 20px; text-align: center; }
+.header h1 { font-size: 20px; }
+
+.add-btn { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background: #007AFF; color: white; font-size: 30px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; z-index: 10; }
+
+.search-bar { padding: 10px 15px; }
+.search-bar input { width: 100%; padding: 10px 15px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; background: white; }
+
+.tabs { display: flex; padding: 0 15px; gap: 8px; margin-bottom: 10px; }
+.tab { flex: 1; padding: 8px; text-align: center; border-radius: 8px; background: white; border: 1px solid #ddd; font-size: 14px; cursor: pointer; }
+.tab.active { background: #007AFF; color: white; border-color: #007AFF; }
+
+.card-list { padding: 0 15px; }
+.card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.card-tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; color: white; }
+.tag-快递 { background: #FF9500; }
+.tag-外卖 { background: #FF3B30; }
+.tag-其他 { background: #8E8E93; }
+.card-time { font-size: 12px; color: #999; }
+.card-code { font-size: 28px; font-weight: bold; color: #333; letter-spacing: 2px; margin-bottom: 5px; }
+.card-name { font-size: 14px; color: #666; }
+.card-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+.card-actions button { background: none; border: none; font-size: 13px; color: #007AFF; cursor: pointer; }
+.card-actions .delete { color: #FF3B30; }
+
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 20; justify-content: center; align-items: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: white; border-radius: 16px; padding: 25px; width: 85%; max-width: 350px; }
+.modal h2 { margin-bottom: 20px; font-size: 18px; }
+.modal label { font-size: 14px; color: #666; margin-bottom: 5px; display: block; }
+.modal input, .modal select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 15px; }
+.modal-btns { display: flex; gap: 10px; }
+.modal-btns button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 16px; cursor: pointer; }
+.btn-cancel { background: #f0f0f0; color: #333; }
+.btn-save { background: #007AFF; color: white; }
+
+.empty { text-align: center; padding: 60px 20px; color: #999; }
+.empty-icon { font-size: 48px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📦 取件码记录</h1>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍 搜索取件码或名称..." oninput="renderCards()">
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="setTab('全部', this)">全部</div>
+  <div class="tab" onclick="setTab('快递', this)">快递</div>
+  <div class="tab" onclick="setTab('外卖', this)">外卖</div>
+  <div class="tab" onclick="setTab('其他', this)">其他</div>
+</div>
+
+<div class="card-list" id="cardList"></div>
+
+<button class="add-btn" onclick="openModal()">+</button>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modalTitle">添加取件码</h2>
+    <label>取件码/取餐码</label>
+    <input type="text" id="inputCode" placeholder="例如：5-2-106">
+    <label>名称</label>
+    <input type="text" id="inputName" placeholder="例如：京东快递、美团外卖">
+    <label>分类</label>
+    <select id="inputCategory">
+      <option value="快递">快递</option>
+      <option value="外卖">外卖</option>
+      <option value="其他">其他</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-save" onclick="saveItem()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let items = JSON.parse(localStorage.getItem('pickupItems') || '[]');
+let currentTab = '全部';
+let editId = null;
+
+function setTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderCards();
+}
+
+function openModal(id) {
+  editId = id || null;
+  if (editId) {
+    const item = items.find(i => i.id === editId);
+    document.getElementById('modalTitle').textContent = '编辑取件码';
+    document.getElementById('inputCode').value = item.code;
+    document.getElementById('inputName').value = item.name;
+    document.getElementById('inputCategory').value = item.category;
+  } else {
+    document.getElementById('modalTitle').textContent = '添加取件码';
+    document.getElementById('inputCode').value = '';
+    document.getElementById('inputName').value = '';
+    document.getElementById('inputCategory').value = '快递';
+  }
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+function saveItem() {
+  const code = document.getElementById('inputCode').value.trim();
+  const name = document.getElementById('inputName').value.trim();
+  const category = document.getElementById('inputCategory').value;
+  if (!code) { alert('请输入取件码'); return; }
+  if (editId) {
+    const item = items.find(i => i.id === editId);
+    item.code = code; item.name = name; item.category = category;
+  } else {
+    items.unshift({ id: Date.now(), code, name, category, time: new Date().toLocaleString('zh-CN') });
+  }
+  localStorage.setItem('pickupItems', JSON.stringify(items));
+  closeModal();
+  renderCards();
+}
+
+function deleteItem(id) {
+  if (confirm('确定删除？')) {
+    items = items.filter(i => i.id !== id);
+    localStorage.setItem('pickupItems', JSON.stringify(items));
+    renderCards();
+  }
+}
+
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => alert('已复制：' + code));
+}
+
+function renderCards() {
+  const keyword = document.getElementById('searchInput').value.toLowerCase();
+  let filtered = items;
+  if (currentTab !== '全部') filtered = filtered.filter(i => i.category === currentTab);
+  if (keyword) filtered = filtered.filter(i => i.code.toLowerCase().includes(keyword) || i.name.toLowerCase().includes(keyword));
+
+  const list = document.getElementById('cardList');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>暂无记录<br>点击 + 添加</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(i => `
+    <div class="card">
+      <div class="card-top">
+        <span class="card-tag tag-${i.category}">${i.category}</span>
+        <span class="card-time">${i.time}</span>
+      </div>
+      <div class="card-code" onclick="copyCode('${i.code}')" style="cursor:pointer" title="点击复制">${i.code}</div>
+      <div class="card-name">${i.name || '未命名'}</div>
+      <div class="card-actions">
+        <button onclick="openModal(${i.id})">编辑</button>
+        <button class="delete" onclick="deleteItem(${i.id})">删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderCards();
+</script>
+</body>
+</html>
