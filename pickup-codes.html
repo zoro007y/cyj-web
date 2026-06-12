@@ -4,12 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>取件码记录</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bottom: 80px; }
 
-.header { background: #007AFF; color: white; padding: 20px; text-align: center; }
+.header { background: #007AFF; color: white; padding: 20px; text-align: center; position: relative; }
 .header h1 { font-size: 20px; }
+.header-right { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 24px; cursor: pointer; }
+
+.view-tabs { display: flex; padding: 10px 15px 0; gap: 0; }
+.view-tab { flex: 1; text-align: center; padding: 10px; font-size: 14px; color: #666; border-bottom: 2px solid transparent; cursor: pointer; }
+.view-tab.active { color: #007AFF; border-bottom-color: #007AFF; font-weight: 600; }
 
 .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: white; border-top: 1px solid #ddd; z-index: 10; padding-bottom: env(safe-area-inset-bottom); }
 .bottom-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 0; font-size: 11px; color: #666; background: none; border: none; cursor: pointer; }
@@ -19,27 +26,26 @@ body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bott
 .search-bar { padding: 10px 15px; }
 .search-bar input { width: 100%; padding: 10px 15px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; background: white; }
 
-.tabs { display: flex; padding: 0 15px; gap: 8px; margin-bottom: 10px; }
-.tab { flex: 1; padding: 8px; text-align: center; border-radius: 8px; background: white; border: 1px solid #ddd; font-size: 14px; cursor: pointer; }
+.tabs { display: flex; padding: 0 15px; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.tab { padding: 6px 10px; text-align: center; border-radius: 8px; background: white; border: 1px solid #ddd; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
 .tab.active { background: #007AFF; color: white; border-color: #007AFF; }
+
+.courier-logo { width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; flex-shrink: 0; }
 
 .card-list { padding: 0 15px; }
 .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.card-tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; color: white; }
-.tag-快递 { background: #FF9500; }
-.tag-外卖 { background: #FF3B30; }
-.tag-其他 { background: #8E8E93; }
+.card-tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; color: white; display: flex; align-items: center; gap: 4px; }
 .card-time { font-size: 12px; color: #999; }
-.card-code { font-size: 28px; font-weight: bold; color: #333; letter-spacing: 2px; margin-bottom: 5px; }
-.card-name { font-size: 14px; color: #666; }
+.card-code { font-size: 28px; font-weight: bold; color: #333; letter-spacing: 2px; margin-bottom: 5px; cursor: pointer; }
+.card-station { font-size: 13px; color: #8E8E93; }
 .card-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
 .card-actions button { background: none; border: none; font-size: 13px; color: #007AFF; cursor: pointer; }
 .card-actions .delete { color: #FF3B30; }
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 20; justify-content: center; align-items: center; }
 .modal-overlay.show { display: flex; }
-.modal { background: white; border-radius: 16px; padding: 25px; width: 85%; max-width: 350px; max-height: 80vh; overflow-y: auto; }
+.modal { background: white; border-radius: 16px; padding: 25px; width: 85%; max-width: 350px; max-height: 85vh; overflow-y: auto; }
 .modal h2 { margin-bottom: 20px; font-size: 18px; }
 .modal label { font-size: 14px; color: #666; margin-bottom: 5px; display: block; }
 .modal input, .modal select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 15px; }
@@ -47,11 +53,12 @@ body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bott
 .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 16px; cursor: pointer; }
 .btn-cancel { background: #f0f0f0; color: #333; }
 .btn-save { background: #007AFF; color: white; }
+.btn-location { width: 100%; padding: 10px; border: 1px dashed #007AFF; border-radius: 8px; font-size: 14px; color: #007AFF; background: #F0F8FF; cursor: pointer; margin-bottom: 15px; text-align: center; }
 
 .empty { text-align: center; padding: 60px 20px; color: #999; }
 .empty-icon { font-size: 48px; margin-bottom: 10px; }
 
-.ocr-zone { margin: 10px 15px; border: 2px dashed #ccc; border-radius: 12px; padding: 30px; text-align: center; background: white; cursor: pointer; position: relative; }
+.ocr-zone { margin: 10px 15px; border: 2px dashed #ccc; border-radius: 12px; padding: 30px; text-align: center; background: white; cursor: pointer; }
 .ocr-zone:active { background: #f0f0f0; }
 .ocr-zone .icon { font-size: 36px; margin-bottom: 8px; }
 .ocr-zone .text { font-size: 14px; color: #999; }
@@ -63,50 +70,68 @@ body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bott
 @keyframes spin { to { transform: rotate(360deg); } }
 .ocr-loading .status { margin-top: 10px; font-size: 14px; color: #666; }
 
-.ocr-result { display: none; margin: 10px 15px; background: white; border-radius: 12px; padding: 15px; }
+.ocr-result { display: none; margin: 10px 15px; background: white; border-radius: 12px; padding: 15px; position: relative; }
 .ocr-result.show { display: block; }
-.ocr-result h3 { font-size: 15px; margin-bottom: 10px; color: #333; }
+.ocr-result h3 { font-size: 15px; margin-bottom: 10px; color: #333; padding-right: 30px; }
+.ocr-close { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; background: #f0f0f0; border-radius: 50%; text-align: center; line-height: 28px; font-size: 16px; color: #999; cursor: pointer; }
 .ocr-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; }
-.ocr-item:last-child { margin-bottom: 0; }
 .ocr-item .code { font-size: 18px; font-weight: bold; color: #007AFF; }
-.ocr-item .context { font-size: 12px; color: #999; margin-top: 2px; }
+.ocr-item .info { font-size: 12px; color: #999; margin-top: 2px; }
 .ocr-item button { background: #007AFF; color: white; border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+
+#mapView { display: none; }
+#mapContainer { width: 100%; height: calc(100vh - 180px); border-radius: 12px; overflow: hidden; margin: 10px 15px; }
+
+.map-popup { font-family: -apple-system, sans-serif; }
+.map-popup h4 { margin: 0 0 6px; font-size: 14px; }
+.map-popup .popup-code { font-size: 16px; font-weight: bold; color: #007AFF; margin: 3px 0; cursor: pointer; }
+.map-popup .popup-station { font-size: 12px; color: #666; }
+
+.custom-marker { background: #007AFF; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>📦 取件码记录</h1>
+  <div class="header-right" onclick="toggleLocation()">📍</div>
 </div>
 
-<div class="ocr-zone" id="ocrZone" onclick="document.getElementById('fileInput').click()">
-  <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
-  <div class="icon">📸</div>
-  <div class="text">点击上传截图，自动识别取件码<br>或长按粘贴截图</div>
+<div class="view-tabs">
+  <div class="view-tab active" onclick="switchView('list')">列表</div>
+  <div class="view-tab" onclick="switchView('map')">地图</div>
 </div>
 
-<div class="ocr-loading" id="ocrLoading">
-  <div class="spinner"></div>
-  <div class="status" id="ocrStatus">正在加载识别引擎...</div>
+<div id="listView">
+  <div class="ocr-zone" onclick="document.getElementById('fileInput').click()">
+    <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
+    <div class="icon">📸</div>
+    <div class="text">点击上传截图，自动识别取件码<br>或长按粘贴截图</div>
+  </div>
+
+  <div class="ocr-loading" id="ocrLoading">
+    <div class="spinner"></div>
+    <div class="status" id="ocrStatus">正在加载识别引擎...</div>
+  </div>
+
+  <div class="ocr-result" id="ocrResult">
+    <div class="ocr-close" onclick="closeOcrResult()">✕</div>
+    <h3>🔍 识别到以下取件码：</h3>
+    <div id="ocrItems"></div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="🔍 搜索取件码或驿站..." oninput="renderCards()">
+  </div>
+
+  <div class="tabs" id="courierTabs"></div>
+
+  <div class="card-list" id="cardList"></div>
 </div>
 
-<div class="ocr-result" id="ocrResult">
-  <h3>🔍 识别到以下取件码：</h3>
-  <div id="ocrItems"></div>
+<div id="mapView">
+  <div id="mapContainer"></div>
 </div>
-
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="🔍 搜索取件码或名称..." oninput="renderCards()">
-</div>
-
-<div class="tabs">
-  <div class="tab active" onclick="setTab('全部', this)">全部</div>
-  <div class="tab" onclick="setTab('快递', this)">快递</div>
-  <div class="tab" onclick="setTab('外卖', this)">外卖</div>
-  <div class="tab" onclick="setTab('其他', this)">其他</div>
-</div>
-
-<div class="card-list" id="cardList"></div>
 
 <div class="bottom-bar">
   <button class="bottom-btn" onclick="document.getElementById('fileInput').click()">
@@ -120,16 +145,27 @@ body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bott
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h2 id="modalTitle">添加取件码</h2>
-    <label>取件码/取餐码</label>
-    <input type="text" id="inputCode" placeholder="例如：5-2-106">
-    <label>名称</label>
-    <input type="text" id="inputName" placeholder="例如：京东快递、美团外卖">
-    <label>分类</label>
-    <select id="inputCategory">
-      <option value="快递">快递</option>
-      <option value="外卖">外卖</option>
+    <label>取件码</label>
+    <input type="text" id="inputCode" placeholder="例如：B7-1-4667">
+    <label>快递公司</label>
+    <select id="inputCourier">
+      <option value="">请选择</option>
+      <option value="极兔">极兔</option>
+      <option value="圆通">圆通</option>
+      <option value="中通">中通</option>
+      <option value="韵达">韵达</option>
+      <option value="申通">申通</option>
+      <option value="顺丰">顺丰</option>
+      <option value="京东">京东</option>
+      <option value="邮政EMS">邮政EMS</option>
+      <option value="菜鸟">菜鸟</option>
+      <option value="德邦">德邦</option>
       <option value="其他">其他</option>
     </select>
+    <label>驿站/代收点</label>
+    <input type="text" id="inputStation" placeholder="例如：9园区桂轩后面快递服务中心">
+    <div class="btn-location" onclick="pickLocation()">📍 设置驿站位置（可选）</div>
+    <div id="locationInfo" style="font-size:12px;color:#999;margin-top:-10px;margin-bottom:15px;"></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">取消</button>
       <button class="btn-save" onclick="saveItem()">保存</button>
@@ -137,225 +173,274 @@ body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bott
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<div class="modal-overlay" id="locationModal">
+  <div class="modal" style="padding:0;overflow:hidden;">
+    <div style="padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
+      <span style="font-size:16px;font-weight:600;">点击地图设置位置</span>
+      <span style="font-size:14px;color:#007AFF;cursor:pointer;" onclick="closeLocationModal()">完成</span>
+    </div>
+    <div id="pickMap" style="width:100%;height:300px;"></div>
+  </div>
+</div>
+
 <script>
+const COURIER_COLORS = {
+  '极兔': '#FF6B00', '圆通': '#0066CC', '中通': '#E4002B', '韵达': '#8B0000',
+  '申通': '#C8A200', '顺丰': '#000', '京东': '#E4002B', '邮政EMS': '#006633',
+  '菜鸟': '#FF6A00', '德邦': '#003399', '其他': '#8E8E93'
+};
+const COURIERS = ['全部', '极兔', '圆通', '中通', '韵达', '申通', '顺丰', '京东', '邮政EMS', '菜鸟', '德邦', '其他'];
+
 let items = JSON.parse(localStorage.getItem('pickupItems') || '[]');
 let currentTab = '全部';
 let editId = null;
 let worker = null;
+let currentView = 'list';
+let map = null;
+let pickMap = null;
+let pendingLocation = null;
 
-document.addEventListener('paste', function(e) {
+function getLogo(courier) {
+  const color = COURIER_COLORS[courier] || '#8E8E93';
+  const letter = (courier || '快')[0];
+  return `<span class="courier-logo" style="background:${color}">${letter}</span>`;
+}
+
+function renderTabs() {
+  const used = new Set(items.map(i => i.courier).filter(Boolean));
+  const tabs = COURIERS.filter(c => c === '全部' || used.has(c));
+  document.getElementById('courierTabs').innerHTML = tabs.map(c =>
+    `<div class="tab${currentTab === c ? ' active' : ''}" onclick="setTab('${c}', this)">${c === '全部' ? '全部' : getLogo(c) + c}</div>`
+  ).join('');
+}
+
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view-tab')[view === 'list' ? 0 : 1].classList.add('active');
+  document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
+  document.getElementById('mapView').style.display = view === 'map' ? 'block' : 'none';
+  if (view === 'map') initMap();
+}
+
+function initMap() {
+  if (map) { map.invalidateSize(); updateMapMarkers(); return; }
+  const stationItems = items.filter(i => i.lat && i.lng);
+  const center = stationItems.length > 0 ? [stationItems[0].lat, stationItems[0].lng] : [29.56, 106.55];
+  map = L.map('mapContainer').setView(center, 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+  updateMapMarkers();
+}
+
+function updateMapMarkers() {
+  if (!map) return;
+  map.eachLayer(l => { if (l instanceof L.Marker) map.removeLayer(l); });
+  const stationMap = {};
+  items.forEach(i => {
+    if (!i.lat || !i.lng) return;
+    const key = i.lat.toFixed(5) + ',' + i.lng.toFixed(5);
+    if (!stationMap[key]) stationMap[key] = { lat: i.lat, lng: i.lng, station: i.station || '未知驿站', items: [] };
+    stationMap[key].items.push(i);
+  });
+  Object.values(stationMap).forEach(s => {
+    const icon = L.divIcon({ className: '', html: `<div class="custom-marker">${s.items.length}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
+    const popupHtml = `<div class="map-popup"><h4>📍 ${s.station}</h4>${s.items.map(i => `<div class="popup-code" onclick="navigator.clipboard.writeText('${i.code}')">${getLogo(i.courier)} ${i.code}</div>`).join('')}</div>`;
+    L.marker([s.lat, s.lng], { icon }).addTo(map).bindPopup(popupHtml);
+  });
+}
+
+function toggleLocation() {
+  if (!navigator.geolocation) { alert('浏览器不支持定位'); return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    if (map) map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+  }, () => alert('无法获取位置'));
+}
+
+function pickLocation() {
+  document.getElementById('locationModal').classList.add('show');
+  setTimeout(() => {
+    if (pickMap) { pickMap.invalidateSize(); return; }
+    navigator.geolocation.getCurrentPosition(pos => {
+      pickMap = L.map('pickMap').setView([pos.coords.latitude, pos.coords.longitude], 16);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(pickMap);
+      let marker = null;
+      pickMap.on('click', e => {
+        if (marker) pickMap.removeLayer(marker);
+        marker = L.marker(e.latlng).addTo(pickMap);
+        pendingLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+        document.getElementById('locationInfo').textContent = `✅ 已设置位置: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+      });
+    }, () => {
+      pickMap = L.map('pickMap').setView([29.56, 106.55], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(pickMap);
+      let marker = null;
+      pickMap.on('click', e => {
+        if (marker) pickMap.removeLayer(marker);
+        marker = L.marker(e.latlng).addTo(pickMap);
+        pendingLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+        document.getElementById('locationInfo').textContent = `✅ 已设置位置: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+      });
+    });
+  }, 300);
+}
+
+function closeLocationModal() { document.getElementById('locationModal').classList.remove('show'); }
+
+document.addEventListener('paste', async function(e) {
   const items_data = e.clipboardData.items;
   for (let i = 0; i < items_data.length; i++) {
-    if (items_data[i].type.indexOf('image') !== -1) {
-      const blob = items_data[i].getAsFile();
-      processImage(blob);
-      break;
-    }
+    if (items_data[i].type.indexOf('image') !== -1) { await processImage(items_data[i].getAsFile()); break; }
   }
 });
 
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (file) processImage(file);
-  e.target.value = '';
-}
+async function handleFile(e) { const f = e.target.files[0]; if (f) await processImage(f); e.target.value = ''; }
 
 async function processImage(imageFile) {
   document.getElementById('ocrLoading').classList.add('show');
   document.getElementById('ocrResult').classList.remove('show');
   document.getElementById('ocrStatus').textContent = '正在加载识别引擎...';
-
   try {
     if (!worker) {
       document.getElementById('ocrStatus').textContent = '首次使用需下载语言包，请稍候...';
-      worker = await Tesseract.createWorker('chi_sim+eng', 1, {
-        logger: m => {
-          if (m.status === 'recognizing text') {
-            document.getElementById('ocrStatus').textContent = '正在识别文字... ' + Math.round(m.progress * 100) + '%';
-          }
-        }
-      });
+      worker = await Tesseract.createWorker('chi_sim+eng', 1, { logger: m => { if (m.status === 'recognizing text') document.getElementById('ocrStatus').textContent = '正在识别文字... ' + Math.round(m.progress * 100) + '%'; } });
     }
-
     document.getElementById('ocrStatus').textContent = '正在识别文字...';
     const { data: { text } } = await worker.recognize(imageFile);
-    console.log('OCR原始文本:', text);
-    const codes = extractCodes(text);
-    showOcrResults(codes, text);
-  } catch (err) {
-    document.getElementById('ocrStatus').textContent = '识别失败，请重试';
-    console.error(err);
-  }
+    showOcrResults(extractCodes(text), text);
+  } catch (err) { document.getElementById('ocrStatus').textContent = '识别失败，请重试'; }
 }
 
 function extractCodes(text) {
   const results = [];
-  const fullText = text.replace(/\n/g, ' ');
+  const lines = text.split(/\n/);
+  let cleanText = lines.join(' ');
+  for (let i = 0; i < 5; i++) cleanText = cleanText.replace(/([\u4e00-\u9fff])\s+([\u4e00-\u9fff])/g, '$1$2');
+  for (let i = 0; i < 3; i++) { cleanText = cleanText.replace(/([\dA-Za-z])\s+([\u4e00-\u9fff])/g, '$1$2'); cleanText = cleanText.replace(/([\u4e00-\u9fff])\s+([\dA-Za-z])/g, '$1$2'); }
 
-  const courierPatterns = [
-    { names: ['圆通', '圆通速递'], key: '圆通' },
-    { names: ['中通', '中通快递'], key: '中通' },
-    { names: ['极兔', '极兔速递', '极兔快递', '极免'], key: '极兔' },
-    { names: ['韵达', '韵达快递', '韵达速递'], key: '韵达' },
-    { names: ['申通', '申通快递', '申通速递'], key: '申通' },
-    { names: ['顺丰', '顺丰速运', '顺丰快递'], key: '顺丰' },
-    { names: ['邮政', '中国邮政', 'EMS', 'Ems'], key: '邮政EMS' },
-    { names: ['京东', '京东快递', '京东物流'], key: '京东' },
-    { names: ['菜鸟', '菜鸟裹裹'], key: '菜鸟' },
-    { names: ['丰巢'], key: '丰巢' },
-    { names: ['德邦', '德邦快递', '德邦物流'], key: '德邦' },
-    { names: ['天天', '天天快递'], key: '天天' },
-    { names: ['百世', '百世快递', '百世快运'], key: '百世' },
-  ];
+  const courierMap = { '极兔': '极兔', '极免': '极兔', '圆通': '圆通', '中通': '中通', '韵达': '韵达', '申通': '申通', '顺丰': '顺丰', '京东': '京东', '邮政': '邮政EMS', 'EMS': '邮政EMS', '菜鸟': '菜鸟', '德邦': '德邦' };
+  let courier = '';
+  for (const [k, v] of Object.entries(courierMap)) { if (cleanText.includes(k)) { courier = v; break; } }
 
-  const patterns = [
-    /\b([A-Z]\d{1,3}\-\d{1,3}\-\d{2,4})\b/g,
-    /[凭取件码：:\s]*([A-Z]?\d{1,3}[\-\/]\d{1,3}[\-\/]\d{2,4})\b/g,
-    /取[件餐]码[：:\s]*([A-Za-z0-9\-\/]{2,20})/g,
-    /验证码[：:\s]*([A-Za-z0-9\-\/]{2,20})/g,
-    /\b(\d{1,3}[\-]\d{1,3}[\-]\d{2,4})\b/g,
-  ];
-
-  const seen = new Set();
-
-  for (const pattern of patterns) {
-    let match;
-    const re = new RegExp(pattern.source, pattern.flags);
-    while ((match = re.exec(fullText)) !== null) {
-      let code = match[1].trim();
-      code = code.replace(/\s+/g, '');
-      if (code.length >= 3 && code.length <= 20 && !seen.has(code)) {
-        seen.add(code);
-        const idx = fullText.indexOf(match[0]);
-        const start = Math.max(0, idx - 50);
-        const end = Math.min(fullText.length, idx + match[0].length + 50);
-        const context = fullText.substring(start, end).trim();
-        let company = '';
-        for (const cp of courierPatterns) {
-          if (cp.names.some(n => context.includes(n))) { company = cp.key; break; }
+  let station = '';
+  for (const line of lines) {
+    let cl = line;
+    for (let i = 0; i < 5; i++) cl = cl.replace(/([\u4e00-\u9fff])\s+([\u4e00-\u9fff])/g, '$1$2');
+    for (let i = 0; i < 3; i++) { cl = cl.replace(/([\dA-Za-z])\s+([\u4e00-\u9fff])/g, '$1$2'); cl = cl.replace(/([\u4e00-\u9fff])\s+([\dA-Za-z])/g, '$1$2'); }
+    for (const kw of ['代收点', '服务中心', '驿站', '自提点', '服务点', '快递柜']) {
+      const idx = cl.indexOf(kw);
+      if (idx !== -1) {
+        let after = cl.substring(idx + kw.length).trim().replace(/^[\s|｜]+/, '');
+        if (after.length >= 2 && after.length <= 30) {
+          station = after;
+          for (const ck of Object.keys(courierMap)) { if (station.endsWith(ck)) station = station.slice(0, -ck.length); }
+          if (station.length >= 2) break;
+          station = '';
         }
-        results.push({ code, context, company });
       }
     }
+    if (station) break;
   }
 
-  return results;
+  const seen = new Set();
+  const labeledCode = cleanText.match(/取件码[：:\s]*([A-Za-z0-9\-—]{2,15})/);
+  if (labeledCode) { const code = labeledCode[1].replace(/[—-]{2,}/g, '-').trim(); if (code.length >= 2 && !seen.has(code)) { seen.add(code); results.push({ code, courier, station }); } }
+  if (results.length === 0) { const dc = /\b([A-Z]\d{1,3}\-\d{1,3}\-\d{2,4})\b/g; let m; while ((m = dc.exec(cleanText)) !== null) { if (!seen.has(m[1])) { seen.add(m[1]); results.push({ code: m[1], courier, station }); } } }
+  if (results.length === 0) { const pc = cleanText.match(/取件[出出示]+手机号码[：:\s]*(\d[\d\*]{6,15})/); if (pc) { const code = '手机号码 ' + pc[1]; if (!seen.has(code)) { seen.add(code); results.push({ code, courier, station }); } } }
+  return results.slice(0, 5);
 }
 
 function showOcrResults(codes, rawText) {
   document.getElementById('ocrLoading').classList.remove('show');
-  const container = document.getElementById('ocrResult');
-  const items = document.getElementById('ocrItems');
-
+  const c = document.getElementById('ocrResult'), el = document.getElementById('ocrItems');
   if (codes.length === 0) {
-    items.innerHTML = '<div style="text-align:center;color:#999;padding:10px;">未识别到取件码，请确认截图清晰</div>';
-    container.classList.add('show');
-    return;
+    const did = 'd_' + Date.now();
+    el.innerHTML = '<div style="text-align:center;color:#999;padding:10px;">未识别到取件码</div>' + `<div style="padding:0 10px;"><div onclick="var d=document.getElementById('${did}');d.style.display=d.style.display==='none'?'block':'none'" style="font-size:12px;color:#999;cursor:pointer;">📝 查看原始文本</div><pre id="${did}" style="display:none;font-size:11px;color:#666;white-space:pre-wrap;word-break:break-all;background:#f5f5f5;padding:8px;border-radius:6px;margin-top:5px;max-height:200px;overflow-y:auto;">${rawText.replace(/</g,'&lt;')}</pre></div>`;
+    c.classList.add('show'); return;
   }
-
-  items.innerHTML = codes.map((c, i) => `
-    <div class="ocr-item">
-      <div>
-        <div class="code">${c.code}</div>
-        <div class="context">${c.company || ''} ${c.context.substring(0, 35)}</div>
-      </div>
-      <button onclick="quickAdd('${c.code.replace(/'/g, "\\'")}', '${c.company || ''}')">添加</button>
-    </div>
-  `).join('');
-  container.classList.add('show');
+  el.innerHTML = codes.map(ci => {
+    const info = [ci.courier, ci.station].filter(Boolean).join(' · ');
+    return `<div class="ocr-item"><div><div class="code">${ci.code}</div><div class="info">${info}</div></div><button onclick="quickAdd('${ci.code.replace(/'/g,"\\'")}','${(ci.courier||'').replace(/'/g,"\\'")}','${(ci.station||'').replace(/'/g,"\\'")}')">添加</button></div>`;
+  }).join('');
+  c.classList.add('show');
 }
 
-function quickAdd(code, company) {
+function quickAdd(code, courier, station) {
   document.getElementById('inputCode').value = code;
-  document.getElementById('inputName').value = company || '';
-  document.getElementById('inputCategory').value = '快递';
+  document.getElementById('inputCourier').value = courier || '';
+  document.getElementById('inputStation').value = station || '';
+  pendingLocation = null;
+  document.getElementById('locationInfo').textContent = '';
   document.getElementById('modalTitle').textContent = '添加取件码';
   editId = null;
   document.getElementById('modal').classList.add('show');
 }
 
-function setTab(tab, el) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderCards();
-}
+function closeOcrResult() { document.getElementById('ocrResult').classList.remove('show'); }
+
+function setTab(tab, el) { currentTab = tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); renderCards(); }
 
 function openModal(id) {
   editId = id || null;
+  pendingLocation = null;
+  document.getElementById('locationInfo').textContent = '';
   if (editId) {
     const item = items.find(i => i.id === editId);
     document.getElementById('modalTitle').textContent = '编辑取件码';
     document.getElementById('inputCode').value = item.code;
-    document.getElementById('inputName').value = item.name;
-    document.getElementById('inputCategory').value = item.category;
+    document.getElementById('inputCourier').value = item.courier || '';
+    document.getElementById('inputStation').value = item.station || '';
+    if (item.lat && item.lng) {
+      pendingLocation = { lat: item.lat, lng: item.lng };
+      document.getElementById('locationInfo').textContent = `📍 已设置位置`;
+    }
   } else {
     document.getElementById('modalTitle').textContent = '添加取件码';
     document.getElementById('inputCode').value = '';
-    document.getElementById('inputName').value = '';
-    document.getElementById('inputCategory').value = '快递';
+    document.getElementById('inputCourier').value = '';
+    document.getElementById('inputStation').value = '';
   }
   document.getElementById('modal').classList.add('show');
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('show');
-}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
 
 function saveItem() {
   const code = document.getElementById('inputCode').value.trim();
-  const name = document.getElementById('inputName').value.trim();
-  const category = document.getElementById('inputCategory').value;
+  const courier = document.getElementById('inputCourier').value;
+  const station = document.getElementById('inputStation').value.trim();
   if (!code) { alert('请输入取件码'); return; }
+  const data = { code, courier, station };
+  if (pendingLocation) { data.lat = pendingLocation.lat; data.lng = pendingLocation.lng; }
   if (editId) {
     const item = items.find(i => i.id === editId);
-    item.code = code; item.name = name; item.category = category;
+    Object.assign(item, data);
   } else {
-    items.unshift({ id: Date.now(), code, name, category, time: new Date().toLocaleString('zh-CN') });
+    data.id = Date.now();
+    data.time = new Date().toLocaleString('zh-CN');
+    items.unshift(data);
   }
   localStorage.setItem('pickupItems', JSON.stringify(items));
   closeModal();
   renderCards();
+  if (map) updateMapMarkers();
 }
 
-function deleteItem(id) {
-  if (confirm('确定删除？')) {
-    items = items.filter(i => i.id !== id);
-    localStorage.setItem('pickupItems', JSON.stringify(items));
-    renderCards();
-  }
-}
+function deleteItem(id) { if (confirm('确定删除？')) { items = items.filter(i => i.id !== id); localStorage.setItem('pickupItems', JSON.stringify(items)); renderCards(); if (map) updateMapMarkers(); } }
 
-function copyCode(code) {
-  navigator.clipboard.writeText(code).then(() => alert('已复制：' + code));
-}
+function copyCode(code) { navigator.clipboard.writeText(code).then(() => alert('已复制：' + code)); }
 
 function renderCards() {
   const keyword = document.getElementById('searchInput').value.toLowerCase();
   let filtered = items;
-  if (currentTab !== '全部') filtered = filtered.filter(i => i.category === currentTab);
-  if (keyword) filtered = filtered.filter(i => i.code.toLowerCase().includes(keyword) || i.name.toLowerCase().includes(keyword));
-
+  if (currentTab !== '全部') filtered = filtered.filter(i => i.courier === currentTab);
+  if (keyword) filtered = filtered.filter(i => i.code.toLowerCase().includes(keyword) || (i.station || '').toLowerCase().includes(keyword));
+  renderTabs();
   const list = document.getElementById('cardList');
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>暂无记录<br>截图识别或手动添加</div>';
-    return;
-  }
-  list.innerHTML = filtered.map(i => `
-    <div class="card">
-      <div class="card-top">
-        <span class="card-tag tag-${i.category}">${i.category}</span>
-        <span class="card-time">${i.time}</span>
-      </div>
-      <div class="card-code" onclick="copyCode('${i.code}')" style="cursor:pointer" title="点击复制">${i.code}</div>
-      <div class="card-name">${i.name || '未命名'}</div>
-      <div class="card-actions">
-        <button onclick="openModal(${i.id})">编辑</button>
-        <button class="delete" onclick="deleteItem(${i.id})">删除</button>
-      </div>
-    </div>
-  `).join('');
+  if (filtered.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>暂无取件码</div>'; return; }
+  list.innerHTML = filtered.map(i => {
+    const color = COURIER_COLORS[i.courier] || '#8E8E93';
+    return `<div class="card"><div class="card-top"><span class="card-tag" style="background:${color}">${getLogo(i.courier)} ${i.courier || '快递'}</span><span class="card-time">${i.time}</span></div><div class="card-code" onclick="copyCode('${i.code}')" title="点击复制">${i.code}</div>${i.station ? `<div class="card-station">📍 ${i.station}</div>` : ''}<div class="card-actions"><button onclick="openModal(${i.id})">编辑</button><button class="delete" onclick="deleteItem(${i.id})">删除</button></div></div>`;
+  }).join('');
 }
 
 renderCards();
