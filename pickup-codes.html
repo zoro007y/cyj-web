@@ -38,7 +38,7 @@ body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px
 .card-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
 .card-actions button{background:none;border:none;font-size:13px;color:#FF69B4;cursor:pointer}
 .card-actions .delete{color:#FF6B6B}
-.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:20;justify-content:center;align-items:center}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9999!important;justify-content:center;align-items:center}
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:16px;padding:25px;width:85%;max-width:350px;max-height:85vh;overflow-y:auto}
 .modal h2{margin-bottom:15px;font-size:18px}
@@ -70,17 +70,56 @@ body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px
 .ocr-item .info{font-size:12px;color:#BC8F8F;margin-top:2px}
 .ocr-item button{background:#FF69B4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer}
 #mapView{display:none}
-#mapContainer{width:100%;height:calc(100vh - 170px);border-radius:12px;overflow:hidden;margin:10px 15px}
+#mapContainer{width:100%;height:calc(100vh - 170px);border-radius:12px;overflow:hidden;margin:10px 15px;position:relative;z-index:1}
 .custom-marker{background:#FF69B4;color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;border:2px solid #fff;box-shadow:0 2px 6px rgba(255,105,180,.4)}
 .map-popup h4{margin:0 0 4px;font-size:14px}
 .map-popup .popup-code{font-size:15px;font-weight:bold;color:#FF69B4;cursor:pointer}
+.card.picked-up{opacity:.5;border-style:dashed}
+.card.picked-up .card-code{text-decoration:line-through;color:#999}
+.card.picked-up .card-station{color:#ccc}
+.btn-pickup{background:#4CAF50!important;color:#fff!important;border-radius:6px!important;padding:4px 10px!important;font-size:12px!important}
+.btn-pickup:active{background:#388E3C!important}
+body.dark{background:#1a1a2e;color:#e0e0e0}
+body.dark .header{background:#16213e;border-bottom-color:#333}
+body.dark .header h1{color:#e0e0e0}
+body.dark .view-tab{color:#999}
+body.dark .view-tab.active{color:#FF69B4}
+body.dark .bottom-bar{background:#16213e;border-top-color:#333}
+body.dark .bottom-btn{color:#999}
+body.dark .search-bar input{background:#1a1a2e;border-color:#333;color:#e0e0e0}
+body.dark .tab{background:#1a1a2e;border-color:#333;color:#ccc}
+body.dark .tab.active{background:#FF69B4;color:#fff}
+body.dark .card{background:#16213e;border-color:#333;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+body.dark .card-code{color:#FF69B4}
+body.dark .card-station{color:#888}
+body.dark .card-time{color:#666}
+body.dark .modal{background:#16213e}
+body.dark .modal h2{color:#e0e0e0}
+body.dark .modal label{color:#999}
+body.dark .modal input,.body.dark .modal select,.body.dark .modal textarea{background:#1a1a2e;border-color:#333;color:#e0e0e0}
+body.dark .ocr-zone{background:#16213e;border-color:#333}
+body.dark .ocr-loading{background:#16213e}
+body.dark .ocr-result{background:#16213e}
+body.dark .ocr-item{background:#1a1a2e}
+body.dark .ocr-item .info{color:#888}
+body.dark .empty{color:#666}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
+.stat-card{background:#FFF0F5;border-radius:12px;padding:15px;text-align:center}
+.stat-card .num{font-size:28px;font-weight:bold;color:#D81B60}
+.stat-card .label{font-size:12px;color:#BC8F8F;margin-top:4px}
+body.dark .stat-card{background:#1a1a2e}
+body.dark .stat-card .num{color:#FF69B4}
+body.dark .stat-card .label{color:#888}
+.btn-cleanup{width:100%;padding:10px;border:1px solid #FF6B6B;border-radius:12px;font-size:14px;color:#FF6B6B;background:#fff;cursor:pointer;margin-top:10px}
+body.dark .btn-cleanup{background:#16213e}
+.btn-cleanup:active{background:#FFF0F0}
 </style>
 </head>
 <body>
 <div class="header">
   <img class="header-img" src="header.png" alt="熊熊驿站" onerror="this.style.display='none'">
   <h1>🐻 熊熊驿站 🐼</h1>
-  <div class="header-right"><span onclick="toggleLocation()">📍</span><span onclick="openSettings()">⚙️</span></div>
+  <div class="header-right"><span onclick="toggleDarkMode()" id="darkBtn">🌙</span><span onclick="openStats()">📊</span><span onclick="toggleLocation()">📍</span><span onclick="openSettings()">⚙️</span></div>
 </div>
 <div class="view-tabs">
   <div class="view-tab active" onclick="switchView('list')">📦 熊熊快递单</div>
@@ -140,6 +179,15 @@ body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px
     <div style="padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee"><span style="font-size:16px;font-weight:600">📍 点击地图选取坐标</span><span style="color:#FF69B4;cursor:pointer" onclick="closePresetPickModal()">完成</span></div>
     <div id="presetPickMap" style="width:100%;height:300px"></div>
     <div style="padding:10px;text-align:center;font-size:13px;color:#666" id="presetPickInfo">点击地图选点，坐标会显示在这里</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="statsModal">
+  <div class="modal">
+    <h2>📊 快递统计</h2>
+    <div id="statsContent"></div>
+    <button class="btn-cleanup" onclick="cleanupPickedUp()">🗑️ 清理已取快递</button>
+    <div class="modal-btns" style="margin-top:12px"><button class="btn-cancel" onclick="closeStats()">关闭</button></div>
   </div>
 </div>
 
@@ -247,7 +295,7 @@ function updateMarkers(){
   if(!map)return;
   map.eachLayer(l=>{if(l instanceof L.Marker)map.removeLayer(l)});
   const sm={};
-  items.forEach(i=>{if(!i.lat||!i.lng)return;const k=i.lat.toFixed(5)+','+i.lng.toFixed(5);if(!sm[k])sm[k]={lat:i.lat,lng:i.lng,station:i.station||'未知',items:[]};sm[k].items.push(i);});
+  items.filter(i=>!i.pickedUp).forEach(i=>{if(!i.lat||!i.lng)return;const k=i.lat.toFixed(5)+','+i.lng.toFixed(5);if(!sm[k])sm[k]={lat:i.lat,lng:i.lng,station:i.station||'未知',items:[]};sm[k].items.push(i);});
   Object.values(sm).forEach(s=>{
     const icon=L.divIcon({className:'',html:`<div class="custom-marker">${s.items.length}</div>`,iconSize:[30,30],iconAnchor:[15,15]});
     const popup=`<div class="map-popup"><h4>📍 ${s.station}</h4>${s.items.map(i=>`<div class="popup-code" onclick="navigator.clipboard.writeText('${i.code}')">${getLogo(i.courier)} ${i.code}</div>`).join('')}</div>`;
@@ -328,18 +376,6 @@ function startPresetPick(c){
   });
 }
 function closePresetPickModal(){document.getElementById('presetPickModal').classList.remove('show')}
-function saveSettings(){
-  amapKey=document.getElementById('inputApiKey').value.trim();
-  localStorage.setItem('amapKey',amapKey);
-  const stText=document.getElementById('inputStations').value.trim();
-  localStorage.setItem('presetStations2',stText);
-  PRESET_STATIONS.length=0;
-  stText.split('\n').forEach(line=>{
-    const m=line.match(/(.+?)=(.+?)(?:\|(.+))?$/);
-    if(m)PRESET_STATIONS.push({keywords:m[1].split(',').map(s=>s.trim()),name:m[2].trim(),address:(m[3]||'').trim()});
-  });
-  closeSettings();alert('已保存');
-}
 
 function openPasteModal(){document.getElementById('pasteInput').value='';document.getElementById('pastePreview').innerHTML='';document.getElementById('pasteModal').classList.add('show')}
 function closePasteModal(){document.getElementById('pasteModal').classList.remove('show')}
@@ -505,7 +541,8 @@ function renderCards(){
   if(!f.length){list.innerHTML='<div class="empty"><div class="empty-icon">🧸</div>还没有取件码哦~<br>截图识别或粘贴吧！</div>';return;}
   list.innerHTML=f.map(i=>{
     const color=COLORS[i.courier]||'#BC8F8F';
-    return `<div class="card"><div class="card-top"><span class="card-tag" style="background:${color}">${getLogo(i.courier)} ${i.courier||'快递'}</span><span class="card-time">${i.time}</span></div><div class="card-code" onclick="copyCode('${i.code}')" title="点击复制">${i.code}</div>${i.station?`<div class="card-station">📍 ${i.station}</div>`:''}<div class="card-actions"><button onclick="openModal(${i.id})">编辑</button><button class="delete" onclick="deleteItem(${i.id})">删除</button></div></div>`;
+    const isPicked=i.pickedUp;
+    return `<div class="card${isPicked?' picked-up':''}"><div class="card-top"><span class="card-tag" style="background:${color}">${getLogo(i.courier)} ${i.courier||'快递'}</span><span class="card-time">${isPicked?'✅ 已取 '+i.pickedUpTime:i.time}</span></div><div class="card-code" onclick="copyCode('${i.code}')" title="点击复制">${i.code}</div>${i.station?`<div class="card-station">📍 ${i.station}</div>`:''}<div class="card-actions">${isPicked?'':`<button class="btn-pickup" onclick="togglePickedUp(${i.id})">✅ 已取</button>`}<button onclick="openModal(${i.id})">编辑</button><button class="delete" onclick="deleteItem(${i.id})">删除</button></div></div>`;
   }).join('');
 }
 
@@ -536,7 +573,49 @@ function addFromPaste(code,courier,station,address){
   }
 }
 
+function togglePickedUp(id){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  it.pickedUp=!it.pickedUp;
+  if(it.pickedUp)it.pickedUpTime=new Date().toLocaleString('zh-CN');
+  else delete it.pickedUpTime;
+  localStorage.setItem('pickupItems',JSON.stringify(items));
+  renderCards();
+  if(map)updateMarkers();
+}
+
+function cleanupPickedUp(){
+  const count=items.filter(i=>i.pickedUp).length;
+  if(!count)return alert('没有已取快递');
+  if(!confirm('确定删除 '+count+' 条已取快递？'))return;
+  items=items.filter(i=>!i.pickedUp);
+  localStorage.setItem('pickupItems',JSON.stringify(items));
+  closeStats();renderCards();if(map)updateMarkers();
+}
+
+function toggleDarkMode(){
+  document.body.classList.toggle('dark');
+  const isDark=document.body.classList.contains('dark');
+  localStorage.setItem('darkMode',isDark);
+  document.getElementById('darkBtn').textContent=isDark?'\u2600\uFE0F':'\uD83C\uDF19';
+}
+
+function openStats(){
+  const total=items.length;
+  const picked=items.filter(i=>i.pickedUp).length;
+  const active=total-picked;
+  const today=new Date().toDateString();
+  const todayCount=items.filter(i=>new Date(i.id).toDateString()===today).length;
+  const cs={};
+  items.forEach(i=>{if(i.courier)cs[i.courier]=(cs[i.courier]||0)+1;});
+  const top=Object.entries(cs).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('statsContent').innerHTML='<div class="stats-grid"><div class="stat-card"><div class="num">'+total+'</div><div class="label">总快递数</div></div><div class="stat-card"><div class="num">'+active+'</div><div class="label">待取快递</div></div><div class="stat-card"><div class="num">'+picked+'</div><div class="label">已取快递</div></div><div class="stat-card"><div class="num">'+todayCount+'</div><div class="label">今日新增</div></div></div>'+(top.length?'<div style="margin-top:15px;font-size:14px;color:#666;font-weight:600">快递公司排行</div>'+top.map(function(n){return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0"><span>'+getLogo(n[0])+' '+n[0]+'</span><span style="font-weight:bold;color:#D81B60">'+n[1]+'件</span></div>';}).join(''):'')+'<div style="margin-top:15px;font-size:12px;color:#BC8F8F;text-align:center">有坐标的快递: '+items.filter(i=>i.lat&&i.lng).length+'件</div>';
+  document.getElementById('statsModal').classList.add('show');
+}
+function closeStats(){document.getElementById('statsModal').classList.remove('show')}
+
 renderCards();
+if(localStorage.getItem('darkMode')==='true'){document.body.classList.add('dark');document.getElementById('darkBtn').textContent='☀️';}
 </script>
 </body>
 </html>
