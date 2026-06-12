@@ -8,502 +8,406 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding-bottom: 80px; }
-.header { background: white; color: #5D4037; padding: 15px 20px; text-align: center; position: relative; border-bottom: 1px solid #FFE4E1; }
-.header h1 { font-size: 20px; font-weight: 700; }
-.header-img { width: 100%; max-height: 120px; object-fit: contain; margin-bottom: 5px; border-radius: 12px; }
-.header-right { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 20px; cursor: pointer; }
-.header-right span { margin-left: 10px; }
-.view-tabs { display: flex; padding: 10px 15px 0; }
-.view-tab { flex: 1; text-align: center; padding: 10px; font-size: 14px; color: #666; border-bottom: 2px solid transparent; cursor: pointer; }
-.view-tab.active { color: #FF69B4; border-bottom-color: #FF69B4; font-weight: 600; }
-.bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: white; border-top: 1px solid #FFE4E1; z-index: 10; padding-bottom: env(safe-area-inset-bottom); }
-.bottom-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 0; font-size: 11px; color: #666; background: none; border: none; cursor: pointer; }
-.bottom-btn .icon { font-size: 22px; margin-bottom: 2px; }
-.bottom-btn.primary { color: #FF69B4; }
-.search-bar { padding: 10px 15px; }
-.search-bar input { width: 100%; padding: 10px 15px; border-radius: 20px; border: 1px solid #FFB6C1; font-size: 16px; background: white; }
-.tabs { display: flex; padding: 0 15px; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-.tab { padding: 6px 10px; text-align: center; border-radius: 20px; background: white; border: 1px solid #FFB6C1; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-.tab.active { background: #FF69B4; color: white; border-color: #FF69B4; }
-.courier-logo { width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; flex-shrink: 0; }
-.card-list { padding: 0 15px; }
-.card { background: white; border-radius: 16px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(255,182,193,0.2); border: 1px solid #FFE4E1; }
-.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.card-tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; color: white; display: flex; align-items: center; gap: 4px; }
-.card-time { font-size: 12px; color: #D7CCC8; }
-.card-code { font-size: 28px; font-weight: bold; color: #D81B60; letter-spacing: 2px; margin-bottom: 5px; cursor: pointer; }
-.card-station { font-size: 13px; color: #BC8F8F; }
-.card-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
-.card-actions button { background: none; border: none; font-size: 13px; color: #FF69B4; cursor: pointer; }
-.card-actions .delete { color: #FF6B6B; }
-.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 20; justify-content: center; align-items: center; }
-.modal-overlay.show { display: flex; }
-.modal { background: white; border-radius: 16px; padding: 25px; width: 85%; max-width: 350px; max-height: 85vh; overflow-y: auto; }
-.modal h2 { margin-bottom: 20px; font-size: 18px; }
-.modal label { font-size: 14px; color: #666; margin-bottom: 5px; display: block; }
-.modal input, .modal select { width: 100%; padding: 10px; border: 1px solid #FFB6C1; border-radius: 12px; font-size: 16px; margin-bottom: 15px; }
-.modal-btns { display: flex; gap: 10px; }
-.modal-btns button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 16px; cursor: pointer; }
-.btn-cancel { background: #f0f0f0; color: #333; }
-.btn-save { background: #FF69B4; color: white; }
-.btn-location { width: 100%; padding: 10px; border: 1px dashed #FF69B4; border-radius: 12px; font-size: 14px; color: #FF69B4; background: #FFF0F5; cursor: pointer; margin-bottom: 15px; text-align: center; }
-.empty { text-align: center; padding: 60px 20px; color: #BC8F8F; }
-.empty-icon { font-size: 48px; margin-bottom: 10px; }
-.ocr-zone { margin: 10px 15px; border: 2px dashed #FFB6C1; border-radius: 16px; padding: 30px; text-align: center; background: white; cursor: pointer; }
-.ocr-zone:active { background: #f0f0f0; }
-.ocr-zone .icon { font-size: 36px; margin-bottom: 8px; }
-.ocr-zone .text { font-size: 14px; color: #999; }
-.ocr-zone input[type="file"] { display: none; }
-.ocr-loading { display: none; margin: 10px 15px; background: white; border-radius: 12px; padding: 20px; text-align: center; }
-.ocr-loading.show { display: block; }
-.ocr-loading .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #FFE4E1; border-top-color: #FF69B4; border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.ocr-loading .status { margin-top: 10px; font-size: 14px; color: #666; }
-.ocr-result { display: none; margin: 10px 15px; background: white; border-radius: 12px; padding: 15px; position: relative; }
-.ocr-result.show { display: block; }
-.ocr-result h3 { font-size: 15px; margin-bottom: 10px; color: #333; padding-right: 30px; }
-.ocr-close { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; background: #f0f0f0; border-radius: 50%; text-align: center; line-height: 28px; font-size: 16px; color: #999; cursor: pointer; }
-.ocr-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; }
-.ocr-item .code { font-size: 18px; font-weight: bold; color: #FF69B4; }
-.ocr-item .info { font-size: 12px; color: #BC8F8F; margin-top: 2px; }
-.ocr-item button { background: #FF69B4; color: white; border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-#mapView { display: none; }
-#mapContainer { width: 100%; height: calc(100vh - 180px); border-radius: 12px; overflow: hidden; margin: 10px 15px; }
-.map-popup { font-family: -apple-system, sans-serif; }
-.map-popup h4 { margin: 0 0 6px; font-size: 14px; }
-.map-popup .popup-code { font-size: 16px; font-weight: bold; color: #FF69B4; margin: 3px 0; cursor: pointer; }
-.custom-marker { background: #FF69B4; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 6px rgba(255,105,180,0.4); }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px}
+.header{background:#fff;color:#5D4037;padding:12px 15px;text-align:center;position:relative;border-bottom:1px solid #FFE4E1}
+.header h1{font-size:20px;font-weight:700}
+.header-img{width:100%;max-height:100px;object-fit:contain;border-radius:12px;margin-bottom:4px}
+.header-right{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:20px;cursor:pointer}
+.header-right span{margin-left:8px}
+.view-tabs{display:flex;padding:8px 15px 0}
+.view-tab{flex:1;text-align:center;padding:8px;font-size:14px;color:#666;border-bottom:2px solid transparent;cursor:pointer}
+.view-tab.active{color:#FF69B4;border-bottom-color:#FF69B4;font-weight:600}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid #FFE4E1;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+.bottom-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0;font-size:11px;color:#666;background:none;border:none;cursor:pointer}
+.bottom-btn .icon{font-size:22px;margin-bottom:2px}
+.bottom-btn.primary{color:#FF69B4}
+.search-bar{padding:8px 15px}
+.search-bar input{width:100%;padding:10px 15px;border-radius:20px;border:1px solid #FFB6C1;font-size:15px;background:#fff}
+.tabs{display:flex;padding:0 15px;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.tab{padding:5px 10px;border-radius:20px;background:#fff;border:1px solid #FFB6C1;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.tab.active{background:#FF69B4;color:#fff;border-color:#FF69B4}
+.courier-logo{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;color:#fff;flex-shrink:0}
+.card-list{padding:0 15px}
+.card{background:#fff;border-radius:16px;padding:15px;margin-bottom:10px;box-shadow:0 2px 8px rgba(255,182,193,.2);border:1px solid #FFE4E1}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.card-tag{padding:2px 8px;border-radius:4px;font-size:12px;color:#fff;display:flex;align-items:center;gap:4px}
+.card-time{font-size:12px;color:#D7CCC8}
+.card-code{font-size:28px;font-weight:bold;color:#D81B60;letter-spacing:2px;margin-bottom:5px;cursor:pointer}
+.card-station{font-size:13px;color:#BC8F8F}
+.card-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
+.card-actions button{background:none;border:none;font-size:13px;color:#FF69B4;cursor:pointer}
+.card-actions .delete{color:#FF6B6B}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:20;justify-content:center;align-items:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:25px;width:85%;max-width:350px;max-height:85vh;overflow-y:auto}
+.modal h2{margin-bottom:15px;font-size:18px}
+.modal label{font-size:14px;color:#666;margin-bottom:5px;display:block}
+.modal input,.modal select,.modal textarea{width:100%;padding:10px;border:1px solid #FFB6C1;border-radius:12px;font-size:15px;margin-bottom:12px;font-family:inherit}
+.modal-btns{display:flex;gap:10px;margin-top:5px}
+.modal-btns button{flex:1;padding:12px;border-radius:12px;border:none;font-size:16px;cursor:pointer}
+.btn-cancel{background:#f0f0f0;color:#333}
+.btn-save{background:#FF69B4;color:#fff}
+.btn-location{width:100%;padding:10px;border:1px dashed #FF69B4;border-radius:12px;font-size:14px;color:#FF69B4;background:#FFF0F5;cursor:pointer;margin-bottom:12px;text-align:center}
+.empty{text-align:center;padding:60px 20px;color:#BC8F8F}
+.empty-icon{font-size:48px;margin-bottom:10px}
+.ocr-zone{margin:10px 15px;border:2px dashed #FFB6C1;border-radius:16px;padding:25px;text-align:center;background:#fff;cursor:pointer}
+.ocr-zone:active{background:#FFF0F5}
+.ocr-zone .icon{font-size:36px;margin-bottom:8px}
+.ocr-zone .text{font-size:14px;color:#BC8F8F}
+.ocr-zone input[type="file"]{display:none}
+.ocr-loading{display:none;margin:10px 15px;background:#fff;border-radius:12px;padding:20px;text-align:center}
+.ocr-loading.show{display:block}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid #FFE4E1;border-top-color:#FF69B4;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ocr-loading .status{margin-top:10px;font-size:14px;color:#666}
+.ocr-result{display:none;margin:10px 15px;background:#fff;border-radius:12px;padding:15px;position:relative}
+.ocr-result.show{display:block}
+.ocr-result h3{font-size:15px;margin-bottom:10px;color:#333;padding-right:30px}
+.ocr-close{position:absolute;top:12px;right:12px;width:28px;height:28px;background:#f0f0f0;border-radius:50%;text-align:center;line-height:28px;font-size:16px;color:#999;cursor:pointer}
+.ocr-item{display:flex;align-items:center;justify-content:space-between;padding:10px;background:#FFF0F5;border-radius:8px;margin-bottom:8px}
+.ocr-item .code{font-size:18px;font-weight:bold;color:#FF69B4}
+.ocr-item .info{font-size:12px;color:#BC8F8F;margin-top:2px}
+.ocr-item button{background:#FF69B4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer}
+#mapView{display:none}
+#mapContainer{width:100%;height:calc(100vh - 170px);border-radius:12px;overflow:hidden;margin:10px 15px}
+.custom-marker{background:#FF69B4;color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;border:2px solid #fff;box-shadow:0 2px 6px rgba(255,105,180,.4)}
+.map-popup h4{margin:0 0 4px;font-size:14px}
+.map-popup .popup-code{font-size:15px;font-weight:bold;color:#FF69B4;cursor:pointer}
 </style>
 </head>
 <body>
-
 <div class="header">
   <img class="header-img" src="header.png" alt="熊熊驿站" onerror="this.style.display='none'">
   <h1>🐻 熊熊驿站 🐼</h1>
-  <div class="header-right">
-    <span onclick="toggleLocation()">📍</span>
-    <span onclick="openSettings()">⚙️</span>
-  </div>
+  <div class="header-right"><span onclick="toggleLocation()">📍</span><span onclick="openSettings()">⚙️</span></div>
 </div>
-
 <div class="view-tabs">
   <div class="view-tab active" onclick="switchView('list')">📦 熊熊快递单</div>
   <div class="view-tab" onclick="switchView('map')">🗺️ 熊熊地图</div>
 </div>
-
 <div id="listView">
   <div class="ocr-zone" onclick="document.getElementById('fileInput').click()">
     <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
     <div class="icon">📸</div>
-    <div class="text">📸 点击上传截图，自动识别取件码<br>或长按粘贴截图</div>
+    <div class="text">点击上传截图自动识别取件码<br>或长按粘贴截图</div>
   </div>
-  <div class="ocr-loading" id="ocrLoading"><div class="spinner"></div><div class="status" id="ocrStatus">正在加载识别引擎...</div></div>
+  <div class="ocr-loading" id="ocrLoading"><div class="spinner"></div><div class="status" id="ocrStatus">加载中...</div></div>
   <div class="ocr-result" id="ocrResult"><div class="ocr-close" onclick="closeOcrResult()">✕</div><h3>🔍 识别到以下取件码：</h3><div id="ocrItems"></div></div>
   <div class="search-bar"><input type="text" id="searchInput" placeholder="🔍 搜索取件码或驿站..." oninput="renderCards()"></div>
   <div class="tabs" id="courierTabs"></div>
   <div class="card-list" id="cardList"></div>
 </div>
-
 <div id="mapView"><div id="mapContainer"></div></div>
-
 <div class="bottom-bar">
   <button class="bottom-btn" onclick="document.getElementById('fileInput').click()"><span class="icon">📸</span>截图识别</button>
-  <button class="bottom-btn primary" onclick="openModal()"><span class="icon">＋</span>手动添加</button>
+  <button class="bottom-btn primary" onclick="openPasteModal()"><span class="icon">📋</span>粘贴识别</button>
+  <button class="bottom-btn" onclick="openModal()"><span class="icon">＋</span>手动添加</button>
 </div>
 
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h2 id="modalTitle">添加取件码</h2>
-    <label>取件码</label>
-    <input type="text" id="inputCode" placeholder="例如：B7-1-4667">
+    <label>取件码</label><input type="text" id="inputCode" placeholder="例如：B7-1-4667">
     <label>快递公司</label>
-    <select id="inputCourier">
-      <option value="">请选择</option>
-      <option value="极兔">极兔</option>
-      <option value="圆通">圆通</option>
-      <option value="中通">中通</option>
-      <option value="韵达">韵达</option>
-      <option value="申通">申通</option>
-      <option value="顺丰">顺丰</option>
-      <option value="京东">京东</option>
-      <option value="邮政EMS">邮政EMS</option>
-      <option value="菜鸟">菜鸟</option>
-      <option value="德邦">德邦</option>
-      <option value="其他">其他</option>
-    </select>
-    <label>驿站/代收点</label>
-    <input type="text" id="inputStation" placeholder="例如：9园区桂轩后面快递服务中心">
+    <select id="inputCourier"><option value="">请选择</option><option>极兔</option><option>圆通</option><option>中通</option><option>韵达</option><option>申通</option><option>顺丰</option><option>京东</option><option>邮政EMS</option><option>菜鸟</option><option>德邦</option><option>其他</option></select>
+    <label>驿站/代收点</label><input type="text" id="inputStation" placeholder="例如：财经学院1栋旁快递服务中心">
     <div class="btn-location" onclick="pickLocation()">📍 手动设置位置（可选）</div>
-    <div id="locationInfo" style="font-size:12px;color:#BC8F8F;margin-top:-10px;margin-bottom:15px;"></div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">取消</button>
-      <button class="btn-save" onclick="saveItem()">保存</button>
-    </div>
+    <div id="locationInfo" style="font-size:12px;color:#BC8F8F;margin-top:-8px;margin-bottom:12px;"></div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closeModal()">取消</button><button class="btn-save" onclick="saveItem()">保存</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pasteModal">
+  <div class="modal">
+    <h2>📋 粘贴快递信息</h2>
+    <div style="font-size:12px;color:#BC8F8F;margin-bottom:8px">粘贴短信或订单文字，自动识别取件码和驿站</div>
+    <textarea id="pasteInput" rows="4" placeholder="取件码 B7-1-4667&#10;驿加易代收点 | 9园区桂轩后面快递服务中心"></textarea>
+    <div id="pastePreview"></div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closePasteModal()">取消</button><button class="btn-save" onclick="parsePasteText()">识别</button></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="locationModal">
-  <div class="modal" style="padding:0;overflow:hidden;">
-    <div style="padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;">
-      <span style="font-size:16px;font-weight:600;">点击地图设置位置</span>
-      <span style="font-size:14px;color:#007AFF;cursor:pointer;" onclick="closeLocationModal()">完成</span>
-    </div>
-    <div id="pickMap" style="width:100%;height:300px;"></div>
+  <div class="modal" style="padding:0;overflow:hidden">
+    <div style="padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee"><span style="font-size:16px;font-weight:600">点击地图设置位置</span><span style="color:#FF69B4;cursor:pointer" onclick="closeLocationModal()">完成</span></div>
+    <div id="pickMap" style="width:100%;height:300px"></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <h2>⚙️ 设置</h2>
-    <label>高德地图 API Key（自动定位驿站用）</label>
-    <input type="text" id="inputApiKey" placeholder="请输入高德地图 Web 服务 Key">
-    <div style="font-size:12px;color:#BC8F8F;margin-top:-10px;margin-bottom:15px;">
-      免费申请：<a href="https://lbs.amap.com/" target="_blank" style="color:#FF69B4;">lbs.amap.com</a><br>
-      注册 → 创建应用 → 添加「Web服务」类型 → 复制 Key
-    </div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeSettings()">取消</button>
-      <button class="btn-save" onclick="saveSettings()">保存</button>
-    </div>
+    <label>高德地图 API Key</label>
+    <input type="text" id="inputApiKey" placeholder="高德地图 Web 服务 Key">
+    <div style="font-size:12px;color:#BC8F8F;margin-top:-8px;margin-bottom:12px">免费申请：<a href="https://lbs.amap.com/" target="_blank" style="color:#FF69B4">lbs.amap.com</a></div>
+    <div class="modal-btns"><button class="btn-cancel" onclick="closeSettings()">取消</button><button class="btn-save" onclick="saveSettings()">保存</button></div>
   </div>
 </div>
 
 <script>
-const COURIER_COLORS = { '极兔': '#FF8C00', '圆通': '#4169E1', '中通': '#DC143C', '韵达': '#8B4513', '申通': '#DAA520', '顺丰': '#2F4F4F', '京东': '#DC143C', '邮政EMS': '#228B22', '菜鸟': '#FF8C00', '德邦': '#4169E1', '其他': '#BC8F8F' };
-const COURIERS = ['全部', '极兔', '圆通', '中通', '韵达', '申通', '顺丰', '京东', '邮政EMS', '菜鸟', '德邦', '其他'];
+const COLORS={极兔:'#FF8C00',圆通:'#4169E1',中通:'#DC143C',韵达:'#8B4513',申通:'#DAA520',顺丰:'#2F4F4F',京东:'#DC143C',邮政EMS:'#228B22',菜鸟:'#FF8C00',德邦:'#4169E1',其他:'#BC8F8F'};
+const COURIERS=['全部','极兔','圆通','中通','韵达','申通','顺丰','京东','邮政EMS','菜鸟','德邦','其他'];
 
-let items = JSON.parse(localStorage.getItem('pickupItems') || '[]');
-let currentTab = '全部';
-let editId = null;
-let worker = null;
-let currentView = 'list';
-let map = null;
-let pickMap = null;
-let pendingLocation = null;
-let amapKey = localStorage.getItem('amapKey') || '';
+let items=JSON.parse(localStorage.getItem('pickupItems')||'[]');
+let currentTab='全部',editId=null,worker=null,currentView='list',map=null,pickMap=null,pendingLocation=null;
+let amapKey=localStorage.getItem('amapKey')||'';
 
-function getLogo(c) { const color = COURIER_COLORS[c] || '#8E8E93'; return `<span class="courier-logo" style="background:${color}">${(c||'快')[0]}</span>`; }
+function getLogo(c){return `<span class="courier-logo" style="background:${COLORS[c]||'#BC8F8F'}">${(c||'快')[0]}</span>`}
 
-function renderTabs() {
-  const used = new Set(items.map(i => i.courier).filter(Boolean));
-  const tabs = COURIERS.filter(c => c === '全部' || used.has(c));
-  document.getElementById('courierTabs').innerHTML = tabs.map(c =>
-    `<div class="tab${currentTab===c?' active':''}" onclick="setTab('${c}',this)">${c==='全部'?'全部':getLogo(c)+c}</div>`
-  ).join('');
+function renderTabs(){
+  const used=new Set(items.map(i=>i.courier).filter(Boolean));
+  const tabs=COURIERS.filter(c=>c==='全部'||used.has(c));
+  document.getElementById('courierTabs').innerHTML=tabs.map(c=>`<div class="tab${currentTab===c?' active':''}" onclick="setTab('${c}',this)">${c==='全部'?'全部':getLogo(c)+c}</div>`).join('');
 }
 
-async function geocodeAddress(address) {
-  if (!amapKey || !address) return null;
-  let cleanAddr = address.replace(/拨打电话|联系电话|投诉电[\u4e00-\u9fff]*|展开|复制|物流电话|联系驿站|取件|已签收|重庆理工[\u4e00-\u9fff]*/g, '').trim();
-  cleanAddr = cleanAddr.replace(/[\d]{7,}/g, '').replace(/[|｜].*$/, '').trim();
-  if (cleanAddr.length < 3) return null;
-
-  const tryAddrs = [];
-  if (cleanAddr.includes('重庆市') || cleanAddr.includes('涪陵') || cleanAddr.includes('巴南')) {
-    tryAddrs.push(cleanAddr);
-  } else {
-    tryAddrs.push('重庆市' + cleanAddr);
-    tryAddrs.push(cleanAddr);
-  }
-
-  for (const addr of tryAddrs) {
-    try {
-      const res = await fetch(`https://restapi.amap.com/v3/geocode/geo?address=${encodeURIComponent(addr)}&key=${amapKey}&city=重庆`);
-      const data = await res.json();
-      if (data.status === '1' && data.geocodes && data.geocodes.length > 0) {
-        const [lng, lat] = data.geocodes[0].location.split(',').map(Number);
-        return { lat, lng };
-      }
-    } catch (e) {}
+async function geocode(addr){
+  if(!amapKey||!addr)return null;
+  let a=addr.replace(/拨打电话|联系电话|投诉电[\u4e00-\u9fff]*|展开|复制|物流电话|联系驿站|取件|已签收/g,'').replace(/[|｜].*$/g,'').replace(/\d{7,}/g,'').trim();
+  if(a.length<3)return null;
+  const tryList=[];
+  if(a.includes('重庆')||a.includes('涪陵')||a.includes('巴南'))tryList.push(a);
+  else{tryList.push('重庆市'+a);tryList.push(a);}
+  for(const t of tryList){
+    try{const r=await fetch(`https://restapi.amap.com/v3/geocode/geo?address=${encodeURIComponent(t)}&key=${amapKey}&city=重庆`);const d=await r.json();if(d.status==='1'&&d.geocodes&&d.geocodes.length>0){const[lng,lat]=d.geocodes[0].location.split(',').map(Number);return{lat,lng};}}catch(e){}
   }
   return null;
 }
 
-function switchView(view) {
-  currentView = view;
-  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.view-tab')[view==='list'?0:1].classList.add('active');
-  document.getElementById('listView').style.display = view==='list' ? 'block' : 'none';
-  document.getElementById('mapView').style.display = view==='map' ? 'block' : 'none';
-  if (view === 'map') initMap();
+function switchView(v){
+  currentView=v;
+  document.querySelectorAll('.view-tab').forEach((t,i)=>{t.classList.toggle('active',i===(v==='list'?0:1))});
+  document.getElementById('listView').style.display=v==='list'?'block':'none';
+  document.getElementById('mapView').style.display=v==='map'?'block':'none';
+  if(v==='map')initMap();
 }
 
-function initMap() {
-  if (map) { map.invalidateSize(); updateMapMarkers(); return; }
-  const si = items.filter(i => i.lat && i.lng);
-  const center = si.length > 0 ? [si[0].lat, si[0].lng] : [29.56, 106.55];
-  map = L.map('mapContainer').setView(center, 15);
-  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', { subdomains: '1234', attribution: '© 高德地图 🐻' }).addTo(map);
-  updateMapMarkers();
+function initMap(){
+  if(map){map.invalidateSize();updateMarkers();return;}
+  const si=items.filter(i=>i.lat&&i.lng);
+  const c=si.length?[si[0].lat,si[0].lng]:[29.56,106.55];
+  map=L.map('mapContainer').setView(c,15);
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(map);
+  updateMarkers();
 }
 
-function updateMapMarkers() {
-  if (!map) return;
-  map.eachLayer(l => { if (l instanceof L.Marker) map.removeLayer(l); });
-  const sm = {};
-  items.forEach(i => {
-    if (!i.lat || !i.lng) return;
-    const k = i.lat.toFixed(5)+','+i.lng.toFixed(5);
-    if (!sm[k]) sm[k] = { lat: i.lat, lng: i.lng, station: i.station||'未知', items: [] };
-    sm[k].items.push(i);
-  });
-  Object.values(sm).forEach(s => {
-    const icon = L.divIcon({ className:'', html:`<div class="custom-marker">${s.items.length}</div>`, iconSize:[30,30], iconAnchor:[15,15] });
-    const popup = `<div class="map-popup"><h4>📍 ${s.station}</h4>${s.items.map(i=>`<div class="popup-code" onclick="navigator.clipboard.writeText('${i.code}')">${getLogo(i.courier)} ${i.code}</div>`).join('')}</div>`;
+function updateMarkers(){
+  if(!map)return;
+  map.eachLayer(l=>{if(l instanceof L.Marker)map.removeLayer(l)});
+  const sm={};
+  items.forEach(i=>{if(!i.lat||!i.lng)return;const k=i.lat.toFixed(5)+','+i.lng.toFixed(5);if(!sm[k])sm[k]={lat:i.lat,lng:i.lng,station:i.station||'未知',items:[]};sm[k].items.push(i);});
+  Object.values(sm).forEach(s=>{
+    const icon=L.divIcon({className:'',html:`<div class="custom-marker">${s.items.length}</div>`,iconSize:[30,30],iconAnchor:[15,15]});
+    const popup=`<div class="map-popup"><h4>📍 ${s.station}</h4>${s.items.map(i=>`<div class="popup-code" onclick="navigator.clipboard.writeText('${i.code}')">${getLogo(i.courier)} ${i.code}</div>`).join('')}</div>`;
     L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(popup);
   });
 }
 
-function toggleLocation() {
-  if (!navigator.geolocation) { alert('浏览器不支持定位'); return; }
-  navigator.geolocation.getCurrentPosition(pos => {
-    if (map) map.setView([pos.coords.latitude, pos.coords.longitude], 16);
-  }, () => alert('无法获取位置'));
+function toggleLocation(){
+  if(!navigator.geolocation)return alert('不支持定位');
+  navigator.geolocation.getCurrentPosition(p=>{if(map)map.setView([p.coords.latitude,p.coords.longitude],16)},()=>alert('定位失败'));
 }
 
-function pickLocation() {
+function pickLocation(){
   document.getElementById('locationModal').classList.add('show');
-  setTimeout(() => {
-    if (pickMap) { pickMap.invalidateSize(); return; }
-    const start = pos => {
-      pickMap = L.map('pickMap').setView([pos.coords.latitude, pos.coords.longitude], 16);
-      L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', { subdomains: '1234' }).addTo(pickMap);
-      let marker = null;
-      pickMap.on('click', e => {
-        if (marker) pickMap.removeLayer(marker);
-        marker = L.marker(e.latlng).addTo(pickMap);
-        pendingLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
-        document.getElementById('locationInfo').textContent = `✅ 已设置位置`;
-      });
-    };
-    navigator.geolocation.getCurrentPosition(start, () => start({ coords: { latitude: 29.56, longitude: 106.55 } }));
-  }, 300);
+  setTimeout(()=>{
+    if(pickMap){pickMap.invalidateSize();return;}
+    navigator.geolocation.getCurrentPosition(p=>startPickMap([p.coords.latitude,p.coords.longitude]),()=>startPickMap([29.56,106.55]));
+  },300);
+}
+function startPickMap(c){
+  pickMap=L.map('pickMap').setView(c,16);
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(pickMap);
+  let mk=null;
+  pickMap.on('click',e=>{if(mk)pickMap.removeLayer(mk);mk=L.marker(e.latlng).addTo(pickMap);pendingLocation={lat:e.latlng.lat,lng:e.latlng.lng};document.getElementById('locationInfo').textContent='✅ 已设置位置';});
+}
+function closeLocationModal(){document.getElementById('locationModal').classList.remove('show')}
+
+function openSettings(){document.getElementById('inputApiKey').value=amapKey;document.getElementById('settingsModal').classList.add('show')}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('show')}
+function saveSettings(){amapKey=document.getElementById('inputApiKey').value.trim();localStorage.setItem('amapKey',amapKey);closeSettings();alert(amapKey?'已保存':'已清除')}
+
+function openPasteModal(){document.getElementById('pasteInput').value='';document.getElementById('pastePreview').innerHTML='';document.getElementById('pasteModal').classList.add('show')}
+function closePasteModal(){document.getElementById('pasteModal').classList.remove('show')}
+
+function cleanCJK(s){
+  let r=s;for(let i=0;i<5;i++)r=r.replace(/([\u4e00-\u9fff])\s+([\u4e00-\u9fff])/g,'$1$2');
+  for(let i=0;i<3;i++){r=r.replace(/([\dA-Za-z])\s+([\u4e00-\u9fff])/g,'$1$2');r=r.replace(/([\u4e00-\u9fff])\s+([\dA-Za-z])/g,'$1$2');}
+  return r;
 }
 
-function closeLocationModal() { document.getElementById('locationModal').classList.remove('show'); }
-
-function openSettings() { document.getElementById('inputApiKey').value = amapKey; document.getElementById('settingsModal').classList.add('show'); }
-function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
-function saveSettings() {
-  amapKey = document.getElementById('inputApiKey').value.trim();
-  localStorage.setItem('amapKey', amapKey);
-  closeSettings();
-  alert(amapKey ? '已保存，识别驿站后将自动定位' : '已清除 API Key');
+function findStation(lines){
+  const ignore=['待取件','已放入','已签收','已到达','配送中','派件中','您的快件','请凭'];
+  for(const line of lines){
+    let cl=cleanCJK(line);
+    if(ignore.some(p=>cl.includes(p)))continue;
+    for(const kw of['快递服务中心','代收点','服务中心','驿站','自提点','服务点','快递柜']){
+      if(!cl.includes(kw))continue;
+      let raw=cl.replace(/拨打电话.*$/g,'').replace(/[|｜]\s*拨打电话.*$/g,'').trim();
+      raw=raw.replace(/^[，。\s|｜]+|[，。\s|｜]+$/g,'');
+      if(raw.length>=4&&raw.length<=60)return raw;
+    }
+  }
+  return '';
 }
 
-function resizeImage(file) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = new Image();
-      img.onload = function() {
-        let w = img.width, h = img.height;
-        if (w > 1000) { h *= 1000/w; w = 1000; }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.7);
-      };
-      img.src = e.target.result;
-    };
+function findAddress(ct){
+  let m=ct.match(/(?:收货地址|收货方|取件地址)[：:\s]*([\u4e00-\u9fff\d号栋座楼室区街道镇村路大道A-Za-z]{5,50})/);
+  if(m)return m[1].replace(/[|｜].*$/g,'').trim();
+  m=ct.match(/([\u4e00-\u9fff]{2,6}[市省][\u4e00-\u9fff]{2,6}[区县][\u4e00-\u9fff\d号路大道街道花园小区A-Za-z]{3,25})/);
+  if(m)return m[1];
+  m=ct.match(/([\u4e00-\u9fff]{2,6}[区县][\u4e00-\u9fff\d号路大道街道花园小区]{3,25})/);
+  return m?m[1]:'';
+}
+
+function parseText(text){
+  const lines=text.split(/\n/);
+  const ct=cleanCJK(lines.join(' '));
+  const cm={极兔:'极兔',极免:'极兔',圆通:'圆通',中通:'中通',韵达:'韵达',申通:'申通',顺丰:'顺丰',京东:'京东',邮政:'邮政EMS',EMS:'邮政EMS',菜鸟:'菜鸟',德邦:'德邦'};
+  let courier='';for(const[k,v]of Object.entries(cm)){if(ct.includes(k)){courier=v;break;}}
+  const station=findStation(lines);
+  const address=findAddress(ct);
+  const results=[],seen=new Set();
+  const labeled=ct.matchAll(/取件码[：:\s]*([A-Za-z0-9\-—]{2,15})/g);
+  for(const m of labeled){const code=m[1].replace(/[—-]{2,}/g,'-').trim();if(code.length>=2&&!seen.has(code)){seen.add(code);results.push({code,courier,station,address});}}
+  if(!results.length){const dc=/\b([A-Z]\d{1,3}\-\d{1,3}\-\d{2,4})\b/g;let m;while((m=dc.exec(ct))!==null){if(!seen.has(m[1])){seen.add(m[1]);results.push({code:m[1],courier,station,address});}}}
+  if(!results.length){const pc=ct.matchAll(/取件[出出示]+手机号码[：:\s]*(\d[\d\*]{6,15})/g);for(const m of pc){const code='手机号码 '+m[1];if(!seen.has(code)){seen.add(code);results.push({code,courier,station,address});}}}
+  return results.slice(0,10);
+}
+
+function resizeImage(file){
+  return new Promise(resolve=>{
+    const reader=new FileReader();
+    reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>1000){h*=1000/w;w=1000;}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cv.toBlob(b=>resolve(b),'image/jpeg',.7);};img.src=e.target.result;};
     reader.readAsDataURL(file);
   });
 }
 
-document.addEventListener('paste', async e => {
-  const d = e.clipboardData.items;
-  for (let i = 0; i < d.length; i++) { if (d[i].type.indexOf('image') !== -1) { await processImage(d[i].getAsFile()); break; } }
-});
+document.addEventListener('paste',async e=>{const d=e.clipboardData.items;for(let i=0;i<d.length;i++){if(d[i].type.indexOf('image')!==-1){await processImage(d[i].getAsFile());break;}}});
+async function handleFile(e){const f=e.target.files[0];if(f)await processImage(f);e.target.value='';}
 
-async function handleFile(e) { const f = e.target.files[0]; if (f) await processImage(f); e.target.value = ''; }
-
-async function processImage(imageFile) {
+async function processImage(imageFile){
   document.getElementById('ocrLoading').classList.add('show');
   document.getElementById('ocrResult').classList.remove('show');
-  document.getElementById('ocrStatus').textContent = '正在处理图片...';
-  try {
-    let processed = imageFile;
-    try {
-      processed = await resizeImage(imageFile);
-      document.getElementById('ocrStatus').textContent = '图片已压缩，正在加载识别引擎...';
-    } catch (e) {
-      console.warn('压缩失败，使用原图', e);
+  document.getElementById('ocrStatus').textContent='正在处理图片...';
+  try{
+    let processed=imageFile;try{processed=await resizeImage(imageFile);}catch(e){}
+    if(!worker){
+      document.getElementById('ocrStatus').textContent='首次需下载语言包，请稍候...';
+      worker=await Tesseract.createWorker('chi_sim+eng',1,{langPath:'https://unpkg.com/tesseract.js-data@5',logger:m=>{if(m.status==='recognizing text')document.getElementById('ocrStatus').textContent='识别中... '+Math.round(m.progress*100)+'%';}});
     }
-    if (!worker) {
-      document.getElementById('ocrStatus').textContent = '首次使用需下载语言包（约10MB），请稍候...';
-      try {
-        worker = await Tesseract.createWorker('chi_sim+eng', 1, { langPath: 'https://unpkg.com/tesseract.js-data@5', logger: m => { if (m.status === 'recognizing text') document.getElementById('ocrStatus').textContent = '正在识别文字... ' + Math.round(m.progress*100) + '%'; } });
-      } catch (e) {
-        document.getElementById('ocrStatus').textContent = '识别引擎加载失败，请检查网络后刷新重试';
-        console.error('Tesseract load failed:', e);
-        return;
-      }
-    }
-    document.getElementById('ocrStatus').textContent = '正在识别文字...';
-    const { data: { text } } = await worker.recognize(processed);
-    console.log('OCR text:', text);
-    showOcrResults(extractCodes(text), text);
-  } catch (err) { document.getElementById('ocrStatus').textContent = '识别失败: ' + err.message; console.error(err); }
+    document.getElementById('ocrStatus').textContent='正在识别...';
+    const{data:{text}}=await worker.recognize(processed);
+    showOcrResults(parseText(text),text);
+  }catch(err){document.getElementById('ocrStatus').textContent='识别失败: '+err.message;}
 }
 
-function extractCodes(text) {
-  const results = [], lines = text.split(/\n/);
-  let ct = lines.join(' ');
-  for (let i=0;i<5;i++) ct = ct.replace(/([\u4e00-\u9fff])\s+([\u4e00-\u9fff])/g,'$1$2');
-  for (let i=0;i<3;i++) { ct = ct.replace(/([\dA-Za-z])\s+([\u4e00-\u9fff])/g,'$1$2'); ct = ct.replace(/([\u4e00-\u9fff])\s+([\dA-Za-z])/g,'$1$2'); }
-
-  const cm = { '极兔':'极兔','极免':'极兔','圆通':'圆通','中通':'中通','韵达':'韵达','申通':'申通','顺丰':'顺丰','京东':'京东','邮政':'邮政EMS','EMS':'邮政EMS','菜鸟':'菜鸟','德邦':'德邦' };
-  let courier = '';
-  for (const [k,v] of Object.entries(cm)) { if (ct.includes(k)) { courier = v; break; } }
-
-  let station = '';
-  for (const line of lines) {
-    let cl = line;
-    for (let i=0;i<5;i++) cl = cl.replace(/([\u4e00-\u9fff])\s+([\u4e00-\u9fff])/g,'$1$2');
-    for (let i=0;i<3;i++) { cl = cl.replace(/([\dA-Za-z])\s+([\u4e00-\u9fff])/g,'$1$2'); cl = cl.replace(/([\u4e00-\u9fff])\s+([\dA-Za-z])/g,'$1$2'); }
-
-    for (const kw of ['快递服务中心','代收点','服务中心','驿站','自提点','服务点','快递柜']) {
-      if (!cl.includes(kw)) continue;
-      let raw = cl;
-      raw = raw.replace(/[|｜]\s*拨打电话.*$/g, '').replace(/拨打电话.*$/g, '').trim();
-      raw = raw.replace(/^[，。\s|｜]+|[，。\s|｜]+$/g, '');
-      if (raw.length >= 4 && raw.length <= 40) {
-        station = raw;
-        break;
-      }
-    }
-    if (station) break;
-  }
-
-  let address = '';
-  const addrMatch = ct.match(/(?:收货地址|收货方|取件地址)[：:\s]*([\u4e00-\u9fff\d号栋座楼室区街道镇村路大道A-Za-z]{5,50})/);
-  if (addrMatch) address = addrMatch[1];
-  if (!address) {
-    const addrMatch2 = ct.match(/([\u4e00-\u9fff]{2,6}[市省][\u4e00-\u9fff]{2,6}[区县][\u4e00-\u9fff\d号路大道街道花园小区A-Za-z]{3,25})/);
-    if (addrMatch2) address = addrMatch2[1];
-  }
-  if (!address) {
-    const addrMatch3 = ct.match(/([\u4e00-\u9fff]{2,6}[区县][\u4e00-\u9fff\d号路大道街道花园小区]{3,25})/);
-    if (addrMatch3) address = addrMatch3[1];
-  }
-  address = address.replace(/[|｜].*$/, '').trim();
-
-  const seen = new Set();
-
-  const labeledAll = ct.matchAll(/取件码[：:\s]*([A-Za-z0-9\-—]{2,15})/g);
-  for (const m of labeledAll) {
-    const code = m[1].replace(/[—-]{2,}/g,'-').trim();
-    if (code.length>=2 && !seen.has(code)) { seen.add(code); results.push({code,courier,station,address}); }
-  }
-
-  if (results.length===0) {
-    const dc=/\b([A-Z]\d{1,3}\-\d{1,3}\-\d{2,4})\b/g;
-    let m; while((m=dc.exec(ct))!==null){if(!seen.has(m[1])){seen.add(m[1]);results.push({code:m[1],courier,station,address});}}
-  }
-
-  if (results.length===0) {
-    const pcAll = ct.matchAll(/取件[出出示]+手机号码[：:\s]*(\d[\d\*]{6,15})/g);
-    for (const m of pcAll) {
-      const code = '手机号码 ' + m[1];
-      if (!seen.has(code)) { seen.add(code); results.push({code,courier,station,address}); }
-    }
-  }
-
-  return results.slice(0,10);
-}
-
-function showOcrResults(codes, rawText) {
+function showOcrResults(codes,rawText){
   document.getElementById('ocrLoading').classList.remove('show');
-  const c = document.getElementById('ocrResult'), el = document.getElementById('ocrItems');
-  if (codes.length === 0) {
-    const did = 'd_'+Date.now();
-    el.innerHTML = '<div style="text-align:center;color:#BC8F8F;padding:10px;">🧸 没有识别到取件码哦~</div>'+`<div style="padding:0 10px;"><div onclick="var d=document.getElementById('${did}');d.style.display=d.style.display==='none'?'block':'none'" style="font-size:12px;color:#999;cursor:pointer;">📝 查看原始文本</div><pre id="${did}" style="display:none;font-size:11px;color:#666;white-space:pre-wrap;word-break:break-all;background:#f5f5f5;padding:8px;border-radius:6px;margin-top:5px;max-height:200px;overflow-y:auto;">${rawText.replace(/</g,'&lt;')}</pre></div>`;
-    c.classList.add('show'); return;
+  const c=document.getElementById('ocrResult'),el=document.getElementById('ocrItems');
+  if(!codes.length){
+    const did='d_'+Date.now();
+    el.innerHTML='<div style="text-align:center;color:#BC8F8F;padding:10px">🧸 没有识别到取件码哦~</div>'+`<div style="padding:0 10px"><div onclick="var d=document.getElementById('${did}');d.style.display=d.style.display==='none'?'block':'none'" style="font-size:12px;color:#999;cursor:pointer">📝 查看原始文本</div><pre id="${did}" style="display:none;font-size:11px;color:#666;white-space:pre-wrap;word-break:break-all;background:#f5f5f5;padding:8px;border-radius:6px;margin-top:5px;max-height:200px;overflow-y:auto">${rawText.replace(/</g,'&lt;')}</pre></div>`;
+    c.classList.add('show');return;
   }
-  el.innerHTML = codes.map(ci => {
-    const info = [ci.courier,ci.station].filter(Boolean).join(' · ');
+  el.innerHTML=codes.map(ci=>{
+    const info=[ci.courier,ci.station].filter(Boolean).join(' · ');
     return `<div class="ocr-item"><div><div class="code">${ci.code}</div><div class="info">${info}</div></div><button onclick="quickAdd('${ci.code.replace(/'/g,"\\'")}','${(ci.courier||'').replace(/'/g,"\\'")}','${(ci.station||'').replace(/'/g,"\\'")}','${(ci.address||'').replace(/'/g,"\\'")}')">添加</button></div>`;
   }).join('');
   c.classList.add('show');
 }
 
-async function quickAdd(code, courier, station, address) {
-  document.getElementById('inputCode').value = code;
-  document.getElementById('inputCourier').value = courier || '';
-  document.getElementById('inputStation').value = station || '';
-  pendingLocation = null;
-  document.getElementById('locationInfo').textContent = '';
-  document.getElementById('modalTitle').textContent = '添加取件码';
-  editId = null;
+async function quickAdd(code,courier,station,address){
+  document.getElementById('inputCode').value=code;
+  document.getElementById('inputCourier').value=courier||'';
+  document.getElementById('inputStation').value=station||'';
+  pendingLocation=null;document.getElementById('locationInfo').textContent='';
+  document.getElementById('modalTitle').textContent='添加取件码';editId=null;
   document.getElementById('modal').classList.add('show');
-  const geoText = address || station;
-  if (geoText && amapKey) {
-    document.getElementById('locationInfo').textContent = '🔍 正在搜索位置...';
-    let loc = await geocodeAddress(geoText);
-    if (!loc && address) loc = await geocodeAddress(station);
-    if (!loc && station) loc = await geocodeAddress(address);
-    if (loc) {
-      pendingLocation = loc;
-      document.getElementById('locationInfo').textContent = `📍 已自动定位`;
-    } else {
-      document.getElementById('locationInfo').textContent = '⚠️ 未找到位置，可手动设置';
-    }
+  if(amapKey&&(address||station)){
+    document.getElementById('locationInfo').textContent='🔍 搜索位置...';
+    let loc=null;
+    if(address&&station)loc=await geocode(address+station);
+    if(!loc&&address)loc=await geocode(address);
+    if(!loc&&station)loc=await geocode(station);
+    if(loc){pendingLocation=loc;document.getElementById('locationInfo').textContent='📍 已自动定位';}
+    else document.getElementById('locationInfo').textContent='⚠️ 未找到位置，可手动设置';
   }
 }
 
-function closeOcrResult() { document.getElementById('ocrResult').classList.remove('show'); }
-function setTab(tab, el) { currentTab = tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); renderCards(); }
+function closeOcrResult(){document.getElementById('ocrResult').classList.remove('show')}
+function setTab(t,el){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderCards()}
 
-function openModal(id) {
-  editId = id || null; pendingLocation = null;
-  document.getElementById('locationInfo').textContent = '';
-  if (editId) {
-    const item = items.find(i => i.id === id);
-    document.getElementById('modalTitle').textContent = '编辑取件码';
-    document.getElementById('inputCode').value = item.code;
-    document.getElementById('inputCourier').value = item.courier || '';
-    document.getElementById('inputStation').value = item.station || '';
-    if (item.lat && item.lng) { pendingLocation = { lat: item.lat, lng: item.lng }; document.getElementById('locationInfo').textContent = '📍 已设置位置'; }
-  } else {
-    document.getElementById('modalTitle').textContent = '添加取件码';
-    document.getElementById('inputCode').value = '';
-    document.getElementById('inputCourier').value = '';
-    document.getElementById('inputStation').value = '';
+function openModal(id){
+  editId=id||null;pendingLocation=null;document.getElementById('locationInfo').textContent='';
+  if(editId){
+    const it=items.find(i=>i.id===id);
+    document.getElementById('modalTitle').textContent='编辑取件码';
+    document.getElementById('inputCode').value=it.code;
+    document.getElementById('inputCourier').value=it.courier||'';
+    document.getElementById('inputStation').value=it.station||'';
+    if(it.lat&&it.lng){pendingLocation={lat:it.lat,lng:it.lng};document.getElementById('locationInfo').textContent='📍 已设置位置';}
+  }else{
+    document.getElementById('modalTitle').textContent='添加取件码';
+    document.getElementById('inputCode').value='';document.getElementById('inputCourier').value='';document.getElementById('inputStation').value='';
   }
   document.getElementById('modal').classList.add('show');
 }
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
+function closeModal(){document.getElementById('modal').classList.remove('show')}
 
-function saveItem() {
-  const code = document.getElementById('inputCode').value.trim();
-  const courier = document.getElementById('inputCourier').value;
-  const station = document.getElementById('inputStation').value.trim();
-  if (!code) { alert('请输入取件码'); return; }
-  const data = { code, courier, station };
-  if (pendingLocation) { data.lat = pendingLocation.lat; data.lng = pendingLocation.lng; }
-  if (editId) { Object.assign(items.find(i => i.id === editId), data); }
-  else { data.id = Date.now(); data.time = new Date().toLocaleString('zh-CN'); items.unshift(data); }
-  localStorage.setItem('pickupItems', JSON.stringify(items));
-  closeModal(); renderCards(); if (map) updateMapMarkers();
+function saveItem(){
+  const code=document.getElementById('inputCode').value.trim(),courier=document.getElementById('inputCourier').value,station=document.getElementById('inputStation').value.trim();
+  if(!code)return alert('请输入取件码');
+  const data={code,courier,station};
+  if(pendingLocation){data.lat=pendingLocation.lat;data.lng=pendingLocation.lng;}
+  if(editId){Object.assign(items.find(i=>i.id===editId),data);}
+  else{data.id=Date.now();data.time=new Date().toLocaleString('zh-CN');items.unshift(data);}
+  localStorage.setItem('pickupItems',JSON.stringify(items));
+  closeModal();renderCards();if(map)updateMarkers();
 }
 
-function deleteItem(id) { if (confirm('确定删除？')) { items = items.filter(i => i.id !== id); localStorage.setItem('pickupItems', JSON.stringify(items)); renderCards(); if (map) updateMapMarkers(); } }
-function copyCode(code) { navigator.clipboard.writeText(code).then(() => alert('已复制：' + code)); }
+function deleteItem(id){if(confirm('确定删除？')){items=items.filter(i=>i.id!==id);localStorage.setItem('pickupItems',JSON.stringify(items));renderCards();if(map)updateMarkers();}}
+function copyCode(code){navigator.clipboard.writeText(code).then(()=>alert('已复制：'+code));}
 
-function renderCards() {
-  const kw = document.getElementById('searchInput').value.toLowerCase();
-  let f = items;
-  if (currentTab !== '全部') f = f.filter(i => i.courier === currentTab);
-  if (kw) f = f.filter(i => i.code.toLowerCase().includes(kw) || (i.station||'').toLowerCase().includes(kw));
+function renderCards(){
+  const kw=document.getElementById('searchInput').value.toLowerCase();
+  let f=items;
+  if(currentTab!=='全部')f=f.filter(i=>i.courier===currentTab);
+  if(kw)f=f.filter(i=>i.code.toLowerCase().includes(kw)||(i.station||'').toLowerCase().includes(kw));
   renderTabs();
-  const list = document.getElementById('cardList');
-  if (f.length === 0) { list.innerHTML = '<div class="empty"><div class="empty-icon">🧸</div>还没有取件码哦~<br>截图识别或手动添加吧！</div>'; return; }
-  list.innerHTML = f.map(i => {
-    const color = COURIER_COLORS[i.courier] || '#8E8E93';
+  const list=document.getElementById('cardList');
+  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-icon">🧸</div>还没有取件码哦~<br>截图识别或粘贴吧！</div>';return;}
+  list.innerHTML=f.map(i=>{
+    const color=COLORS[i.courier]||'#BC8F8F';
     return `<div class="card"><div class="card-top"><span class="card-tag" style="background:${color}">${getLogo(i.courier)} ${i.courier||'快递'}</span><span class="card-time">${i.time}</span></div><div class="card-code" onclick="copyCode('${i.code}')" title="点击复制">${i.code}</div>${i.station?`<div class="card-station">📍 ${i.station}</div>`:''}<div class="card-actions"><button onclick="openModal(${i.id})">编辑</button><button class="delete" onclick="deleteItem(${i.id})">删除</button></div></div>`;
   }).join('');
+}
+
+function parsePasteText(){
+  const text=document.getElementById('pasteInput').value.trim();
+  if(!text)return alert('请先粘贴');
+  const results=parseText(text);
+  if(!results.length)return alert('没有识别到取件码');
+  document.getElementById('pastePreview').innerHTML=results.map(r=>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#FFF0F5;border-radius:8px;margin-bottom:8px"><div><div style="font-size:16px;font-weight:bold;color:#D81B60">${r.code}</div><div style="font-size:12px;color:#BC8F8F">${r.station||'未识别驿站'}</div></div><button onclick="addFromPaste('${r.code.replace(/'/g,"\\'")}','${(r.courier||'').replace(/'/g,"\\'")}','${(r.station||'').replace(/'/g,"\\'")}','${(r.address||'').replace(/'/g,"\\'")}')" style="background:#FF69B4;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer">添加</button></div>`
+  ).join('');
+}
+
+function addFromPaste(code,courier,station,address){
+  closePasteModal();
+  document.getElementById('inputCode').value=code;
+  document.getElementById('inputCourier').value=courier||'';
+  document.getElementById('inputStation').value=station||'';
+  pendingLocation=null;document.getElementById('locationInfo').textContent='';
+  document.getElementById('modalTitle').textContent='添加取件码';editId=null;
+  document.getElementById('modal').classList.add('show');
+  if(amapKey&&(address||station)){
+    document.getElementById('locationInfo').textContent='🔍 搜索位置...';
+    geocode(address?address+station:station).then(loc=>{
+      if(loc){pendingLocation=loc;document.getElementById('locationInfo').textContent='📍 已自动定位';}
+      else document.getElementById('locationInfo').textContent='⚠️ 未找到位置';
+    });
+  }
 }
 
 renderCards();
