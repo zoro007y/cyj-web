@@ -2,96 +2,130 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>熊熊驿站</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px}
-.header{background:#fff;padding:12px 15px;text-align:center;position:relative;border-bottom:1px solid #FFE4E1}
-.header-img{width:100%;max-height:100px;object-fit:contain;border-radius:12px;margin-bottom:4px}
-.header h1{font-size:20px;font-weight:700;color:#5D4037}
-.header-right{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:10px;font-size:20px}
-.header-right span{cursor:pointer}
-.view-tabs{display:flex;padding:8px 15px 0}
-.view-tab{flex:1;text-align:center;padding:8px;font-size:14px;color:#666;border-bottom:2px solid transparent;cursor:pointer}
-.view-tab.active{color:#FF69B4;border-bottom-color:#FF69B4;font-weight:600}
-.search-bar{padding:8px 15px}
-.search-bar input{width:100%;padding:10px 15px;border-radius:20px;border:1px solid #FFB6C1;font-size:15px;background:#fff}
-.tabs{display:flex;padding:0 15px;gap:6px;margin-bottom:8px;flex-wrap:wrap}
-.tab{padding:5px 10px;border-radius:20px;background:#fff;border:1px solid #FFB6C1;font-size:12px;cursor:pointer}
-.tab.active{background:#FF69B4;color:#fff;border-color:#FF69B4}
-.courier-logo{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;color:#fff;flex-shrink:0}
-.card-list{padding:0 15px}
-.card{background:#fff;border-radius:16px;padding:15px;margin-bottom:10px;box-shadow:0 2px 8px rgba(255,182,193,.2);border:1px solid #FFE4E1}
-.card.picked{opacity:.5;border-style:dashed}
-.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.card-tag{padding:2px 8px;border-radius:4px;font-size:12px;color:#fff;display:flex;align-items:center;gap:4px}
-.card-time{font-size:12px;color:#D7CCC8}
-.card-code{font-size:28px;font-weight:bold;color:#D81B60;letter-spacing:2px;margin-bottom:5px;cursor:pointer}
-.card-code.picked-text{text-decoration:line-through;color:#999}
-.card-station{font-size:13px;color:#BC8F8F}
-.card-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:10px;align-items:center}
-.card-actions button{background:none;border:none;font-size:13px;color:#FF69B4;cursor:pointer}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--pink:#FF6B9D;--pink-light:#FFE0EB;--glass:rgba(255,255,255,.72);--glass-border:rgba(255,255,255,.45);--shadow:0 8px 32px rgba(0,0,0,.08);--shadow-sm:0 2px 8px rgba(0,0,0,.06);--radius:20px;--radius-sm:14px}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;background:linear-gradient(160deg,#FFF5F8 0%,#F0F4FF 50%,#F5FFF0 100%);background-attachment:fixed;padding-bottom:100px;min-height:100vh;color:#1C1C1E;-webkit-font-smoothing:antialiased}
+
+.header{background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);padding:16px 20px;text-align:center;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--glass-border)}
+.header-img{width:100%;max-height:100px;object-fit:contain;border-radius:var(--radius);margin-bottom:6px}
+.header h1{font-size:22px;font-weight:800;background:linear-gradient(135deg,#FF6B9D,#FF8E53);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.3px}
+.header-right{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:4px}
+.header-right span{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,107,157,.1);font-size:16px;cursor:pointer;transition:all .15s}
+.header-right span:active{transform:scale(.85);background:rgba(255,107,157,.2)}
+
+.view-tabs{display:flex;padding:12px 16px 0;gap:4px}
+.view-tab{flex:1;text-align:center;padding:10px;font-size:14px;color:#8E8E93;border-radius:var(--radius-sm);cursor:pointer;transition:all .3s;font-weight:500}
+.view-tab.active{color:#FF6B9D;background:rgba(255,107,157,.1);font-weight:700}
+
+.search-bar{padding:12px 16px}
+.search-bar input{width:100%;padding:14px 20px;border-radius:var(--radius);border:none;font-size:16px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--shadow-sm);outline:none;transition:all .3s}
+.search-bar input:focus{box-shadow:0 0 0 3px rgba(255,107,157,.2),var(--shadow-sm)}
+
+.tabs{display:flex;padding:0 16px;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:7px 14px;border-radius:var(--radius-sm);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s;font-weight:500;color:#666;box-shadow:var(--shadow-sm)}
+.tab:active{transform:scale(.95)}
+.tab.active{background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;border-color:transparent;box-shadow:0 4px 15px rgba(255,107,157,.35)}
+
+.courier-logo{width:20px;height:20px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+
+.card-list{padding:0 16px}
+.card{background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--glass-border);transition:transform .15s}
+.card.picked{opacity:.45}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.card-tag{padding:4px 10px;border-radius:10px;font-size:11px;color:#fff;display:flex;align-items:center;gap:4px;font-weight:600;letter-spacing:.3px}
+.card-time{font-size:11px;color:#AEAEB2;font-weight:500}
+.card-code{font-size:30px;font-weight:800;color:#FF6B9D;letter-spacing:1.5px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.card-code:active{opacity:.6}
+.card-code.picked-text{text-decoration:line-through;color:#C7C7CC;font-weight:500}
+.card-station{font-size:13px;color:#8E8E93}
+.card-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:12px;align-items:center}
+.card-actions button{background:none;border:none;font-size:13px;color:#FF6B9D;cursor:pointer;padding:6px 10px;border-radius:10px;transition:all .15s;font-weight:500}
+.card-actions button:active{background:rgba(255,107,157,.1);transform:scale(.95)}
 .card-actions .delete{color:#FF6B6B}
-.btn-pickup{background:#4CAF50!important;color:#fff!important;border-radius:6px!important;padding:4px 10px!important;font-size:12px!important}
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #FFE4E1;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
-.bottom-btn{width:100%;display:flex;flex-direction:column;align-items:center;padding:10px 0;font-size:13px;color:#FF69B4;background:none;border:none;cursor:pointer;font-weight:600}
-.bottom-btn .icon{font-size:26px;margin-bottom:2px}
-.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9999;justify-content:center;align-items:center}
+.btn-pickup{background:linear-gradient(135deg,#34C759,#30B350)!important;color:#fff!important;border-radius:10px!important;padding:6px 12px!important;font-size:12px!important;font-weight:600!important;box-shadow:0 2px 8px rgba(52,199,89,.3)!important}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-top:1px solid var(--glass-border);z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 30px rgba(0,0,0,.06)}
+.bottom-btn{width:100%;display:flex;flex-direction:column;align-items:center;padding:12px 0;font-size:12px;color:#FF6B9D;background:none;border:none;cursor:pointer;font-weight:700;letter-spacing:.3px;transition:all .15s}
+.bottom-btn:active{transform:scale(.95)}
+.bottom-btn .icon{font-size:28px;margin-bottom:3px;filter:drop-shadow(0 2px 4px rgba(255,107,157,.3))}
+
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;justify-content:center;align-items:center}
 .modal-overlay.show{display:flex}
-.modal{background:#fff;border-radius:16px;padding:25px;width:85%;max-width:350px;max-height:85vh;overflow-y:auto}
-.modal h2{margin-bottom:15px;font-size:18px;color:#333}
-.modal label{font-size:14px;color:#666;margin-bottom:5px;display:block}
-.modal input,.modal select,.modal textarea{width:100%;padding:10px;border:1px solid #FFB6C1;border-radius:12px;font-size:15px;margin-bottom:12px;font-family:inherit}
-.modal-btns{display:flex;gap:10px;margin-top:5px}
-.modal-btns button{flex:1;padding:12px;border-radius:12px;border:none;font-size:16px;cursor:pointer}
-.btn-cancel{background:#f0f0f0;color:#333}
-.btn-save{background:#FF69B4;color:#fff}
-.empty{text-align:center;padding:60px 20px;color:#BC8F8F}
-.empty-icon{font-size:48px;margin-bottom:10px}
-.ocr-loading{display:none;margin:10px 15px;background:#fff;border-radius:12px;padding:20px;text-align:center}
+.modal{background:var(--glass);backdrop-filter:blur(50px) saturate(200%);-webkit-backdrop-filter:blur(50px) saturate(200%);border-radius:24px;padding:28px;width:88%;max-width:360px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15);border:1px solid var(--glass-border)}
+.modal h2{margin-bottom:20px;font-size:20px;font-weight:800;color:#1C1C1E}
+.modal label{font-size:12px;color:#8E8E93;margin-bottom:6px;display:block;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.modal input,.modal select,.modal textarea{width:100%;padding:14px 16px;border:none;border-radius:var(--radius-sm);font-size:15px;margin-bottom:14px;font-family:inherit;background:rgba(0,0,0,.04);outline:none;transition:all .2s}
+.modal input:focus,.modal textarea:focus{background:rgba(0,0,0,.06);box-shadow:0 0 0 3px rgba(255,107,157,.15)}
+.modal-btns{display:flex;gap:10px;margin-top:8px}
+.modal-btns button{flex:1;padding:14px;border-radius:var(--radius-sm);border:none;font-size:16px;cursor:pointer;font-weight:600;transition:all .15s}
+.modal-btns button:active{transform:scale(.97)}
+.btn-cancel{background:rgba(0,0,0,.06);color:#1C1C1E}
+.btn-save{background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;box-shadow:0 4px 15px rgba(255,107,157,.35)}
+
+.empty{text-align:center;padding:80px 20px;color:#AEAEB2}
+.empty-icon{font-size:56px;margin-bottom:12px}
+
+.ocr-loading{display:none;margin:12px 16px;background:var(--glass);backdrop-filter:blur(20px);border-radius:var(--radius);padding:24px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--glass-border)}
 .ocr-loading.show{display:block}
-.spinner{display:inline-block;width:30px;height:30px;border:3px solid #FFE4E1;border-top-color:#FF69B4;border-radius:50%;animation:spin .8s linear infinite}
+.spinner{display:inline-block;width:36px;height:36px;border:3px solid rgba(255,107,157,.2);border-top-color:#FF6B9D;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ocr-loading .status{margin-top:10px;font-size:14px;color:#666}
+.ocr-loading .status{margin-top:12px;font-size:14px;color:#8E8E93;font-weight:500}
+.ocr-cancel{margin-top:12px;padding:8px 20px;border:none;border-radius:10px;background:rgba(0,0,0,.06);color:#666;font-size:13px;cursor:pointer;font-weight:500}
+
 #mapView{display:none}
-#mapContainer{width:100%;height:calc(100vh - 170px);border-radius:12px;overflow:hidden;margin:10px 15px;position:relative;z-index:1}
-.custom-marker{background:#FF69B4;color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;border:2px solid #fff;box-shadow:0 2px 6px rgba(255,105,180,.4)}
-.map-popup h4{margin:0 0 4px;font-size:14px}
-.map-popup .popup-code{font-size:15px;font-weight:bold;color:#FF69B4;cursor:pointer}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0}
-.stat-card{background:#FFF0F5;border-radius:12px;padding:15px;text-align:center}
-.stat-card .num{font-size:28px;font-weight:bold;color:#D81B60}
-.stat-card .label{font-size:12px;color:#BC8F8F;margin-top:4px}
-.btn-cleanup{width:100%;padding:10px;border:1px solid #FF6B6B;border-radius:12px;font-size:14px;color:#FF6B6B;background:#fff;cursor:pointer;margin-top:10px}
-.courier-row{flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.courier-btn{padding:6px 14px;border-radius:20px;border:1px solid #FFB6C1;background:#fff}
-.courier-btn.active{background:#FF69B4;border-color:#FF69B4}
-.courier-btn-text{font-size:13px;color:#666}
+#mapContainer{width:100%;height:calc(100vh - 170px);border-radius:var(--radius);overflow:hidden;margin:12px 16px;position:relative;z-index:1;box-shadow:var(--shadow)}
+.custom-marker{background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:3px solid #fff;box-shadow:0 4px 15px rgba(255,107,157,.4)}
+.map-popup h4{margin:0 0 4px;font-size:15px;font-weight:700}
+.map-popup .popup-code{font-size:16px;font-weight:700;color:#FF6B9D;cursor:pointer}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.stat-card{background:linear-gradient(135deg,rgba(255,107,157,.08),rgba(255,142,83,.08));border-radius:var(--radius);padding:18px;text-align:center;border:1px solid rgba(255,107,157,.1)}
+.stat-card .num{font-size:32px;font-weight:800;background:linear-gradient(135deg,#FF6B9D,#FF8E53);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-card .label{font-size:12px;color:#8E8E93;margin-top:4px;font-weight:500}
+.btn-cleanup{width:100%;padding:12px;border:1.5px solid #FF6B6B;border-radius:var(--radius-sm);font-size:14px;color:#FF6B6B;background:rgba(255,107,107,.05);cursor:pointer;margin-top:12px;font-weight:600;transition:all .15s}
+.btn-cleanup:active{background:rgba(255,107,107,.15);transform:scale(.98)}
+
+.courier-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.courier-btn{padding:8px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(0,0,0,.08);background:rgba(0,0,0,.03);cursor:pointer;transition:all .15s}
+.courier-btn:active{transform:scale(.95)}
+.courier-btn.active{background:linear-gradient(135deg,#FF6B9D,#FF8E53);border-color:transparent;box-shadow:0 4px 12px rgba(255,107,157,.3)}
+.courier-btn-text{font-size:13px;color:#666;font-weight:500}
 .courier-btn-text.active{color:#fff}
+
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;z-index:99999;pointer-events:none;animation:toastIn .2s ease,toastOut .3s ease 1.2s forwards;backdrop-filter:blur(10px)}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-50%) scale(.8)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes toastOut{to{opacity:0;transform:translate(-50%,-50%) scale(.8)}}
 </style>
 </head>
 <body>
 <div class="header">
-  <img class="header-img" src="header.png" alt="熊熊驿站" onerror="this.style.display='none'">
+  <img class="header-img" src="header.png" alt="" onerror="this.style.display='none'">
   <h1>🐻 熊熊驿站 🐼</h1>
   <div class="header-right">
-    <span onclick="openModal()">➕</span>
     <span onclick="openStats()">📊</span>
     <span onclick="openSettings()">⚙️</span>
   </div>
 </div>
 <div class="view-tabs">
-  <div class="view-tab active" onclick="switchView('list')">📦 熊熊快递单</div>
-  <div class="view-tab" onclick="switchView('map')">🗺️ 熊熊地图</div>
+  <div class="view-tab active" onclick="switchView('list')">📦 快递单</div>
+  <div class="view-tab" onclick="switchView('map')">🗺️ 地图</div>
 </div>
 <div id="listView">
   <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)" style="display:none">
-  <div class="ocr-loading" id="ocrLoading"><div class="spinner"></div><div class="status" id="ocrStatus">加载中...</div></div>
-  <div class="search-bar"><input type="text" id="searchInput" placeholder="🔍 搜索取件码或驿站..." oninput="renderCards()"></div>
+  <div class="ocr-loading" id="ocrLoading">
+    <div class="spinner"></div>
+    <div class="status" id="ocrStatus">加载中...</div>
+    <button class="ocr-cancel" onclick="cancelOCR()">取消</button>
+  </div>
+  <div class="search-bar"><input type="text" id="searchInput" placeholder="🔍 搜索快递..." oninput="renderCards()"></div>
   <div class="tabs" id="courierTabs"></div>
   <div class="card-list" id="cardList"></div>
 </div>
@@ -102,7 +136,7 @@ body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px
 
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <h2 id="modalTitle">添加取件码</h2>
+    <h2 id="modalTitle">添加快递</h2>
     <label>取件码</label><input type="text" id="inputCode" placeholder="例如：B7-1-4667">
     <label>快递公司</label>
     <div class="courier-row" id="courierRow"></div>
@@ -113,9 +147,9 @@ body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px
 
 <div class="modal-overlay" id="statsModal">
   <div class="modal">
-    <h2>📊 快递统计</h2>
+    <h2>📊 数据概览</h2>
     <div id="statsContent"></div>
-    <button class="btn-cleanup" onclick="cleanupPicked()">🗑️ 清理已取快递</button>
+    <button class="btn-cleanup" onclick="cleanupPicked()">🗑️ 清理已取</button>
     <div class="modal-btns" style="margin-top:12px"><button class="btn-cancel" onclick="closeStats()">关闭</button></div>
   </div>
 </div>
@@ -125,29 +159,29 @@ body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px
     <h2>⚙️ 设置</h2>
     <label>高德地图 API Key</label>
     <input type="text" id="inputApiKey" placeholder="高德地图 Web 服务 Key">
-    <div style="font-size:12px;color:#BC8F8F;margin-top:-8px;margin-bottom:12px">免费申请：<a href="https://lbs.amap.com/" target="_blank" style="color:#FF69B4">lbs.amap.com</a></div>
+    <div style="font-size:12px;color:#BC8F8F;margin-top:-8px;margin-bottom:12px">免费申请：<a href="https://lbs.amap.com/" target="_blank" style="color:#FF6B9D">lbs.amap.com</a></div>
     <label>常用驿站</label>
-    <button onclick="pickPresetLocation()" style="width:100%;padding:8px;border:1px dashed #FF69B4;border-radius:8px;font-size:13px;color:#FF69B4;background:#FFF0F5;cursor:pointer;margin-bottom:8px">📍 在地图上选取坐标</button>
-    <textarea id="inputStations" rows="6" style="width:100%;padding:8px;border:1px solid #FFB6C1;border-radius:8px;font-size:11px;font-family:monospace;resize:vertical" placeholder="关键词=驿站名|地址|纬度,经度"></textarea>
+    <button onclick="pickPresetLocation()" style="width:100%;padding:10px;border:1.5px dashed #FF6B9D;border-radius:var(--radius-sm);font-size:13px;color:#FF6B9D;background:rgba(255,107,157,.05);cursor:pointer;margin-bottom:10px;font-weight:600">📍 在地图上选取坐标</button>
+    <textarea id="inputStations" rows="6" style="width:100%;padding:10px;border:none;border-radius:var(--radius-sm);font-size:12px;font-family:monospace;resize:vertical;background:rgba(0,0,0,.04)" placeholder="关键词=驿站名|地址|纬度,经度"></textarea>
     <div style="font-size:11px;color:#BC8F8F;margin-top:-8px;margin-bottom:12px">格式：关键词=驿站名|地址|纬度,经度</div>
-    <button onclick="exportData()" style="width:100%;padding:10px;border:1px solid #FF69B4;border-radius:12px;font-size:14px;color:#FF69B4;background:#FFF0F5;cursor:pointer;margin-bottom:10px">📤 导出数据</button>
+    <button onclick="exportData()" style="width:100%;padding:12px;border:1.5px solid #FF6B9D;border-radius:var(--radius-sm);font-size:14px;color:#FF6B9D;background:rgba(255,107,157,.05);cursor:pointer;margin-bottom:10px;font-weight:600">📤 导出数据</button>
     <label>📥 导入数据</label>
-    <textarea id="importData" rows="3" style="width:100%;padding:8px;border:1px solid #FFB6C1;border-radius:8px;font-size:12px;font-family:monospace;resize:vertical" placeholder="粘贴导出的数据..."></textarea>
-    <button onclick="importData()" style="width:100%;padding:10px;border:none;border-radius:12px;font-size:14px;color:#fff;background:#FF69B4;cursor:pointer;margin-top:6px;margin-bottom:12px">📥 导入</button>
+    <textarea id="importData" rows="3" style="width:100%;padding:10px;border:none;border-radius:var(--radius-sm);font-size:12px;font-family:monospace;resize:vertical;background:rgba(0,0,0,.04)" placeholder="粘贴导出的数据..."></textarea>
+    <button onclick="importData()" style="width:100%;padding:12px;border:none;border-radius:var(--radius-sm);font-size:14px;color:#fff;background:linear-gradient(135deg,#FF6B9D,#FF8E53);cursor:pointer;margin-top:6px;margin-bottom:12px;font-weight:600">📥 导入</button>
     <div class="modal-btns"><button class="btn-cancel" onclick="closeSettings()">取消</button><button class="btn-save" onclick="saveSettings()">保存</button></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="locationModal">
   <div class="modal" style="padding:0;overflow:hidden">
-    <div style="padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee"><span style="font-size:16px;font-weight:600">点击地图设置位置</span><span style="color:#FF69B4;cursor:pointer" onclick="closeLocationModal()">完成</span></div>
+    <div style="padding:18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,.06)"><span style="font-size:17px;font-weight:700">📍 选择位置</span><span style="color:#FF6B9D;cursor:pointer;font-weight:600" onclick="closeLocationModal()">完成</span></div>
     <div id="pickMap" style="width:100%;height:300px"></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="presetPickModal">
   <div class="modal" style="padding:0;overflow:hidden">
-    <div style="padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee"><span style="font-size:16px;font-weight:600">📍 点击地图选取坐标</span><span style="color:#FF69B4;cursor:pointer" onclick="closePresetPickModal()">完成</span></div>
+    <div style="padding:18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,.06)"><span style="font-size:17px;font-weight:700">📍 选取坐标</span><span style="color:#FF6B9D;cursor:pointer;font-weight:600" onclick="closePresetPickModal()">完成</span></div>
     <div id="presetPickMap" style="width:100%;height:300px"></div>
     <div style="padding:10px;text-align:center;font-size:13px;color:#666" id="presetPickInfo">点击地图选点</div>
   </div>
@@ -156,377 +190,110 @@ body{font-family:-apple-system,sans-serif;background:#f5f5f5;padding-bottom:80px
 <script>
 const COLORS={极兔:'#FF8C00',圆通:'#4169E1',中通:'#DC143C',韵达:'#8B4513',申通:'#DAA520',顺丰:'#2F4F4F',京东:'#DC143C',邮政EMS:'#228B22',菜鸟:'#FF8C00',德邦:'#4169E1',其他:'#BC8F8F'};
 const COURIERS=['极兔','圆通','中通','韵达','申通','顺丰','京东','邮政EMS','菜鸟','德邦','其他'];
-
 let items=JSON.parse(localStorage.getItem('pickupItems')||'[]');
 let currentTab='全部',editId=null,worker=null,currentView='list',map=null,pickMap=null,pendingLocation=null;
 let amapKey=localStorage.getItem('amapKey')||'';
 
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),1600);}
 function getLogo(c){return `<span class="courier-logo" style="background:${COLORS[c]||'#BC8F8F'}">${(c||'快')[0]}</span>`}
 
-function renderCourierRow(){
-  document.getElementById('courierRow').innerHTML=COURIERS.map(c=>`<div class="courier-btn${courier===c?' active':''}" onclick="setCourier('${c}')"><span class="courier-btn-text${courier===c?' active':''}">${c}</span></div>`).join('');
-}
 let courier='';
+function renderCourierRow(){document.getElementById('courierRow').innerHTML=COURIERS.map(c=>`<div class="courier-btn${courier===c?' active':''}" onclick="setCourier('${c}')"><span class="courier-btn-text${courier===c?' active':''}">${c}</span></div>`).join('');}
 function setCourier(c){courier=courier===c?'':c;renderCourierRow();}
 
-function renderTabs(){
-  const used=new Set(items.map(i=>i.courier).filter(Boolean));
-  const tabs=['全部',...COURIERS.filter(c=>used.has(c))];
-  document.getElementById('courierTabs').innerHTML=tabs.map(c=>`<div class="tab${currentTab===c?' active':''}" onclick="setTab('${c}',this)">${c}</div>`).join('');
-}
+function renderTabs(){const used=new Set(items.map(i=>i.courier).filter(Boolean));const tabs=['全部',...COURIERS.filter(c=>used.has(c))];document.getElementById('courierTabs').innerHTML=tabs.map(c=>`<div class="tab${currentTab===c?' active':''}" onclick="setTab('${c}',this)">${c}</div>`).join('');}
 
-function switchView(v){
-  currentView=v;
-  document.querySelectorAll('.view-tab').forEach((t,i)=>{t.classList.toggle('active',i===(v==='list'?0:1))});
-  document.getElementById('listView').style.display=v==='list'?'block':'none';
-  document.getElementById('mapView').style.display=v==='map'?'block':'none';
-  if(v==='map')initMap();
-}
+function switchView(v){currentView=v;document.querySelectorAll('.view-tab').forEach((t,i)=>{t.classList.toggle('active',i===(v==='list'?0:1))});document.getElementById('listView').style.display=v==='list'?'block':'none';document.getElementById('mapView').style.display=v==='map'?'block':'none';if(v==='map')initMap();}
 
-function initMap(){
-  if(map){map.invalidateSize();updateMarkers();return;}
-  const si=items.filter(i=>i.lat&&i.lng);
-  map=L.map('mapContainer').setView(si.length?[si[0].lat,si[0].lng]:[29.46,106.52],15);
-  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(map);
-  updateMarkers();
-}
+function initMap(){if(map){map.invalidateSize();updateMarkers();return;}const si=items.filter(i=>i.lat&&i.lng);map=L.map('mapContainer').setView(si.length?[si[0].lat,si[0].lng]:[29.46,106.52],15);L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(map);updateMarkers();}
 
-function updateMarkers(){
-  if(!map)return;
-  map.eachLayer(l=>{if(l instanceof L.Marker)map.removeLayer(l)});
-  const sm={};
-  items.filter(i=>!i.pickedUp&&i.lat&&i.lng).forEach(i=>{
-    const k=i.lat.toFixed(5)+','+i.lng.toFixed(5);
-    if(!sm[k])sm[k]={lat:i.lat,lng:i.lng,station:i.station||'未知',items:[]};
-    sm[k].items.push(i);
-  });
-  Object.values(sm).forEach(s=>{
-    const icon=L.divIcon({className:'',html:`<div class="custom-marker">${s.items.length}</div>`,iconSize:[30,30],iconAnchor:[15,15]});
-    L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(`<div class="map-popup"><h4>📍 ${s.station}</h4>${s.items.map(i=>`<div class="popup-code" onclick="navigator.clipboard.writeText('${i.code}')">${getLogo(i.courier)} ${i.code}</div>`).join('')}</div>`);
-  });
-}
+function updateMarkers(){if(!map)return;map.eachLayer(l=>{if(l instanceof L.Marker)map.removeLayer(l)});const sm={};items.filter(i=>!i.pickedUp&&i.lat&&i.lng).forEach(i=>{const k=i.lat.toFixed(5)+','+i.lng.toFixed(5);if(!sm[k])sm[k]={lat:i.lat,lng:i.lng,station:i.station||'未知',items:[]};sm[k].items.push(i);});Object.values(sm).forEach(s=>{const icon=L.divIcon({className:'',html:`<div class="custom-marker">${s.items.length}</div>`,iconSize:[30,30],iconAnchor:[15,15]});L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(`<div class="map-popup"><h4>📍 ${s.station}</h4>${s.items.map(i=>`<div class="popup-code" onclick="navigator.clipboard.writeText('${i.code}')">${getLogo(i.courier)} ${i.code}</div>`).join('')}</div>`);});}
 
 let pickMap2=null;
-function pickLocation(){
-  document.getElementById('locationModal').classList.add('show');
-  setTimeout(()=>{
-    if(pickMap2){pickMap2.invalidateSize();return;}
-    navigator.geolocation.getCurrentPosition(p=>initPickMap([p.coords.latitude,p.coords.longitude]),()=>initPickMap([29.46,106.52]));
-  },300);
-}
-function initPickMap(c){
-  pickMap2=L.map('pickMap').setView(c,16);
-  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(pickMap2);
-  let mk=null;
-  pickMap2.on('click',e=>{if(mk)pickMap2.removeLayer(mk);mk=L.marker(e.latlng).addTo(pickMap2);pendingLocation={lat:e.latlng.lat,lng:e.latlng.lng};});
-}
+function pickLocation(){document.getElementById('locationModal').classList.add('show');setTimeout(()=>{if(pickMap2){pickMap2.invalidateSize();return;}navigator.geolocation.getCurrentPosition(p=>initPickMap([p.coords.latitude,p.coords.longitude]),()=>initPickMap([29.46,106.52]));},300);}
+function initPickMap(c){pickMap2=L.map('pickMap').setView(c,16);L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(pickMap2);let mk=null;pickMap2.on('click',e=>{if(mk)pickMap2.removeLayer(mk);mk=L.marker(e.latlng).addTo(pickMap2);pendingLocation={lat:e.latlng.lat,lng:e.latlng.lng};});}
 function closeLocationModal(){document.getElementById('locationModal').classList.remove('show')}
 
 let presetPickMap2=null;
-function pickPresetLocation(){
-  document.getElementById('presetPickModal').classList.add('show');
-  document.getElementById('presetPickInfo').textContent='点击地图选点';
-  setTimeout(()=>{
-    if(presetPickMap2){presetPickMap2.invalidateSize();return;}
-    navigator.geolocation.getCurrentPosition(p=>initPresetPick([p.coords.latitude,p.coords.longitude]),()=>initPresetPick([29.46,106.52]));
-  },300);
-}
-function initPresetPick(c){
-  presetPickMap2=L.map('presetPickMap').setView(c,16);
-  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(presetPickMap2);
-  let mk=null;
-  presetPickMap2.on('click',e=>{
-    if(mk)presetPickMap2.removeLayer(mk);
-    mk=L.marker(e.latlng).addTo(presetPickMap2);
-    const lat=e.latlng.lat.toFixed(6),lng=e.latlng.lng.toFixed(6);
-    document.getElementById('presetPickInfo').innerHTML=`<b>${lat},${lng}</b><br><span style="font-size:11px;color:#999">坐标已复制</span>`;
-    navigator.clipboard.writeText(lat+','+lng).catch(()=>{});
-  });
-}
+function pickPresetLocation(){document.getElementById('presetPickModal').classList.add('show');document.getElementById('presetPickInfo').textContent='点击地图选点';setTimeout(()=>{if(presetPickMap2){presetPickMap2.invalidateSize();return;}navigator.geolocation.getCurrentPosition(p=>initPresetPick([p.coords.latitude,p.coords.longitude]),()=>initPresetPick([29.46,106.52]));},300);}
+function initPresetPick(c){presetPickMap2=L.map('presetPickMap').setView(c,16);L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',{subdomains:'1234'}).addTo(presetPickMap2);let mk=null;presetPickMap2.on('click',e=>{if(mk)presetPickMap2.removeLayer(mk);mk=L.marker(e.latlng).addTo(presetPickMap2);const lat=e.latlng.lat.toFixed(6),lng=e.latlng.lng.toFixed(6);document.getElementById('presetPickInfo').innerHTML=`<b>${lat},${lng}</b><br><span style="font-size:11px;color:#999">坐标已复制</span>`;navigator.clipboard.writeText(lat+','+lng).catch(()=>{});});}
 function closePresetPickModal(){document.getElementById('presetPickModal').classList.remove('show')}
 
-const PRESET_STATIONS=[
-  {keywords:['北门','美食广场','美食'],name:'北门美食广场',address:'重庆财经学院北门',lat:29.4613,lng:106.5234},
-  {keywords:['1栋','一栋'],name:'1栋快递服务中心',address:'重庆财经学院宿舍1栋',lat:29.4600,lng:106.5220},
-  {keywords:['食堂'],name:'食堂快递点',address:'重庆财经学院食堂',lat:29.4608,lng:106.5228},
-  {keywords:['桂轩','9园区','9园'],name:'桂轩快递站',address:'重庆理工大学花溪校区桂轩',lat:29.4770,lng:106.5370},
-  {keywords:['鸿欣','滨江国际南门'],name:'滨江国际南门鸿欣超市',address:'涪陵区滨江国际花园南门',lat:29.7180,lng:107.3940},
-  {keywords:['2栋','二栋'],name:'2栋快递服务中心',address:'重庆财经学院宿舍2栋',lat:29.4595,lng:106.5215},
-  {keywords:['3栋','三栋'],name:'3栋快递服务中心',address:'重庆财经学院宿舍3栋',lat:29.4590,lng:106.5210},
-  {keywords:['东门'],name:'东门快递点',address:'重庆财经学院东门',lat:29.4605,lng:106.5250},
-  {keywords:['西门'],name:'西门快递点',address:'重庆财经学院西门',lat:29.4605,lng:106.5200},
-  {keywords:['南门'],name:'南门快递点',address:'重庆财经学院南门',lat:29.4585,lng:106.5225},
-  {keywords:['图书馆'],name:'图书馆快递点',address:'重庆财经学院图书馆',lat:29.4610,lng:106.5230},
-];
+const PRESET_STATIONS=[{keywords:['北门','美食广场','美食'],name:'北门美食广场',address:'重庆财经学院北门',lat:29.4613,lng:106.5234},{keywords:['1栋','一栋'],name:'1栋快递服务中心',address:'重庆财经学院宿舍1栋',lat:29.4600,lng:106.5220},{keywords:['食堂'],name:'食堂快递点',address:'重庆财经学院食堂',lat:29.4608,lng:106.5228},{keywords:['桂轩','9园区','9园'],name:'桂轩快递站',address:'重庆理工大学花溪校区桂轩',lat:29.4770,lng:106.5370},{keywords:['鸿欣','滨江国际南门'],name:'滨江国际南门鸿欣超市',address:'涪陵区滨江国际花园南门',lat:29.7180,lng:107.3940},{keywords:['2栋','二栋'],name:'2栋快递服务中心',address:'重庆财经学院宿舍2栋',lat:29.4595,lng:106.5215},{keywords:['3栋','三栋'],name:'3栋快递服务中心',address:'重庆财经学院宿舍3栋',lat:29.4590,lng:106.5210},{keywords:['东门'],name:'东门快递点',address:'重庆财经学院东门',lat:29.4605,lng:106.5250},{keywords:['西门'],name:'西门快递点',address:'重庆财经学院西门',lat:29.4605,lng:106.5200},{keywords:['南门'],name:'南门快递点',address:'重庆财经学院南门',lat:29.4585,lng:106.5225},{keywords:['图书馆'],name:'图书馆快递点',address:'重庆财经学院图书馆',lat:29.4610,lng:106.5230}];
 
 const savedStations=localStorage.getItem('presetStations2');
-if(savedStations){
-  PRESET_STATIONS.length=0;
-  savedStations.split('\n').forEach(line=>{
-    const parts=line.split('=');
-    if(parts.length<2)return;
-    const keywords=parts[0].split(',').map(s=>s.trim());
-    const rest=parts.slice(1).join('=');
-    const segs=rest.split('|');
-    let lat=null,lng=null;
-    if(segs[2]){const ll=segs[2].split(',');lat=parseFloat(ll[0]);lng=parseFloat(ll[1]);}
-    PRESET_STATIONS.push({keywords,name:segs[0]||'',address:segs[1]||'',lat:isNaN(lat)?null:lat,lng:isNaN(lng)?null:lng});
-  });
-}
+if(savedStations){PRESET_STATIONS.length=0;savedStations.split('\n').forEach(line=>{const parts=line.split('=');if(parts.length<2)return;const keywords=parts[0].split(',').map(s=>s.trim());const rest=parts.slice(1).join('=');const segs=rest.split('|');let lat=null,lng=null;if(segs[2]){const ll=segs[2].split(',');lat=parseFloat(ll[0]);lng=parseFloat(ll[1]);}PRESET_STATIONS.push({keywords,name:segs[0]||'',address:segs[1]||'',lat:isNaN(lat)?null:lat,lng:isNaN(lng)?null:lng});});}
 
-function matchPreset(text){
-  for(const p of PRESET_STATIONS){if(p.keywords.some(kw=>text.includes(kw)))return{name:p.name,address:p.address,lat:p.lat,lng:p.lng};}
-  return null;
-}
+function matchPreset(text){for(const p of PRESET_STATIONS){if(p.keywords.some(kw=>text.includes(kw)))return{name:p.name,address:p.address,lat:p.lat,lng:p.lng};}return null;}
 
-function openSettings(){
-  document.getElementById('inputApiKey').value=amapKey;
-  const saved=localStorage.getItem('presetStations2');
-  document.getElementById('inputStations').value=saved||PRESET_STATIONS.map(p=>p.keywords.join(',')+'='+p.name+(p.address?'|'+p.address:'')+(p.lat?`|${p.lat},${p.lng}`:'')).join('\n');
-  document.getElementById('settingsModal').classList.add('show');
-}
+function openSettings(){document.getElementById('inputApiKey').value=amapKey;const saved=localStorage.getItem('presetStations2');document.getElementById('inputStations').value=saved||PRESET_STATIONS.map(p=>p.keywords.join(',')+'='+p.name+(p.address?'|'+p.address:'')+(p.lat?`|${p.lat},${p.lng}`:'')).join('\n');document.getElementById('settingsModal').classList.add('show');}
 function closeSettings(){document.getElementById('settingsModal').classList.remove('show')}
-function saveSettings(){
-  amapKey=document.getElementById('inputApiKey').value.trim();
-  localStorage.setItem('amapKey',amapKey);
-  const stText=document.getElementById('inputStations').value.trim();
-  localStorage.setItem('presetStations2',stText);
-  PRESET_STATIONS.length=0;
-  stText.split('\n').forEach(line=>{
-    const parts=line.split('=');
-    if(parts.length<2)return;
-    const keywords=parts[0].split(',').map(s=>s.trim());
-    const rest=parts.slice(1).join('=');
-    const segs=rest.split('|');
-    let lat=null,lng=null;
-    if(segs[2]){const ll=segs[2].split(',');lat=parseFloat(ll[0]);lng=parseFloat(ll[1]);}
-    PRESET_STATIONS.push({keywords,name:segs[0]||'',address:segs[1]||'',lat:isNaN(lat)?null:lat,lng:isNaN(lng)?null:lng});
-  });
-  closeSettings();alert('已保存');
-}
+function saveSettings(){amapKey=document.getElementById('inputApiKey').value.trim();localStorage.setItem('amapKey',amapKey);const stText=document.getElementById('inputStations').value.trim();localStorage.setItem('presetStations2',stText);PRESET_STATIONS.length=0;stText.split('\n').forEach(line=>{const parts=line.split('=');if(parts.length<2)return;const keywords=parts[0].split(',').map(s=>s.trim());const rest=parts.slice(1).join('=');const segs=rest.split('|');let lat=null,lng=null;if(segs[2]){const ll=segs[2].split(',');lat=parseFloat(ll[0]);lng=parseFloat(ll[1]);}PRESET_STATIONS.push({keywords,name:segs[0]||'',address:segs[1]||'',lat:isNaN(lat)?null:lat,lng:isNaN(lng)?null:lng});});closeSettings();toast('已保存');}
 
-function exportData(){
-  const data=JSON.stringify({items,amapKey,stations:localStorage.getItem('presetStations2')||''});
-  navigator.clipboard.writeText(data).then(()=>alert('数据已复制到剪贴板')).catch(()=>alert('复制失败'));
-}
-function importData(){
-  const text=document.getElementById('importData').value.trim();
-  if(!text)return alert('请先粘贴数据');
-  try{
-    const data=JSON.parse(text);
-    if(!data.items)return alert('格式错误');
-    if(!confirm('导入会覆盖当前数据，确定？'))return;
-    items=data.items;
-    localStorage.setItem('pickupItems',JSON.stringify(items));
-    if(data.amapKey){amapKey=data.amapKey;localStorage.setItem('amapKey',amapKey);}
-    if(data.stations)localStorage.setItem('presetStations2',data.stations);
-    renderCards();alert('导入成功！共'+items.length+'条');
-  }catch(e){alert('格式错误');}
-}
+function exportData(){const data=JSON.stringify({items,amapKey,stations:localStorage.getItem('presetStations2')||''});navigator.clipboard.writeText(data).then(()=>toast('数据已复制')).catch(()=>toast('复制失败'));}
+function importData(){const text=document.getElementById('importData').value.trim();if(!text)return toast('请先粘贴数据');try{const data=JSON.parse(text);if(!data.items)return toast('格式错误');if(!confirm('导入会覆盖当前数据，确定？'))return;items=data.items;localStorage.setItem('pickupItems',JSON.stringify(items));if(data.amapKey){amapKey=data.amapKey;localStorage.setItem('amapKey',amapKey);}if(data.stations)localStorage.setItem('presetStations2',data.stations);renderCards();toast('导入成功！共'+items.length+'条');}catch(e){toast('格式错误');}}
 
-function openStats(){
-  const total=items.length,picked=items.filter(i=>i.pickedUp).length,active=total-picked;
-  const today=new Date().toDateString(),todayCount=items.filter(i=>new Date(i.id).toDateString()===today).length;
-  const cs={};items.forEach(i=>{if(i.courier)cs[i.courier]=(cs[i.courier]||0)+1;});
-  const top=Object.entries(cs).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  document.getElementById('statsContent').innerHTML=`<div class="stats-grid"><div class="stat-card"><div class="num">${total}</div><div class="label">总快递数</div></div><div class="stat-card"><div class="num">${active}</div><div class="label">待取快递</div></div><div class="stat-card"><div class="num">${picked}</div><div class="label">已取快递</div></div><div class="stat-card"><div class="num">${todayCount}</div><div class="label">今日新增</div></div></div>${top.length?`<div style="font-size:14px;color:#666;font-weight:600;margin-top:10px">快递公司排行</div>${top.map(n=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0"><span>${getLogo(n[0])} ${n[0]}</span><span style="font-weight:bold;color:#D81B60">${n[1]}件</span></div>`).join('')}`:''}`;
-  document.getElementById('statsModal').classList.add('show');
-}
+function openStats(){const total=items.length,picked=items.filter(i=>i.pickedUp).length,active=total-picked;const today=new Date().toDateString(),todayCount=items.filter(i=>new Date(i.id).toDateString()===today).length;const cs={};items.forEach(i=>{if(i.courier)cs[i.courier]=(cs[i.courier]||0)+1;});const top=Object.entries(cs).sort((a,b)=>b[1]-a[1]).slice(0,5);document.getElementById('statsContent').innerHTML=`<div class="stats-grid"><div class="stat-card"><div class="num">${total}</div><div class="label">总快递数</div></div><div class="stat-card"><div class="num">${active}</div><div class="label">待取快递</div></div><div class="stat-card"><div class="num">${picked}</div><div class="label">已取快递</div></div><div class="stat-card"><div class="num">${todayCount}</div><div class="label">今日新增</div></div></div>${top.length?`<div style="font-size:14px;color:#666;font-weight:600;margin-top:10px">快递公司排行</div>${top.map(n=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06)"><span>${getLogo(n[0])} ${n[0]}</span><span style="font-weight:bold;color:#FF6B9D">${n[1]}件</span></div>`).join('')}`:''}`;document.getElementById('statsModal').classList.add('show');}
 function closeStats(){document.getElementById('statsModal').classList.remove('show')}
 
-function openModal(id){
-  editId=id||null;pendingLocation=null;
-  if(editId){
-    const it=items.find(i=>i.id===id);
-    document.getElementById('modalTitle').textContent='编辑取件码';
-    document.getElementById('inputCode').value=it.code;
-    courier=it.courier||'';
-    document.getElementById('inputStation').value=it.station||'';
-  }else{
-    document.getElementById('modalTitle').textContent='添加取件码';
-    document.getElementById('inputCode').value='';courier='';document.getElementById('inputStation').value='';
-  }
-  renderCourierRow();
-  document.getElementById('modal').classList.add('show');
-}
+function openModal(id){editId=id||null;pendingLocation=null;renderCourierRow();if(editId){const it=items.find(i=>i.id===id);if(!it)return;document.getElementById('modalTitle').textContent='编辑快递';document.getElementById('inputCode').value=it.code;courier=it.courier||'';document.getElementById('inputStation').value=it.station||'';renderCourierRow();}else{document.getElementById('modalTitle').textContent='添加快递';document.getElementById('inputCode').value='';courier='';document.getElementById('inputStation').value='';}document.getElementById('modal').classList.add('show');}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 
-function saveItem(){
-  const code=document.getElementById('inputCode').value.trim(),station=document.getElementById('inputStation').value.trim();
-  if(!code)return alert('请输入取件码');
-  if(editId){
-    const it=items.find(i=>i.id===editId);
-    Object.assign(it,{code,courier,station});
-    if(pendingLocation){it.lat=pendingLocation.lat;it.lng=pendingLocation.lng;}
-  }else{
-    const newItem={id:Date.now(),code,courier,station,time:new Date().toLocaleString('zh-CN'),pickedUp:false};
-    if(pendingLocation){newItem.lat=pendingLocation.lat;newItem.lng=pendingLocation.lng;}
-    items.unshift(newItem);
-  }
-  localStorage.setItem('pickupItems',JSON.stringify(items));
-  closeModal();renderCards();if(map)updateMarkers();
-}
+function saveItem(){const code=document.getElementById('inputCode').value.trim(),station=document.getElementById('inputStation').value.trim();if(!code)return toast('请输入取件码');if(editId){const it=items.find(i=>i.id===editId);if(it){Object.assign(it,{code,courier,station});if(pendingLocation){it.lat=pendingLocation.lat;it.lng=pendingLocation.lng;}}}else{const newItem={id:Date.now(),code,courier,station,time:new Date().toLocaleString('zh-CN'),pickedUp:false};if(pendingLocation){newItem.lat=pendingLocation.lat;newItem.lng=pendingLocation.lng;}items.unshift(newItem);}localStorage.setItem('pickupItems',JSON.stringify(items));closeModal();renderCards();if(map)updateMarkers();toast(editId?'已更新':'已添加');}
 
-function togglePicked(id){
-  const it=items.find(i=>i.id===id);
-  if(!it)return;
-  it.pickedUp=!it.pickedUp;
-  if(it.pickedUp)it.pickedUpTime=new Date().toLocaleString('zh-CN');
-  else delete it.pickedUpTime;
-  localStorage.setItem('pickupItems',JSON.stringify(items));
-  renderCards();if(map)updateMarkers();
-}
+function togglePicked(id){const it=items.find(i=>i.id===id);if(!it)return;it.pickedUp=!it.pickedUp;if(it.pickedUp)it.pickedUpTime=new Date().toLocaleString('zh-CN');else delete it.pickedUpTime;localStorage.setItem('pickupItems',JSON.stringify(items));renderCards();if(map)updateMarkers();toast(it.pickedUp?'已标记取件':'已取消标记');}
 
-function deleteItem(id){if(confirm('确定删除？')){items=items.filter(i=>i.id!==id);localStorage.setItem('pickupItems',JSON.stringify(items));renderCards();if(map)updateMarkers();}}
-function copyCode(code){navigator.clipboard.writeText(code).then(()=>alert('已复制：'+code));}
+function deleteItem(id){if(confirm('确定删除？')){items=items.filter(i=>i.id!==id);localStorage.setItem('pickupItems',JSON.stringify(items));renderCards();if(map)updateMarkers();toast('已删除');}}
+function copyCode(code){navigator.clipboard.writeText(code).then(()=>toast('已复制：'+code)).catch(()=>toast('复制失败'));}
 
-function cleanupPicked(){
-  const count=items.filter(i=>i.pickedUp).length;
-  if(!count)return alert('没有已取快递');
-  if(!confirm('删除 '+count+' 条已取快递？'))return;
-  items=items.filter(i=>!i.pickedUp);
-  localStorage.setItem('pickupItems',JSON.stringify(items));
-  closeStats();renderCards();if(map)updateMarkers();
-}
+function cleanupPicked(){const count=items.filter(i=>i.pickedUp).length;if(!count)return toast('没有已取快递');if(!confirm('删除 '+count+' 条已取快递？'))return;items=items.filter(i=>!i.pickedUp);localStorage.setItem('pickupItems',JSON.stringify(items));closeStats();renderCards();if(map)updateMarkers();toast('已清理');}
 
-function renderCards(){
-  const kw=document.getElementById('searchInput').value.toLowerCase();
-  let f=items;
-  if(currentTab!=='全部')f=f.filter(i=>i.courier===currentTab);
-  if(kw)f=f.filter(i=>i.code.toLowerCase().includes(kw)||(i.station||'').toLowerCase().includes(kw));
-  renderTabs();
-  const list=document.getElementById('cardList');
-  if(!f.length){list.innerHTML='<div class="empty"><div class="empty-icon">🧸</div>还没有取件码哦~<br>点下方截图识别添加</div>';return;}
-  list.innerHTML=f.map(i=>{
-    const color=COLORS[i.courier]||'#BC8F8F';
-    return `<div class="card${i.pickedUp?' picked':''}"><div class="card-top"><span class="card-tag" style="background:${color}">${getLogo(i.courier)} ${i.courier||'快递'}</span><span class="card-time">${i.pickedUp?'✅ 已取 '+i.pickedUpTime:i.time}</span></div><div class="card-code${i.pickedUp?' picked-text':''}" onclick="copyCode('${i.code}')" title="点击复制">${i.code}</div>${i.station?`<div class="card-station">📍 ${i.station}</div>`:''}<div class="card-actions">${i.pickedUp?'':`<button class="btn-pickup" onclick="togglePicked(${i.id})">✅ 已取</button>`}<button onclick="openModal(${i.id})">编辑</button><button class="delete" onclick="deleteItem(${i.id})">删除</button></div></div>`;
-  }).join('');
-}
+function cancelOCR(){document.getElementById('ocrLoading').classList.remove('show');toast('已取消');}
+
+function renderCards(){const kw=document.getElementById('searchInput').value.toLowerCase();let f=items;if(currentTab!=='全部')f=f.filter(i=>i.courier===currentTab);if(kw)f=f.filter(i=>i.code.toLowerCase().includes(kw)||(i.station||'').toLowerCase().includes(kw));renderTabs();const list=document.getElementById('cardList');if(!f.length){list.innerHTML='<div class="empty"><div class="empty-icon">📦</div>还没有快递哦<br><span style="font-size:14px;color:#AEAEB2">点击下方按钮开始识别</span></div>';return;}list.innerHTML=f.map(i=>{const color=COLORS[i.courier]||'#BC8F8F';return `<div class="card${i.pickedUp?' picked':''}"><div class="card-top"><span class="card-tag" style="background:${color}">${getLogo(i.courier)} ${i.courier||'快递'}</span><span class="card-time">${i.pickedUp?'✅ 已取 '+i.pickedUpTime:i.time}</span></div><div class="card-code${i.pickedUp?' picked-text':''}" onclick="copyCode('${i.code}')" title="点击复制">${i.code}</div>${i.station?`<div class="card-station">📍 ${i.station}</div>`:''}<div class="card-actions">${i.pickedUp?'':`<button class="btn-pickup" onclick="event.stopPropagation();togglePicked(${i.id})">✅ 已取</button>`}<button onclick="event.stopPropagation();openModal(${i.id})">编辑</button><button class="delete" onclick="event.stopPropagation();deleteItem(${i.id})">删除</button></div></div>`;}).join('');}
 
 function cleanCJK(s){let r=s;for(let i=0;i<5;i++)r=r.replace(/([\u4e00-\u9fff])\s+([\u4e00-\u9fff])/g,'$1$2');for(let i=0;i<3;i++){r=r.replace(/([\dA-Za-z])\s+([\u4e00-\u9fff])/g,'$1$2');r=r.replace(/([\u4e00-\u9fff])\s+([\dA-Za-z])/g,'$1$2');}return r;}
 
-function findStation(lines){
-  const ignore=['待取件','已放入','已签收','已到达','配送中','派件中','您的快件','请凭'];
-  const fullText=cleanCJK(lines.join(' '));
-  const preset=matchPreset(fullText);
-  if(preset)return{station:preset.name,presetAddress:preset.address,presetLat:preset.lat,presetLng:preset.lng};
-  for(const line of lines){
-    let cl=cleanCJK(line);
-    if(ignore.some(p=>cl.includes(p)))continue;
-    for(const kw of['快递服务中心','代收点','服务中心','驿站','自提点','服务点','快递柜']){
-      if(!cl.includes(kw))continue;
-      let raw=cl.replace(/拨打电话.*$/g,'').replace(/[|｜]\s*拨打电话.*$/g,'').trim();
-      raw=raw.replace(/^[，。\s|｜]+|[，。\s|｜]+$/g,'');
-      if(raw.length>=4&&raw.length<=60)return{station:raw,presetAddress:'',presetLat:null,presetLng:null};
-    }
-  }
-  return{station:'',presetAddress:'',presetLat:null,presetLng:null};
-}
+function findStation(lines){const ignore=['待取件','已放入','已签收','已到达','配送中','派件中','您的快件','请凭'];const fullText=cleanCJK(lines.join(' '));const preset=matchPreset(fullText);if(preset)return{station:preset.name,presetAddress:preset.address,presetLat:preset.lat,presetLng:preset.lng};for(const line of lines){let cl=cleanCJK(line);if(ignore.some(p=>cl.includes(p)))continue;for(const kw of['快递服务中心','代收点','服务中心','驿站','自提点','服务点','快递柜']){if(!cl.includes(kw))continue;let raw=cl.replace(/拨打电话.*$/g,'').replace(/[|｜]\s*拨打电话.*$/g,'').trim();raw=raw.replace(/^[，。\s|｜]+|[，。\s|｜]+$/g,'');if(raw.length>=4&&raw.length<=60)return{station:raw,presetAddress:'',presetLat:null,presetLng:null};}}return{station:'',presetAddress:'',presetLat:null,presetLng:null};}
 
-function findAddress(ct){
-  let m=ct.match(/(?:收货地址|收货方|取件地址)[：:\s]*([\u4e00-\u9fff\d号栋座楼室区街道镇村路大道A-Za-z]{5,50})/);
-  if(m)return m[1].replace(/[|｜].*$/g,'').trim();
-  m=ct.match(/([\u4e00-\u9fff]{2,6}[市省][\u4e00-\u9fff]{2,6}[区县][\u4e00-\u9fff\d号路大道街道花园小区A-Za-z]{3,25})/);
-  if(m)return m[1];
-  return'';
-}
+function findAddress(ct){let m=ct.match(/(?:收货地址|收货方|取件地址)[：:\s]*([\u4e00-\u9fff\d号栋座楼室区街道镇村路大道A-Za-z]{5,50})/);if(m)return m[1].replace(/[|｜].*$/g,'').trim();m=ct.match(/([\u4e00-\u9fff]{2,6}[市省][\u4e00-\u9fff]{2,6}[区县][\u4e00-\u9fff\d号路大道街道花园小区A-Za-z]{3,25})/);if(m)return m[1];return'';}
 
-function parseText(text){
-  const lines=text.split(/\n/);
-  const ct=cleanCJK(lines.join(' '));
-  const cm={极兔:'极兔',极免:'极兔',圆通:'圆通',中通:'中通',韵达:'韵达',申通:'申通',顺丰:'顺丰',京东:'京东',邮政:'邮政EMS',EMS:'邮政EMS',菜鸟:'菜鸟',德邦:'德邦'};
-  let courierName='';for(const[k,v]of Object.entries(cm)){if(ct.includes(k)){courierName=v;break;}}
-  const sr=findStation(lines);
-  const address=sr.presetAddress||findAddress(ct);
-  const results=[],seen=new Set();
-  for(const m of ct.matchAll(/取件码[：:\s]*([A-Za-z0-9\-—]{2,15})/g)){const code=m[1].replace(/[—-]{2,}/g,'-').trim();if(code.length>=2&&!seen.has(code)){seen.add(code);results.push({code,courier:courierName,station:sr.station,address,lat:sr.presetLat,lng:sr.presetLng});}}
-  if(!results.length){const dc=/\b([A-Z]\d{1,3}\-\d{1,3}\-\d{2,4})\b/g;let m;while((m=dc.exec(ct))!==null){if(!seen.has(m[1])){seen.add(m[1]);results.push({code:m[1],courier:courierName,station:sr.station,address,lat:sr.presetLat,lng:sr.presetLng});}}}
-  return results.slice(0,10);
-}
+function parseText(text){const lines=text.split(/\n/);const ct=cleanCJK(lines.join(' '));const cm={极兔:'极兔',极免:'极兔',圆通:'圆通',中通:'中通',韵达:'韵达',申通:'申通',顺丰:'顺丰',京东:'京东',邮政:'邮政EMS',EMS:'邮政EMS',菜鸟:'菜鸟',德邦:'德邦'};let courierName='';for(const[k,v]of Object.entries(cm)){if(ct.includes(k)){courierName=v;break;}}const sr=findStation(lines);const address=sr.presetAddress||findAddress(ct);const results=[],seen=new Set();for(const m of ct.matchAll(/取件码[：:\s]*([A-Za-z0-9\-—]{2,15})/g)){const code=m[1].replace(/[—-]{2,}/g,'-').trim();if(code.length>=2&&!seen.has(code)){seen.add(code);results.push({code,courier:courierName,station:sr.station,address,lat:sr.presetLat,lng:sr.presetLng});}}if(!results.length){const dc=/\b([A-Z]\d{1,3}\-\d{1,3}\-\d{2,4})\b/g;let m;while((m=dc.exec(ct))!==null){if(!seen.has(m[1])){seen.add(m[1]);results.push({code:m[1],courier:courierName,station:sr.station,address,lat:sr.presetLat,lng:sr.presetLng});}}}return results.slice(0,10);}
 
-function resizeImage(file){
-  return new Promise(resolve=>{
-    const reader=new FileReader();
-    reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>1000){h*=1000/w;w=1000;}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cv.toBlob(b=>resolve(b),'image/jpeg',.7);};img.src=e.target.result;};
-    reader.readAsDataURL(file);
-  });
-}
+function resizeImage(file){return new Promise(resolve=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>1000){h*=1000/w;w=1000;}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);cv.toBlob(b=>resolve(b),'image/jpeg',.7);};img.src=e.target.result;};reader.readAsDataURL(file);});}
 
-document.addEventListener('paste',async e=>{const d=e.clipboardData.items;for(let i=0;i<d.length;i++){if(d[i].type.indexOf('image')!==-1){await processImage(d[i].getAsFile());break;}}});
 async function handleFile(e){const f=e.target.files[0];if(f)await processImage(f);e.target.value='';}
 
 async function processImage(imageFile){
   document.getElementById('ocrLoading').classList.add('show');
   document.getElementById('ocrStatus').textContent='正在处理图片...';
   try{
-    let processed=imageFile;
-    try{processed=await resizeImage(imageFile);}catch(e){}
+    let processed=imageFile;try{processed=await resizeImage(imageFile);}catch(e){}
     if(!worker){
       document.getElementById('ocrStatus').textContent='首次使用需下载中文语言包（约18MB），请稍候...';
       let retries=3;
       while(retries>0){
-        try{
-          worker=await Tesseract.createWorker('chi_sim+eng',1,{
-            logger:m=>{if(m.status==='recognizing text')document.getElementById('ocrStatus').textContent='识别中... '+Math.round(m.progress*100)+'%';}
-          });
-          break;
-        }catch(e){
-          retries--;
-          if(retries===0)throw e;
-          document.getElementById('ocrStatus').textContent='加载失败，正在重试...';
-          await new Promise(r=>setTimeout(r,2000));
-        }
+        try{worker=await Tesseract.createWorker('chi_sim+eng',1,{logger:m=>{if(m.status==='recognizing text')document.getElementById('ocrStatus').textContent='识别中... '+Math.round(m.progress*100)+'%';}});break;}
+        catch(e){retries--;if(retries===0)throw e;document.getElementById('ocrStatus').textContent='加载失败，正在重试('+retries+')...';await new Promise(r=>setTimeout(r,2000));}
       }
     }
     document.getElementById('ocrStatus').textContent='正在识别...';
     const{data:{text}}=await worker.recognize(processed);
-    console.log('OCR:',text);
     showOcrResults(parseText(text),text);
-  }catch(err){document.getElementById('ocrStatus').textContent='识别失败: '+err.message;console.error(err);}
+  }catch(err){document.getElementById('ocrStatus').textContent='识别失败: '+err.message;}
 }
 
 function showOcrResults(codes,rawText){
   document.getElementById('ocrLoading').classList.remove('show');
-  if(!codes.length){
-    alert('没有识别到取件码\n\n原始文本：\n'+rawText.substring(0,200));
-    return;
-  }
-  if(codes.length===1){
-    const c=codes[0];
-    document.getElementById('inputCode').value=c.code;
-    courier=c.courier||'';
-    document.getElementById('inputStation').value=c.station||'';
-    renderCourierRow();
-    pendingLocation=(c.lat&&c.lng)?{lat:c.lat,lng:c.lng}:null;
-    document.getElementById('modalTitle').textContent='添加取件码';
-    editId=null;
-    document.getElementById('modal').classList.add('show');
-    return;
-  }
-  let html='<div style="margin:10px 15px;background:#fff;border-radius:12px;padding:15px"><h3 style="font-size:15px;margin-bottom:10px">🔍 识别到多个取件码：</h3>';
-  codes.forEach(c=>{
-    const info=[c.courier,c.station].filter(Boolean).join(' · ');
-    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#FFF0F5;border-radius:8px;margin-bottom:6px"><div><div style="font-size:16px;font-weight:bold;color:#D81B60">${c.code}</div><div style="font-size:12px;color:#BC8F8F">${info}</div></div><button onclick="quickAdd('${c.code.replace(/'/g,"\\'")}','${(c.courier||'').replace(/'/g,"\\'")}','${(c.station||'').replace(/'/g,"\\'")}',${c.lat||'null'},${c.lng||'null'})" style="background:#FF69B4;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer">添加</button></div>`;
-  });
+  if(!codes.length){toast('没有识别到取件码');return;}
+  if(codes.length===1){const c=codes[0];openModal();setTimeout(()=>{document.getElementById('inputCode').value=c.code;courier=c.courier||'';document.getElementById('inputStation').value=c.station||'';renderCourierRow();pendingLocation=(c.lat&&c.lng)?{lat:c.lat,lng:c.lng}:null;},50);return;}
+  let html='<div style="margin:10px 16px;background:var(--glass);backdrop-filter:blur(40px);border-radius:16px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--glass-border)"><h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:#1C1C1E">🔍 识别到多个取件码</h3>';
+  codes.forEach(c=>{const info=[c.courier,c.station].filter(Boolean).join(' · ');html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,107,157,.06);border-radius:12px;margin-bottom:8px"><div><div style="font-size:17px;font-weight:700;color:#FF6B9D">${c.code}</div><div style="font-size:12px;color:#8E8E93;margin-top:2px">${info||'未识别驿站'}</div></div><button onclick="quickAdd('${c.code.replace(/'/g,"\\'")}','${(c.courier||'').replace(/'/g,"\\'")}','${(c.station||'').replace(/'/g,"\\'")}',${c.lat||'null'},${c.lng||'null'})" style="background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer">添加</button></div>`;});
   html+='</div>';
-  const overlay=document.createElement('div');
-  overlay.className='modal-overlay show';
-  overlay.innerHTML=html;
-  overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
-  document.body.appendChild(overlay);
+  const overlay=document.createElement('div');overlay.className='modal-overlay show';overlay.innerHTML=html;overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};document.body.appendChild(overlay);
 }
 
-function quickAdd(code,c,cn,lat,lng){
-  document.querySelectorAll('.modal-overlay.show').forEach(m=>m.remove());
-  document.getElementById('inputCode').value=code;
-  courier=c||'';
-  document.getElementById('inputStation').value=cn||'';
-  renderCourierRow();
-  pendingLocation=(lat&&lng)?{lat,lng}:null;
-  document.getElementById('modalTitle').textContent='添加取件码';
-  editId=null;
-  document.getElementById('modal').classList.add('show');
-}
+function quickAdd(code,c,cn,lat,lng){document.querySelectorAll('.modal-overlay.show').forEach(m=>m.remove());openModal();setTimeout(()=>{document.getElementById('inputCode').value=code;courier=c||'';document.getElementById('inputStation').value=cn||'';renderCourierRow();pendingLocation=(lat&&lng)?{lat,lng}:null;},50);}
 
 renderCards();
 </script>
