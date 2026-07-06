@@ -201,7 +201,8 @@ let courier='';
 function renderCourierRow(){document.getElementById('courierRow').innerHTML=COURIERS.map(c=>`<div class="courier-btn${courier===c?' active':''}" onclick="setCourier('${c}')"><span class="courier-btn-text${courier===c?' active':''}">${c}</span></div>`).join('');}
 function setCourier(c){courier=courier===c?'':c;renderCourierRow();}
 
-function renderTabs(){const used=new Set(items.map(i=>i.courier).filter(Boolean));const tabs=['全部',...COURIERS.filter(c=>used.has(c))];document.getElementById('courierTabs').innerHTML=tabs.map(c=>`<div class="tab${currentTab===c?' active':''}" onclick="setTab('${c}',this)">${c}</div>`).join('');}
+function renderTabs(){const used=new Set(items.map(i=>i.courier).filter(Boolean));const tabs=['全部',...COURIERS.filter(c=>used.has(c))];document.getElementById('courierTabs').innerHTML=tabs.map(c=>`<div class="tab${currentTab===c?' active':''}" onclick="setTab('${c}')">${c}</div>`).join('');}
+function setTab(t){currentTab=t;renderCards();}
 
 function switchView(v){currentView=v;document.querySelectorAll('.view-tab').forEach((t,i)=>{t.classList.toggle('active',i===(v==='list'?0:1))});document.getElementById('listView').style.display=v==='list'?'block':'none';document.getElementById('mapView').style.display=v==='map'?'block':'none';if(v==='map')initMap();}
 
@@ -288,13 +289,20 @@ function showOcrResults(codes,rawText){
   document.getElementById('ocrLoading').classList.remove('show');
   if(!codes.length){toast('没有识别到取件码');return;}
   if(codes.length===1){const c=codes[0];openModal();setTimeout(()=>{document.getElementById('inputCode').value=c.code;courier=c.courier||'';document.getElementById('inputStation').value=c.station||'';renderCourierRow();pendingLocation=(c.lat&&c.lng)?{lat:c.lat,lng:c.lng}:null;},50);return;}
-  let html='<div style="margin:10px 16px;background:var(--glass);backdrop-filter:blur(40px);border-radius:16px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--glass-border)"><h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:#1C1C1E">🔍 识别到多个取件码</h3>';
-  codes.forEach(c=>{const info=[c.courier,c.station].filter(Boolean).join(' · ');html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,107,157,.06);border-radius:12px;margin-bottom:8px"><div><div style="font-size:17px;font-weight:700;color:#FF6B9D">${c.code}</div><div style="font-size:12px;color:#8E8E93;margin-top:2px">${info||'未识别驿站'}</div></div><button onclick="quickAdd('${c.code.replace(/'/g,"\\'")}','${(c.courier||'').replace(/'/g,"\\'")}','${(c.station||'').replace(/'/g,"\\'")}',${c.lat||'null'},${c.lng||'null'})" style="background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer">添加</button></div>`;});
+  let html='<div style="margin:10px 16px;background:var(--glass);backdrop-filter:blur(40px);border-radius:16px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--glass-border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="font-size:16px;font-weight:700;color:#1C1C1E;margin:0">🔍 识别到多个取件码</h3><span onclick="document.getElementById(\'multiSelectOverlay\').remove()" style="font-size:14px;color:#FF6B9D;cursor:pointer;font-weight:600;padding:4px 8px">完成</span></div>';
+  codes.forEach(c=>{const info=[c.courier,c.station].filter(Boolean).join(' · ');html+=`<div class="ocr-item" id="ocr_${c.code.replace(/[^a-zA-Z0-9]/g,'')}"><div><div style="font-size:17px;font-weight:700;color:#FF6B9D">${c.code}</div><div style="font-size:12px;color:#8E8E93;margin-top:2px">${info||'未识别驿站'}</div></div><button onclick="quickAdd('${c.code.replace(/'/g,"\\'")}','${(c.courier||'').replace(/'/g,"\\'")}','${(c.station||'').replace(/'/g,"\\'")}',${c.lat||'null'},${c.lng||'null'});this.textContent='✅ 已添加';this.style.background='#34C759';this.disabled=true;" style="background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;touch-action:manipulation">添加</button></div>`;});
   html+='</div>';
   const overlay=document.createElement('div');overlay.className='modal-overlay show';overlay.id='multiSelectOverlay';overlay.innerHTML=html;overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};document.body.appendChild(overlay);
 }
 
-function quickAdd(code,c,cn,lat,lng){const ms=document.getElementById('multiSelectOverlay');if(ms)ms.remove();openModal();setTimeout(()=>{document.getElementById('inputCode').value=code;courier=c||'';document.getElementById('inputStation').value=cn||'';renderCourierRow();pendingLocation=(lat&&lng)?{lat,lng}:null;},50);}
+function quickAdd(code,c,cn,lat,lng){
+  const newItem={id:Date.now(),code,courier:c||'',station:cn||'',time:new Date().toLocaleString('zh-CN'),pickedUp:false};
+  if(lat&&lng){newItem.lat=lat;newItem.lng=lng;}
+  items.unshift(newItem);
+  localStorage.setItem('pickupItems',JSON.stringify(items));
+  renderCards();
+  toast('✅ 已添加 '+code);
+}
 
 renderCards();
 if(typeof Tesseract==='undefined'){setTimeout(()=>toast('⚠️ OCR引擎加载失败，请刷新重试'),1000);}
