@@ -99,6 +99,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .courier-btn.active{background:linear-gradient(135deg,#FF6B9D,#FF8E53);border-color:transparent;box-shadow:0 4px 12px rgba(255,107,157,.3)}
 .courier-btn-text{font-size:13px;color:#666;font-weight:500}
 .courier-btn-text.active{color:#fff}
+.ocr-item{display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,107,157,.06);border-radius:12px;margin-bottom:8px}
 
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;z-index:99999;pointer-events:none;animation:toastIn .2s ease,toastOut .3s ease 1.2s forwards;backdrop-filter:blur(10px)}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,-50%) scale(.8)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
@@ -296,7 +297,7 @@ function showOcrResults(codes,rawText){
 }
 
 function quickAdd(code,c,cn,lat,lng){
-  const newItem={id:Date.now(),code,courier:c||'',station:cn||'',time:new Date().toLocaleString('zh-CN'),pickedUp:false};
+  const newItem={id:Date.now()+Math.floor(Math.random()*1000),code,courier:c||'',station:cn||'',time:new Date().toLocaleString('zh-CN'),pickedUp:false};
   if(lat&&lng){newItem.lat=lat;newItem.lng=lng;}
   items.unshift(newItem);
   localStorage.setItem('pickupItems',JSON.stringify(items));
