@@ -17,27 +17,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .header-img{width:100%;max-height:100px;object-fit:contain;border-radius:var(--radius);margin-bottom:6px}
 .header h1{font-size:22px;font-weight:800;background:linear-gradient(135deg,#FF6B9D,#FF8E53);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.3px}
 .header-right{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:4px}
-.header-right span{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,107,157,.1);font-size:16px;cursor:pointer;transition:all .15s}
+.header-right span{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,107,157,.1);font-size:16px;cursor:pointer;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .header-right span:active{transform:scale(.85);background:rgba(255,107,157,.2)}
 
 .view-tabs{display:flex;padding:12px 16px 0;gap:4px}
-.view-tab{flex:1;text-align:center;padding:10px;font-size:14px;color:#8E8E93;border-radius:var(--radius-sm);cursor:pointer;transition:all .3s;font-weight:500}
+.view-tab{flex:1;text-align:center;padding:10px;font-size:14px;color:#8E8E93;border-radius:var(--radius-sm);cursor:pointer;transition:all .3s;font-weight:500;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .view-tab.active{color:#FF6B9D;background:rgba(255,107,157,.1);font-weight:700}
 
 .search-bar{padding:12px 16px}
 .search-bar input{width:100%;padding:14px 20px;border-radius:var(--radius);border:none;font-size:16px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--shadow-sm);outline:none;transition:all .3s}
 .search-bar input:focus{box-shadow:0 0 0 3px rgba(255,107,157,.2),var(--shadow-sm)}
 
-.tabs{display:flex;padding:0 16px;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.tabs{display:flex;padding:0 16px;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:relative;z-index:2}
 .tabs::-webkit-scrollbar{display:none}
-.tab{padding:7px 14px;border-radius:var(--radius-sm);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-border);font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s;font-weight:500;color:#666;box-shadow:var(--shadow-sm)}
-.tab:active{transform:scale(.95)}
+.tab{padding:8px 16px;border-radius:var(--radius-sm);background:rgba(255,255,255,.85);border:1px solid rgba(0,0,0,.06);font-size:13px;cursor:pointer;white-space:nowrap;transition:all .15s;font-weight:500;color:#666;box-shadow:0 1px 4px rgba(0,0,0,.04);touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative}
+.tab:active{transform:scale(.93);background:rgba(255,107,157,.15)}
 .tab.active{background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;border-color:transparent;box-shadow:0 4px 15px rgba(255,107,157,.35)}
 
 .courier-logo{width:20px;height:20px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
 
 .card-list{padding:0 16px}
-.card{background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--glass-border);transition:transform .15s}
+.card{background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--glass-border);transition:transform .15s;touch-action:manipulation}
 .card.picked{opacity:.45}
 .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .card-tag{padding:4px 10px;border-radius:10px;font-size:11px;color:#fff;display:flex;align-items:center;gap:4px;font-weight:600;letter-spacing:.3px}
@@ -47,13 +47,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .card-code.picked-text{text-decoration:line-through;color:#C7C7CC;font-weight:500}
 .card-station{font-size:13px;color:#8E8E93}
 .card-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:12px;align-items:center}
-.card-actions button{background:none;border:none;font-size:13px;color:#FF6B9D;cursor:pointer;padding:6px 10px;border-radius:10px;transition:all .15s;font-weight:500}
+.card-actions button{background:none;border:none;font-size:13px;color:#FF6B9D;cursor:pointer;padding:8px 12px;border-radius:10px;transition:all .15s;font-weight:500;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:36px}
 .card-actions button:active{background:rgba(255,107,157,.1);transform:scale(.95)}
 .card-actions .delete{color:#FF6B6B}
-.btn-pickup{background:linear-gradient(135deg,#34C759,#30B350)!important;color:#fff!important;border-radius:10px!important;padding:6px 12px!important;font-size:12px!important;font-weight:600!important;box-shadow:0 2px 8px rgba(52,199,89,.3)!important}
+.btn-pickup{background:linear-gradient(135deg,#34C759,#30B350)!important;color:#fff!important;border-radius:10px!important;padding:6px 12px!important;font-size:12px!important;font-weight:600!important;box-shadow:0 2px 8px rgba(52,199,89,.3)!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}
 
 .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--glass);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-top:1px solid var(--glass-border);z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 30px rgba(0,0,0,.06)}
-.bottom-btn{width:100%;display:flex;flex-direction:column;align-items:center;padding:12px 0;font-size:12px;color:#FF6B9D;background:none;border:none;cursor:pointer;font-weight:700;letter-spacing:.3px;transition:all .15s}
+.bottom-btn{width:100%;display:flex;flex-direction:column;align-items:center;padding:12px 0;font-size:12px;color:#FF6B9D;background:none;border:none;cursor:pointer;font-weight:700;letter-spacing:.3px;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .bottom-btn:active{transform:scale(.95)}
 .bottom-btn .icon{font-size:28px;margin-bottom:3px;filter:drop-shadow(0 2px 4px rgba(255,107,157,.3))}
 
@@ -65,7 +65,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .modal input,.modal select,.modal textarea{width:100%;padding:14px 16px;border:none;border-radius:var(--radius-sm);font-size:15px;margin-bottom:14px;font-family:inherit;background:rgba(0,0,0,.04);outline:none;transition:all .2s}
 .modal input:focus,.modal textarea:focus{background:rgba(0,0,0,.06);box-shadow:0 0 0 3px rgba(255,107,157,.15)}
 .modal-btns{display:flex;gap:10px;margin-top:8px}
-.modal-btns button{flex:1;padding:14px;border-radius:var(--radius-sm);border:none;font-size:16px;cursor:pointer;font-weight:600;transition:all .15s}
+.modal-btns button{flex:1;padding:14px;border-radius:var(--radius-sm);border:none;font-size:16px;cursor:pointer;font-weight:600;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .modal-btns button:active{transform:scale(.97)}
 .btn-cancel{background:rgba(0,0,0,.06);color:#1C1C1E}
 .btn-save{background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;box-shadow:0 4px 15px rgba(255,107,157,.35)}
@@ -90,11 +90,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .stat-card{background:linear-gradient(135deg,rgba(255,107,157,.08),rgba(255,142,83,.08));border-radius:var(--radius);padding:18px;text-align:center;border:1px solid rgba(255,107,157,.1)}
 .stat-card .num{font-size:32px;font-weight:800;background:linear-gradient(135deg,#FF6B9D,#FF8E53);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .stat-card .label{font-size:12px;color:#8E8E93;margin-top:4px;font-weight:500}
-.btn-cleanup{width:100%;padding:12px;border:1.5px solid #FF6B6B;border-radius:var(--radius-sm);font-size:14px;color:#FF6B6B;background:rgba(255,107,107,.05);cursor:pointer;margin-top:12px;font-weight:600;transition:all .15s}
+.btn-cleanup{width:100%;padding:12px;border:1.5px solid #FF6B6B;border-radius:var(--radius-sm);font-size:14px;color:#FF6B6B;background:rgba(255,107,107,.05);cursor:pointer;margin-top:12px;font-weight:600;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .btn-cleanup:active{background:rgba(255,107,107,.15);transform:scale(.98)}
 
 .courier-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.courier-btn{padding:8px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(0,0,0,.08);background:rgba(0,0,0,.03);cursor:pointer;transition:all .15s}
+.courier-btn{padding:8px 16px;border-radius:var(--radius-sm);border:1.5px solid rgba(0,0,0,.08);background:rgba(0,0,0,.03);cursor:pointer;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .courier-btn:active{transform:scale(.95)}
 .courier-btn.active{background:linear-gradient(135deg,#FF6B9D,#FF8E53);border-color:transparent;box-shadow:0 4px 12px rgba(255,107,157,.3)}
 .courier-btn-text{font-size:13px;color:#666;font-weight:500}
@@ -162,11 +162,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
     <div style="font-size:12px;color:#BC8F8F;margin-top:-8px;margin-bottom:12px">免费申请：<a href="https://lbs.amap.com/" target="_blank" style="color:#FF6B9D">lbs.amap.com</a></div>
     <label>常用驿站</label>
     <button onclick="pickPresetLocation()" style="width:100%;padding:10px;border:1.5px dashed #FF6B9D;border-radius:var(--radius-sm);font-size:13px;color:#FF6B9D;background:rgba(255,107,157,.05);cursor:pointer;margin-bottom:10px;font-weight:600">📍 在地图上选取坐标</button>
-    <textarea id="inputStations" rows="6" style="width:100%;padding:10px;border:none;border-radius:var(--radius-sm);font-size:12px;font-family:monospace;resize:vertical;background:rgba(0,0,0,.04)" placeholder="关键词=驿站名|地址|纬度,经度"></textarea>
+    <textarea id="inputStations" rows="6" style="width:100%;padding:14px 16px;border:none;border-radius:var(--radius-sm);font-size:12px;font-family:monospace;resize:vertical;background:rgba(0,0,0,.04);outline:none" placeholder="关键词=驿站名|地址|纬度,经度"></textarea>
     <div style="font-size:11px;color:#BC8F8F;margin-top:-8px;margin-bottom:12px">格式：关键词=驿站名|地址|纬度,经度</div>
     <button onclick="exportData()" style="width:100%;padding:12px;border:1.5px solid #FF6B9D;border-radius:var(--radius-sm);font-size:14px;color:#FF6B9D;background:rgba(255,107,157,.05);cursor:pointer;margin-bottom:10px;font-weight:600">📤 导出数据</button>
     <label>📥 导入数据</label>
-    <textarea id="importData" rows="3" style="width:100%;padding:10px;border:none;border-radius:var(--radius-sm);font-size:12px;font-family:monospace;resize:vertical;background:rgba(0,0,0,.04)" placeholder="粘贴导出的数据..."></textarea>
+    <textarea id="importData" rows="3" style="width:100%;padding:14px 16px;border:none;border-radius:var(--radius-sm);font-size:12px;font-family:monospace;resize:vertical;background:rgba(0,0,0,.04);outline:none" placeholder="粘贴导出的数据..."></textarea>
     <button onclick="importData()" style="width:100%;padding:12px;border:none;border-radius:var(--radius-sm);font-size:14px;color:#fff;background:linear-gradient(135deg,#FF6B9D,#FF8E53);cursor:pointer;margin-top:6px;margin-bottom:12px;font-weight:600">📥 导入</button>
     <div class="modal-btns"><button class="btn-cancel" onclick="closeSettings()">取消</button><button class="btn-save" onclick="saveSettings()">保存</button></div>
   </div>
@@ -230,8 +230,8 @@ function openSettings(){document.getElementById('inputApiKey').value=amapKey;con
 function closeSettings(){document.getElementById('settingsModal').classList.remove('show')}
 function saveSettings(){amapKey=document.getElementById('inputApiKey').value.trim();localStorage.setItem('amapKey',amapKey);const stText=document.getElementById('inputStations').value.trim();localStorage.setItem('presetStations2',stText);PRESET_STATIONS.length=0;stText.split('\n').forEach(line=>{const parts=line.split('=');if(parts.length<2)return;const keywords=parts[0].split(',').map(s=>s.trim());const rest=parts.slice(1).join('=');const segs=rest.split('|');let lat=null,lng=null;if(segs[2]){const ll=segs[2].split(',');lat=parseFloat(ll[0]);lng=parseFloat(ll[1]);}PRESET_STATIONS.push({keywords,name:segs[0]||'',address:segs[1]||'',lat:isNaN(lat)?null:lat,lng:isNaN(lng)?null:lng});});closeSettings();toast('已保存');}
 
-function exportData(){const data=JSON.stringify({items,amapKey,stations:localStorage.getItem('presetStations2')||''});navigator.clipboard.writeText(data).then(()=>toast('数据已复制')).catch(()=>toast('复制失败'));}
-function importData(){const text=document.getElementById('importData').value.trim();if(!text)return toast('请先粘贴数据');try{const data=JSON.parse(text);if(!data.items)return toast('格式错误');if(!confirm('导入会覆盖当前数据，确定？'))return;items=data.items;localStorage.setItem('pickupItems',JSON.stringify(items));if(data.amapKey){amapKey=data.amapKey;localStorage.setItem('amapKey',amapKey);}if(data.stations)localStorage.setItem('presetStations2',data.stations);renderCards();toast('导入成功！共'+items.length+'条');}catch(e){toast('格式错误');}}
+function exportData(){const data=JSON.stringify({items,amapKey:amapKey||'',stations:localStorage.getItem('presetStations2')||'',version:1});navigator.clipboard.writeText(data).then(()=>toast('数据已复制')).catch(()=>{const ta=document.createElement('textarea');ta.value=data;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('数据已复制');});}
+function importData(){const text=document.getElementById('importData').value.trim();if(!text)return toast('请先粘贴数据');try{const data=JSON.parse(text);if(!data.items||!Array.isArray(data.items))return toast('格式错误');if(!confirm('导入会覆盖当前数据，确定？'))return;items=data.items;localStorage.setItem('pickupItems',JSON.stringify(items));if(data.amapKey!==undefined){amapKey=data.amapKey;localStorage.setItem('amapKey',amapKey);}if(data.stations)localStorage.setItem('presetStations2',data.stations);renderCards();closeSettings();toast('导入成功！共'+items.length+'条');}catch(e){toast('格式错误');}}
 
 function openStats(){const total=items.length,picked=items.filter(i=>i.pickedUp).length,active=total-picked;const today=new Date().toDateString(),todayCount=items.filter(i=>new Date(i.id).toDateString()===today).length;const cs={};items.forEach(i=>{if(i.courier)cs[i.courier]=(cs[i.courier]||0)+1;});const top=Object.entries(cs).sort((a,b)=>b[1]-a[1]).slice(0,5);document.getElementById('statsContent').innerHTML=`<div class="stats-grid"><div class="stat-card"><div class="num">${total}</div><div class="label">总快递数</div></div><div class="stat-card"><div class="num">${active}</div><div class="label">待取快递</div></div><div class="stat-card"><div class="num">${picked}</div><div class="label">已取快递</div></div><div class="stat-card"><div class="num">${todayCount}</div><div class="label">今日新增</div></div></div>${top.length?`<div style="font-size:14px;color:#666;font-weight:600;margin-top:10px">快递公司排行</div>${top.map(n=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06)"><span>${getLogo(n[0])} ${n[0]}</span><span style="font-weight:bold;color:#FF6B9D">${n[1]}件</span></div>`).join('')}`:''}`;document.getElementById('statsModal').classList.add('show');}
 function closeStats(){document.getElementById('statsModal').classList.remove('show')}
@@ -268,6 +268,7 @@ async function processImage(imageFile){
   document.getElementById('ocrLoading').classList.add('show');
   document.getElementById('ocrStatus').textContent='正在处理图片...';
   try{
+    if(typeof Tesseract==='undefined'){document.getElementById('ocrStatus').textContent='OCR引擎加载失败，请检查网络后刷新重试';return;}
     let processed=imageFile;try{processed=await resizeImage(imageFile);}catch(e){}
     if(!worker){
       document.getElementById('ocrStatus').textContent='首次使用需下载中文语言包（约18MB），请稍候...';
@@ -290,12 +291,13 @@ function showOcrResults(codes,rawText){
   let html='<div style="margin:10px 16px;background:var(--glass);backdrop-filter:blur(40px);border-radius:16px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--glass-border)"><h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:#1C1C1E">🔍 识别到多个取件码</h3>';
   codes.forEach(c=>{const info=[c.courier,c.station].filter(Boolean).join(' · ');html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,107,157,.06);border-radius:12px;margin-bottom:8px"><div><div style="font-size:17px;font-weight:700;color:#FF6B9D">${c.code}</div><div style="font-size:12px;color:#8E8E93;margin-top:2px">${info||'未识别驿站'}</div></div><button onclick="quickAdd('${c.code.replace(/'/g,"\\'")}','${(c.courier||'').replace(/'/g,"\\'")}','${(c.station||'').replace(/'/g,"\\'")}',${c.lat||'null'},${c.lng||'null'})" style="background:linear-gradient(135deg,#FF6B9D,#FF8E53);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer">添加</button></div>`;});
   html+='</div>';
-  const overlay=document.createElement('div');overlay.className='modal-overlay show';overlay.innerHTML=html;overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};document.body.appendChild(overlay);
+  const overlay=document.createElement('div');overlay.className='modal-overlay show';overlay.id='multiSelectOverlay';overlay.innerHTML=html;overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};document.body.appendChild(overlay);
 }
 
-function quickAdd(code,c,cn,lat,lng){document.querySelectorAll('.modal-overlay.show').forEach(m=>m.remove());openModal();setTimeout(()=>{document.getElementById('inputCode').value=code;courier=c||'';document.getElementById('inputStation').value=cn||'';renderCourierRow();pendingLocation=(lat&&lng)?{lat,lng}:null;},50);}
+function quickAdd(code,c,cn,lat,lng){const ms=document.getElementById('multiSelectOverlay');if(ms)ms.remove();openModal();setTimeout(()=>{document.getElementById('inputCode').value=code;courier=c||'';document.getElementById('inputStation').value=cn||'';renderCourierRow();pendingLocation=(lat&&lng)?{lat,lng}:null;},50);}
 
 renderCards();
+if(typeof Tesseract==='undefined'){setTimeout(()=>toast('⚠️ OCR引擎加载失败，请刷新重试'),1000);}
 </script>
 </body>
 </html>
