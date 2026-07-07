@@ -125,7 +125,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
   <span class="cnt" id="batchCnt">已选 0 项</span>
   <button class="abtn abtn-green" onclick="batchPickup()">✅ 批量已取</button>
   <button class="abtn abtn-red" onclick="batchDelete()">🗑️ 删除</button>
-  <button class="abtn abtn-gray" onclick="batchShare()">📤 分享</button>
   <button class="abtn abtn-gray" onclick="exitSelectMode()">取消</button>
 </div>
 
@@ -264,18 +263,6 @@ function batchDelete(){
   if(!confirm('删除选中的 '+selected.size+' 条？'))return;
   items=items.filter(i=>!selected.has(i.id));save();exitSelectMode();renderCards();toast('已批量删除');
 }
-function batchShare(){
-  if(!selected.size)return toast('请先选择快递');
-  const shareItems=items.filter(i=>selected.has(i.id));
-  const text=shareItems.map(i=>`${i.code} | ${i.courier||''} | ${i.station||''}`).join('\n');
-  if(navigator.share){navigator.share({title:'我的取件码',text}).catch(()=>{});}
-  else{navigator.clipboard.writeText(text).then(()=>toast('已复制到剪贴板')).catch(()=>toast('复制失败'));}
-}
-function shareItem(code,courier,station){
-  const text=`取件码：${code}\n快递公司：${courier||'未知'}\n驿站：${station||'未知'}`;
-  if(navigator.share){navigator.share({title:'取件码',text}).catch(()=>{});}
-  else{navigator.clipboard.writeText(text).then(()=>toast('已复制取件码信息'));}
-}
 
 function renderCards(){
   let f=items;
@@ -286,7 +273,7 @@ function renderCards(){
   el.innerHTML=f.map(i=>{
     const color=CR[i.courier]||'#BC8F8F';
     const sel=selected.has(i.id);
-    return `<div class="cd${i.pickedUp?' picked':''}${sel?' sel':''}" ${selectMode?`onclick="toggleSel(${i.id})"`:''}><div class="cd-hd">${selectMode?`<div class="chk${sel?' on':''}">${sel?'✓':''}</div>`:''}<span class="cd-corp"><span class="badge" style="background:${color}">${i.courier||'快递'}</span> 📍 ${i.station||''}</span><span class="cd-sta">${i.time||''}</span></div><div class="cd-code${i.pickedUp?' picked':''}" onclick="${selectMode?`toggleSel(${i.id})`:`copyCode('${i.code}')`}">${i.code}</div><div class="cd-ft">${i.pickedUp?'':`<button class="btn-pk" onclick="event.stopPropagation();togglePicked(${i.id})">✅ 已取</button>`}<button onclick="event.stopPropagation();shareItem('${i.code.replace(/'/g,"\\'")}','${(i.courier||'').replace(/'/g,"\\'")}','${(i.station||'').replace(/'/g,"\\'")}')">📤</button><button onclick="event.stopPropagation();openModal(${i.id})">编辑</button><button class="del" onclick="event.stopPropagation();deleteItem(${i.id})">删除</button></div></div>`;
+    return `<div class="cd${i.pickedUp?' picked':''}${sel?' sel':''}" ${selectMode?`onclick="toggleSel(${i.id})"`:''}><div class="cd-hd">${selectMode?`<div class="chk${sel?' on':''}">${sel?'✓':''}</div>`:''}<span class="cd-corp"><span class="badge" style="background:${color}">${i.courier||'快递'}</span> 📍 ${i.station||''}</span><span class="cd-sta">${i.time||''}</span></div><div class="cd-code${i.pickedUp?' picked':''}" onclick="${selectMode?`toggleSel(${i.id})`:`copyCode('${i.code}')`}">${i.code}</div><div class="cd-ft">${i.pickedUp?'':`<button class="btn-pk" onclick="event.stopPropagation();togglePicked(${i.id})">✅ 已取</button>`}<button onclick="event.stopPropagation();openModal(${i.id})">编辑</button><button class="del" onclick="event.stopPropagation();deleteItem(${i.id})">删除</button></div></div>`;
   }).join('');
 }
 
