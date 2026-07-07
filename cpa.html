@@ -331,6 +331,65 @@ body {
 .flashcard-progress { height:4px; border-radius:2px; background:rgba(118,118,128,0.12); margin-bottom:20px; overflow:hidden; }
 .flashcard-progress-bar { height:100%; background:var(--red); border-radius:2px; transition:width 0.3s; }
 
+/* ═══ Mind Map ═══ */
+.mindmap-tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.mindmap-tab {
+  padding:8px 16px; border-radius:12px; border:1.5px solid var(--separator);
+  background:transparent; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s;
+}
+.mindmap-tab.active { background:var(--teal); color:#fff; border-color:var(--teal); }
+.mindmap-group { display:none; }
+.mindmap-group.active { display:block; }
+.mindmap-tree {
+  background:var(--card); border-radius:var(--card-radius); padding:20px;
+  box-shadow:var(--shadow); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+}
+.mm-root {
+  display:flex; align-items:center; justify-content:center; padding:12px 20px;
+  background:linear-gradient(135deg,var(--teal),#0a84ff); color:#fff; font-weight:700;
+  font-size:16px; border-radius:14px; margin-bottom:16px; text-align:center;
+}
+.mm-branches { display:flex; flex-direction:column; gap:12px; }
+.mm-branch {
+  border-left:3px solid var(--teal); padding-left:14px; margin-left:8px;
+}
+.mm-branch-title {
+  font-weight:600; font-size:14px; color:var(--text); margin-bottom:6px;
+  display:flex; align-items:center; gap:6px;
+}
+.mm-branch-title::before {
+  content:''; width:8px; height:8px; border-radius:50%; background:var(--teal); flex-shrink:0;
+}
+.mm-leaf {
+  padding:4px 0 4px 18px; font-size:13px; color:var(--text2); line-height:1.6;
+  border-left:2px solid rgba(90,200,250,0.3); margin-left:3px;
+}
+
+/* ═══ Tips ═══ */
+.tips-section { margin-bottom:16px; }
+.tips-card {
+  background:var(--card); border-radius:var(--card-radius); overflow:hidden; margin-bottom:12px;
+  box-shadow:var(--shadow); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+}
+.tips-card-header {
+  display:flex; align-items:center; gap:10px; padding:14px 16px;
+  background:rgba(255,149,0,0.06); border-bottom:0.5px solid var(--separator);
+  font-weight:600; font-size:15px;
+}
+.tips-card-icon { font-size:20px; }
+.tips-items { padding:12px 16px; }
+.tip-item {
+  display:flex; gap:10px; padding:10px 0; border-bottom:0.5px solid var(--separator);
+}
+.tip-item:last-child { border-bottom:none; }
+.tip-num {
+  width:24px; height:24px; border-radius:50%; background:rgba(255,149,0,0.12);
+  color:var(--orange); font-size:12px; font-weight:700; display:flex; align-items:center;
+  justify-content:center; flex-shrink:0;
+}
+.tip-content { font-size:13px; color:var(--text2); line-height:1.6; }
+.tip-content strong { color:var(--text); font-weight:600; }
+
 /* ═══ Footer ═══ */
 .footer { text-align:center; padding:20px 16px; font-size:12px; color:var(--text3); }
 
@@ -381,7 +440,9 @@ body {
       <button class="tab-btn" onclick="switchTab('fm')">财管</button>
       <button class="tab-btn" onclick="switchTab('strategy')">战略</button>
       <button class="tab-btn" onclick="switchTab('comprehensive')">综合</button>
+      <button class="tab-btn" onclick="switchTab('mindmap')" style="background:rgba(90,200,250,0.12);color:var(--teal);">🧠 导图</button>
       <button class="tab-btn" onclick="switchTab('formulas')" style="background:rgba(175,82,222,0.12);color:var(--purple);">📐 公式</button>
+      <button class="tab-btn" onclick="switchTab('tips')" style="background:rgba(255,149,0,0.12);color:var(--orange);">💡 技巧</button>
       <button class="tab-btn" onclick="switchTab('flashcard')" style="background:rgba(255,59,48,0.12);color:var(--red);">🃏 卡片</button>
       <button class="tab-btn" onclick="switchTab('favorites')" style="background:rgba(255,149,0,0.12);color:var(--orange);">⭐ 收藏</button>
     </div>
@@ -411,6 +472,188 @@ body {
       <div class="quick-card" onclick="switchTab('law')"><div class="icon">⚖️</div><div class="name">经济法</div><div class="desc">12章 · 记忆为主</div></div>
       <div class="quick-card" onclick="switchTab('fm')"><div class="icon">📊</div><div class="name">财务成本管理</div><div class="desc">21章 · 公式密集</div></div>
       <div class="quick-card" onclick="switchTab('strategy')"><div class="icon">🎯</div><div class="name">公司战略</div><div class="desc">7章 · 理解为主</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 思维导图 ═══ -->
+<div class="subject-section" id="sec-mindmap">
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--teal)">🧠</div>
+    <h2>思维导图</h2>
+  </div>
+  <div class="mindmap-tabs">
+    <button class="mindmap-tab active" onclick="switchMindmap(this,'mm-accounting')">会计</button>
+    <button class="mindmap-tab" onclick="switchMindmap(this,'mm-audit')">审计</button>
+    <button class="mindmap-tab" onclick="switchMindmap(this,'mm-tax')">税法</button>
+    <button class="mindmap-tab" onclick="switchMindmap(this,'mm-law')">经济法</button>
+    <button class="mindmap-tab" onclick="switchMindmap(this,'mm-fm')">财管</button>
+    <button class="mindmap-tab" onclick="switchMindmap(this,'mm-strategy')">战略</button>
+  </div>
+  <div class="mindmap-group active" id="mm-accounting">
+    <div class="mindmap-tree">
+      <div class="mm-root">📒 会计 · 30章知识体系</div>
+      <div class="mm-branches">
+        <div class="mm-branch"><div class="mm-branch-title">基础理论</div><div class="mm-leaf">总论 → 会计假设(主体/持续经营/分期/货币) → 信息质量要求(8项) → 会计要素(6要素)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">资产核算</div><div class="mm-leaf">存货(成本与可变现净值孰低) → 固定资产(折旧4法) → 无形资产(研发费用资本化条件) → 投资性房地产(成本/公允模式) → 长期股权投资(成本法vs权益法) → 资产减值(可收回金额)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">负债与权益</div><div class="mm-leaf">负债(流动/非流动) → 职工薪酬(设定受益计划) → 股份支付(权益/现金结算) → 借款费用资本化</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">金融工具</div><div class="mm-leaf">三分类(AC/FVOCI/FVTPL) → 重分类 → 套期会计 → 减值(ECL模型) → 列报</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">收入与所得税</div><div class="mm-leaf">收入五步法 → 合同成本 → 特殊交易(退回/质保/代理人) → 所得税(暂时性差异/递延所得税)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">合并与报表</div><div class="mm-leaf">企业合并(同一/非同一控制) → 合并报表(抵销分录) → 每股收益 → 关联方披露</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">✨ 2027新增</div><div class="mm-leaf">可持续发展信息披露 → ESG会计处理 → 气候相关财务披露(TCFD)</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mindmap-group" id="mm-audit">
+    <div class="mindmap-tree">
+      <div class="mm-root">🔍 审计 · 23章知识体系</div>
+      <div class="mm-branches">
+        <div class="mm-branch"><div class="mm-branch-title">审计基础</div><div class="mm-leaf">概述(定义/目标/保证程度) → 审计计划(重要性/实际执行) → 审计证据(充分性/适当性)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">风险评估与应对</div><div class="mm-leaf">了解被审计单位 → 内部控制(5要素) → 识别重大错报风险 → 特别风险 → 总体应对措施 → 进一步审计程序</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">各业务循环审计</div><div class="mm-leaf">销售收款 → 采购付款 → 生产存货 → 货币资金 → 函证程序 → 分析程序</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">特殊事项</div><div class="mm-leaf">舞弊考虑 → 法律法规 → 审计沟通 → 利用他人工作 → 集团审计 → 关联方审计</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">审计报告</div><div class="mm-leaf">完成审计 → 书面声明 → 4种意见类型 → 强调事项段 → 关键审计事项</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">质量管理与职业道德</div><div class="mm-leaf">事务所质量管理体系 → 职业道德基本原则 → 独立性要求</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">✨ 2027新增</div><div class="mm-leaf">数据分析技术 → AI在审计中的应用 → 区块链审计 → 持续审计</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mindmap-group" id="mm-tax">
+    <div class="mindmap-tree">
+      <div class="mm-root">💰 税法 · 14章知识体系</div>
+      <div class="mm-branches">
+        <div class="mm-branch"><div class="mm-branch-title">流转税(核心)</div><div class="mm-leaf">增值税(税率13%/9%/6% → 一般计税vs简易计税 → 进项抵扣 → 出口退税) → 消费税(从价/从量/复合)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">所得税(核心)</div><div class="mm-leaf">企业所得税(收入确认 → 税前扣除标准 → 税收优惠 → 境外抵免) → 个人所得税(综合所得/经营所得/分类所得)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">小税种</div><div class="mm-leaf">城建税/烟叶税 → 关税/船舶吨税 → 资源税/环保税 → 土地使用税/耕地占用税 → 房产税/契税/土地增值税 → 车辆购置税/车船税/印花税</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">国际税收</div><div class="mm-leaf">税收协定 → 非居民企业 → 国际避税与反避税 → 转让定价</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">征收管理</div><div class="mm-leaf">税务登记 → 纳税申报 → 税款征收(保全/强制) → 行政法制(处罚/复议/诉讼)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">✨ 2027新增</div><div class="mm-leaf">ESG相关税收优惠 → 绿色低碳企业所得税优惠</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mindmap-group" id="mm-law">
+    <div class="mindmap-tree">
+      <div class="mm-root">⚖️ 经济法 · 12章知识体系</div>
+      <div class="mm-branches">
+        <div class="mm-branch"><div class="mm-branch-title">民法基础</div><div class="mm-leaf">法律基本原理 → 民事法律行为效力 → 代理制度 → 诉讼时效(普通3年/特殊)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">物权与合同</div><div class="mm-leaf">物权变动(公示原则) → 担保物权(抵押/质押/留置) → 合同订立(要约/承诺) → 合同履行(抗辩权) → 违约责任</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">商法</div><div class="mm-leaf">合伙企业(普通/有限) → 公司法(设立/治理/解散) → 证券法(注册制/信息披露) → 破产法(重整/和解)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">经济法</div><div class="mm-leaf">票据法(汇票/本票/支票) → 国有资产 → 反垄断 → 涉外经济(外汇/外贸)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">✨ 2027新增</div><div class="mm-leaf">ESG信息披露要求 → 特别代表人诉讼制度 → 数据出境安全评估 → 跨境数据流动</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mindmap-group" id="mm-fm">
+    <div class="mindmap-tree">
+      <div class="mm-root">📊 财务成本管理 · 21章知识体系</div>
+      <div class="mm-branches">
+        <div class="mm-branch"><div class="mm-branch-title">价值评估基础</div><div class="mm-leaf">货币时间价值(FV/PV/年金) → 风险与报酬(CAPM) → 资本成本(Kd/Ke/WACC)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">投资决策</div><div class="mm-leaf">项目资本预算(NPV/IRR/回收期) → 项目现金流估计 → 敏感性分析</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">筹资决策</div><div class="mm-leaf">资本结构(MM理论/权衡/优序) → 杠杆系数(DOL/DFL/DTL) → 长期筹资 → 股利政策</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">企业估值</div><div class="mm-leaf">现金流量折现(FCFF/FCFE) → 相对价值法(P/E/P/B/P/S) → 债券股票估值 → 期权估值(BS/二叉树)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">成本管理</div><div class="mm-leaf">成本计算(品种/分批/分步) → 标准成本法 → 作业成本法 → 本量利分析 → 短期经营决策</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">管理会计</div><div class="mm-leaf">全面预算 → 责任会计 → 业绩评价(EVA/平衡计分卡) → 管理会计报告</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">✨ 2027新增</div><div class="mm-leaf">可持续发展指标在管理会计中的应用 → ESG成本核算</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mindmap-group" id="mm-strategy">
+    <div class="mindmap-tree">
+      <div class="mm-root">🎯 公司战略与风险管理 · 7章知识体系</div>
+      <div class="mm-branches">
+        <div class="mm-branch"><div class="mm-branch-title">战略分析</div><div class="mm-leaf">外部环境(PEST/五力/产业生命周期) → 内部环境(价值链/核心竞争力/波士顿矩阵) → SWOT分析</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">战略选择</div><div class="mm-leaf">总体战略(发展/稳定/收缩) → 业务单位战略(成本领先/差异化/集中化) → 职能战略 → 国际化战略</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">战略实施</div><div class="mm-leaf">公司治理(股东大会/董事会/监事会) → 组织结构(M型/H型/矩阵) → 企业文化 → 平衡计分卡</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">风险管理</div><div class="mm-leaf">风险类型(战略/财务/市场/操作) → 管理流程(收集/评估/应对/监控) → 管理方法(头脑风暴/德尔菲/蒙特卡洛)</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">内部控制</div><div class="mm-leaf">COSO五要素(控制环境/风险评估/控制活动/信息沟通/监督) → 内控应用 → 内控评价</div></div>
+        <div class="mm-branch"><div class="mm-branch-title">✨ 2027新增</div><div class="mm-leaf">ESG战略框架 → 数字化转型战略 → 数据安全与隐私保护 → 绿色金融</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 高分技巧 ═══ -->
+<div class="subject-section" id="sec-tips">
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--orange)">💡</div>
+    <h2>高分技巧</h2>
+  </div>
+  <div class="tips-section">
+    <div class="tips-card">
+      <div class="tips-card-header"><span class="tips-card-icon">📒</span><span>会计</span></div>
+      <div class="tips-items">
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-content"><strong>合并报表必考</strong>：每年必考合并抵销分录，重点掌握内部交易抵销(商品/固定资产/债权债务)，建议做10道以上真题</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-content"><strong>金融工具分类</strong>：AC/FVOCI/FVTPL三分类是核心，重点理解业务模式+合同现金流特征(SPPI测试)</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-content"><strong>所得税必考</strong>：暂时性差异→递延所得税→所得税费用，每年必考计算题，注意税率变动的处理</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-content"><strong>收入五步法</strong>：新收入准则核心，重点掌握特殊交易(附退货/质保/代理人判断)</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-content"><strong>长期股权投资</strong>：成本法vs权益法转换是难点，建议画T型账户辅助理解</div></div>
+        <div class="tip-item"><div class="tip-num">6</div><div class="tip-content"><strong>答题策略</strong>：先做客观题(45分钟)，再做计算分析题(45分钟)，最后综合题(60分钟)，留15分钟检查</div></div>
+      </div>
+    </div>
+    <div class="tips-card">
+      <div class="tips-card-header"><span class="tips-card-icon">🔍</span><span>审计</span></div>
+      <div class="tips-items">
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-content"><strong>审计报告必考</strong>：4种意见类型的判断条件必须熟练，注意强调事项段与关键审计事项的区别</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-content"><strong>风险评估</strong>：了解被审计单位→识别风险→评估风险→应对风险，这是审计的主线逻辑</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-content"><strong>函证程序</strong>：银行函证必函、应收账款函证(金额大/账龄长/争议款)，注意函证的控制和评价</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-content"><strong>集团审计</strong>：组成部分重要性的确定、与组成部分注册会计师的沟通是常考点</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-content"><strong>简答题技巧</strong>：审计简答题通常6-8题，每题5-10分，答题时先判断再说明理由，注意使用专业术语</div></div>
+        <div class="tip-item"><div class="tip-num">6</div><div class="tip-content"><strong>综合题策略</strong>：通常涉及审计程序设计+审计报告判断，建议先通读资料再逐问作答</div></div>
+      </div>
+    </div>
+    <div class="tips-card">
+      <div class="tips-card-header"><span class="tips-card-icon">💰</span><span>税法</span></div>
+      <div class="tips-items">
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-content"><strong>增值税必考</strong>：税率档次(13%/9%/6%)、进项抵扣/转出、出口退税，计算量大需细心</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-content"><strong>企业所得税扣除</strong>：业务招待费(min(60%,5‰))、广告费(15%)、福利费(14%)、教育经费(8%)必须背熟</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-content"><strong>个税综合所得</strong>：4项收入合并、专项附加扣除标准(子女教育/房贷/赡养老人等)是送分题</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-content"><strong>小税种</strong>：城建税(7%/5%/1%)、印花税(比例/定额)、房产税(从价1.2%/从租12%)，分值不高但必须拿</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-content"><strong>国际税收</strong>：抵免法(分国/综合)、转让定价方法(可比非受控价格/再销售价格/成本加成)</div></div>
+        <div class="tip-item"><div class="tip-num">6</div><div class="tip-content"><strong>时间分配</strong>：单选25题(25分钟)、多选10题(20分钟)、计算4题(60分钟)、综合2题(50分钟)</div></div>
+      </div>
+    </div>
+    <div class="tips-card">
+      <div class="tips-card-header"><span class="tips-card-icon">⚖️</span><span>经济法</span></div>
+      <div class="tips-items">
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-content"><strong>合同法必考</strong>：要约/承诺的条件、合同效力(有效/无效/可撤销)、违约责任(继续履行/赔偿损失)</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-content"><strong>公司法</strong>：股东出资(货币/非货币)、股东权利(知情权/利润分配)、公司治理(三会职权)</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-content"><strong>证券法</strong>：注册制条件、信息披露要求、内幕交易认定、上市公司收购(30%触发要约)</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-content"><strong>物权法</strong>：物权变动公示(交付/登记)、担保物权优先顺序(留置>已登记抵押>未登记抵押>质权)</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-content"><strong>票据法</strong>：票据行为(出票/背书/承兑/保证)、票据权利(付款请求权/追索权)、票据抗辩</div></div>
+        <div class="tip-item"><div class="tip-num">6</div><div class="tip-content"><strong>背诵技巧</strong>：经济法记忆量大，建议用口诀法+案例法，重点法条原文要能复述</div></div>
+      </div>
+    </div>
+    <div class="tips-card">
+      <div class="tips-card-header"><span class="tips-card-icon">📊</span><span>财务成本管理</span></div>
+      <div class="tips-items">
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-content"><strong>公式必须熟记</strong>：CAPM/WACC/NPV/IRR/DOL/DFL/本量利等核心公式，考前一周反复默写</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-content"><strong>计算量巨大</strong>：财管是6科中计算量最大的，建议做题速度目标：客观题45分钟、计算题90分钟</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-content"><strong>期权估值</strong>：BS模型和二叉树模型是难点，建议理解原理而非死记公式</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-content"><strong>企业价值评估</strong>：FCFF/FCFE折现法、相对价值法(P/E/P/B)是综合题常考点</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-content"><strong>成本计算</strong>：品种法/分批法/分步法的适用条件和计算步骤，约当产量法必须熟练</div></div>
+        <div class="tip-item"><div class="tip-num">6</div><div class="tip-content"><strong>答题技巧</strong>：财管允许使用计算器，建议带两台；先做会的题，综合题分步拿分</div></div>
+      </div>
+    </div>
+    <div class="tips-card">
+      <div class="tips-card-header"><span class="tips-card-icon">🎯</span><span>公司战略</span></div>
+      <div class="tips-items">
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-content"><strong>模型必背</strong>：PEST/五力/价值链/波士顿/SWOT/波特三大战略，考试直接套用</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-content"><strong>案例分析</strong>：战略主观题通常是案例分析，先识别案例中的关键信息，再对应理论模型</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-content"><strong>内部控制</strong>：COSO五要素是必考点，注意区分控制环境/控制活动/监督的不同</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-content"><strong>风险管理</strong>：风险类型识别+管理流程(收集→评估→应对→监控)是框架</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-content"><strong>答题结构</strong>：主观题建议采用"理论+案例分析"结构，先写理论框架再结合材料分析</div></div>
+        <div class="tip-item"><div class="tip-num">6</div><div class="tip-content"><strong>时间分配</strong>：客观题30分钟、简答题40分钟、综合题50分钟，综合题留足时间</div></div>
+      </div>
+    </div>
+    <div class="tips-card">
+      <div class="tips-card-header"><span class="tips-card-icon">📋</span><span>综合阶段</span></div>
+      <div class="tips-items">
+        <div class="tip-item"><div class="tip-num">1</div><div class="tip-content"><strong>试卷一(会计审计税法)</strong>：以审计为主线，重点是审计程序设计+会计处理+税务影响</div></div>
+        <div class="tip-item"><div class="tip-num">2</div><div class="tip-content"><strong>试卷二(财管战略经济法)</strong>：以战略为主线，重点是战略分析+投融资决策+法律合规</div></div>
+        <div class="tip-item"><div class="tip-num">3</div><div class="tip-content"><strong>职业判断</strong>：综合阶段考的是综合运用能力，答题时要体现职业判断过程</div></div>
+        <div class="tip-item"><div class="tip-num">4</div><div class="tip-content"><strong>专业表述</strong>：使用专业术语，逻辑清晰，分点作答，每问控制在300-500字</div></div>
+        <div class="tip-item"><div class="tip-num">5</div><div class="tip-content"><strong>时间管理</strong>：试卷一3.5小时、试卷二3.5小时，建议先浏览全部题目再逐题作答</div></div>
+      </div>
     </div>
   </div>
 </div>
@@ -884,7 +1127,7 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   const sec = document.getElementById('sec-' + id);
   if (sec) sec.classList.add('active');
-  const tabMap = { 'overview':'总览','accounting':'会计','audit':'审计','tax':'税法','law':'经济法','fm':'财管','strategy':'战略','comprehensive':'综合','formulas':'📐 公式','flashcard':'🃏 卡片','favorites':'⭐ 收藏' };
+  const tabMap = { 'overview':'总览','accounting':'会计','audit':'审计','tax':'税法','law':'经济法','fm':'财管','strategy':'战略','comprehensive':'综合','mindmap':'🧠 导图','formulas':'📐 公式','tips':'💡 技巧','flashcard':'🃏 卡片','favorites':'⭐ 收藏' };
   document.querySelectorAll('.tab-btn').forEach(b => { if (b.textContent.includes(tabMap[id])) b.classList.add('active'); });
   if (id === 'favorites') renderFavorites();
   document.getElementById('header').scrollIntoView({behavior:'smooth'});
@@ -1026,50 +1269,143 @@ function switchFormulaTab(btn, id) {
   document.getElementById('fg-' + id).classList.add('active');
 }
 
+function switchMindmap(btn, id) {
+  document.querySelectorAll('.mindmap-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mindmap-group').forEach(g => g.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
 // ═══ Flashcard ═══
 const flashcards = [
-  // 会计
-  { subject:'会计', topic:'accounting', q:'什么是会计基本假设？', a:'会计主体、持续经营、会计分期、货币计量。这是会计核算的前提条件。' },
-  { subject:'会计', topic:'accounting', q:'存货期末计量原则？', a:'成本与可变现净值孰低。可变现净值 = 估计售价 - 至完工估计成本 - 估计销售费用。' },
-  { subject:'会计', topic:'accounting', q:'固定资产折旧方法有哪些？', a:'年限平均法、工作量法、双倍余额递减法、年数总和法。注意：折旧方法一经确定不得随意变更。' },
-  { subject:'会计', topic:'accounting', q:'长期股权投资成本法与权益法的区别？', a:'成本法：投资方对被投资方无控制/共同控制/重大影响。权益法：有重大影响或共同控制。成本法下投资按成本计量，权益法下按被投资方净利润份额调整。' },
-  { subject:'会计', topic:'accounting', q:'金融资产三分类是什么？', a:'AC（以摊余成本计量）、FVOCI（以公允价值计量且其变动计入其他综合收益）、FVTPL（以公允价值计量且其变动计入当期损益）。' },
-  { subject:'会计', topic:'accounting', q:'收入确认五步法模型？', a:'①识别合同 ②识别履约义务 ③确定交易价格 ④分摊交易价格 ⑤履行履约义务时确认收入。' },
-  { subject:'会计', topic:'accounting', q:'什么是暂时性差异？', a:'资产/负债的账面价值与其计税基础之间的差异，会在未来期间转回。分为应纳税暂时性差异和可抵扣暂时性差异。' },
-  { subject:'会计', topic:'accounting', q:'合并报表的合并范围如何确定？', a:'以控制为基础确定。控制 = 拥有对被投资方的权力 + 享有可变回报 + 能运用权力影响回报。' },
-  { subject:'会计', topic:'accounting', q:'使用权资产如何计量？', a:'按成本计量 = 租赁负债初始计量金额 + 预付租金 + 初始直接费用 + 预计拆卸成本。' },
-  { subject:'会计', topic:'accounting', q:'每股收益的稀释如何计算？', a:'考虑可转债、认股权证等潜在普通股的稀释作用。假设在期初转换，调整归属于普通股的净利润和加权平均股数。' },
-  // 审计
-  { subject:'审计', topic:'audit', q:'审计风险模型是什么？', a:'AR = IR × CR × DR（审计风险 = 固有风险 × 控制风险 × 检查风险）。审计师通过评估IR和CR来确定可接受的DR水平。' },
-  { subject:'审计', topic:'audit', q:'什么是重要性？', a:'错报单独或汇总起来可能影响报表使用者经济决策的金额。整体重要性 × 50%~75% = 实际执行的重要性。' },
-  { subject:'审计', topic:'audit', q:'函证的适用范围？', a:'主要用于银行存款、应收账款、应收票据等。函证是获取外部证据的重要程序，证明力较强。' },
-  { subject:'审计', topic:'audit', q:'审计报告有哪几种意见类型？', a:'无保留意见、保留意见、否定意见、无法表示意见。关键审计事项段仅在无保留意见报告中可能包含。' },
-  { subject:'审计', topic:'audit', q:'什么是分析程序？', a:'通过分析财务数据之间、财务数据与非财务数据之间的内在关系，评估财务信息。用于风险评估、实质性程序和总体复核。' },
-  { subject:'审计', topic:'audit', q:'内部控制五要素？', a:'控制环境、风险评估过程、信息系统与沟通、控制活动、对控制的监督。' },
-  { subject:'审计', topic:'audit', q:'集团审计的特殊考虑？', a:'组成部分重要性由集团项目组确定；与组成部分注册会计师沟通；评价审计证据的充分性和适当性。' },
-  // 税法
-  { subject:'税法', topic:'tax', q:'增值税一般纳税人税率？', a:'13%（销售货物/加工修理修配）、9%（交通运输/建筑/不动产等）、6%（现代服务/金融等）。小规模纳税人征收率3%。' },
-  { subject:'税法', topic:'tax', q:'消费税计税方法？', a:'从价计征（销售额×税率）、从量计征（销售数量×单位税额）、复合计征（两者结合）。白酒和卷烟采用复合计征。' },
-  { subject:'税法', topic:'tax', q:'企业所得税税前扣除标准？', a:'业务招待费：min(发生额×60%, 营收×5‰)；广告费：营收×15%（超出结转）；福利费：工资总额×14%；教育经费：工资总额×8%。' },
-  { subject:'税法', topic:'tax', q:'个人所得税综合所得包括哪些？', a:'工资薪金所得、劳务报酬所得、稿酬所得、特许权使用费所得。按纳税年度合并计算，适用3%~45%超额累进税率。' },
-  { subject:'税法', topic:'tax', q:'什么是增值税进项税额转出？', a:'已抵扣进项税额的购进货物/服务，发生非正常损失或改变用途用于简易计税/免税/集体福利/个人消费时，需将进项税额转出。' },
-  { subject:'税法', topic:'tax', q:'土地增值税的扣除项目？', a:'取得土地使用权所支付金额、开发成本、开发费用（利息+其他扣除）、与转让有关的税金、加计扣除（前两项之和的20%）。' },
-  // 财管
-  { subject:'财管', topic:'fm', q:'CAPM公式是什么？', a:'R = Rf + β(Rm-Rf)。其中Rf为无风险利率，β为系统性风险系数，Rm为市场组合收益率，(Rm-Rf)为市场风险溢价。' },
-  { subject:'财管', topic:'fm', q:'WACC如何计算？', a:'WACC = Wd×Kd×(1-T) + We×Ke。其中Wd/We为债务/股权比重，Kd为债务成本，Ke为股权成本，T为税率。' },
-  { subject:'财管', topic:'fm', q:'NPV和IRR的关系？', a:'NPV = Σ[CFt/(1+r)ᵗ] - 初始投资。IRR是使NPV=0的折现率。当NPV>0时，IRR>必要报酬率。' },
-  { subject:'财管', topic:'fm', q:'杜邦分析体系的核心公式？', a:'ROE = 净利润率 × 资产周转率 × 权益乘数。分解为盈利能力、营运能力和财务杠杆三个维度。' },
-  { subject:'财管', topic:'fm', q:'本量利分析的基本公式？', a:'利润 = Q(P-V) - F。盈亏临界点销量 Q = F/(P-V)。安全边际率 = (实际销量-盈亏点)/实际销量。' },
-  { subject:'财管', topic:'fm', q:'经营杠杆系数和财务杠杆系数？', a:'DOL = M/(M-F) = 边际贡献/息税前利润。DFL = EBIT/(EBIT-I)。DTL = DOL × DFL。' },
-  { subject:'财管', topic:'fm', q:'FCFF和FCFE的区别？', a:'FCFF（企业自由现金流）= EBIT(1-T) + 折旧 - 资本支出 - 营运资本增加。FCFE（股权自由现金流）= NI + 折旧 - 资本支出 - 营运资本增加 + 净借款。' },
-  // 战略
-  { subject:'战略', topic:'strategy', q:'五力模型包括哪些？', a:'①现有竞争者之间的竞争 ②潜在进入者的威胁 ③替代品的威胁 ④供应商的议价能力 ⑤购买者的议价能力。' },
-  { subject:'战略', topic:'strategy', q:'SWOT分析是什么？', a:'S(优势)、W(劣势)、O(机会)、T(威胁)。内部因素(S/W)与外部因素(O/T)的匹配分析，用于制定战略。' },
-  { subject:'战略', topic:'strategy', q:'三种基本竞争战略？', a:'成本领先战略、差异化战略、集中化战略（成本集中或差异化集中）。由迈克尔·波特提出。' },
-  { subject:'战略', topic:'strategy', q:'价值链分析包括哪些活动？', a:'基本活动：内部后勤→生产经营→外部后勤→市场营销→服务。支持活动：采购、技术开发、人力资源管理、企业基础设施。' },
-  { subject:'战略', topic:'strategy', q:'什么是ESG？', a:'E(环境Environment)、S(社会Social)、G(治理Governance)。2027年CPA新增考点，关注企业可持续发展信息披露。' },
-  { subject:'战略', topic:'strategy', q:'风险管理基本流程？', a:'①收集风险管理初始信息 ②风险评估 ③风险应对 ④风险监控 ⑤风险管理监督与改进。' },
-  { subject:'战略', topic:'strategy', q:'内部控制五要素？', a:'控制环境、风险评估、控制活动、信息与沟通、监控。与COSO框架一致。' },
+  // ═══════ 会计(30张) ═══════
+  { subject:'会计', topic:'accounting', q:'会计基本假设包括哪些？', a:'①会计主体(明确核算范围) ②持续经营(假定企业持续运营) ③会计分期(划分期间) ④货币计量(以货币为统一尺度)。注意：会计主体≠法律主体，法律主体一定是会计主体。' },
+  { subject:'会计', topic:'accounting', q:'会计信息质量要求有哪8项？', a:'①可靠性(真实完整) ②相关性(决策有用) ③可理解性(清晰明了) ④可比性(纵向/横向) ⑤实质重于形式 ⑥重要性 ⑦谨慎性(不高估资产/收益) ⑧及时性。' },
+  { subject:'会计', topic:'accounting', q:'存货的计价方法有哪些？', a:'先进先出法、移动加权平均法、月末一次加权平均法、个别计价法。注意：新准则下不再允许使用后进先出法。' },
+  { subject:'会计', topic:'accounting', q:'存货期末如何计量？', a:'按成本与可变现净值孰低计量。可变现净值 = 估计售价 - 至完工估计成本 - 估计销售费用及相关税费。存货跌价准备 = 成本 - 可变现净值。' },
+  { subject:'会计', topic:'accounting', q:'固定资产折旧的四种方法？', a:'①年限平均法：(原值-净残值)/使用年限 ②工作量法：按实际工作量计提 ③双倍余额递减法：期初净值×2/年限(最后两年改平均) ④年数总和法：(原值-残值)×尚可使用年限/年数总和。' },
+  { subject:'会计', topic:'accounting', q:'无形资产内部研发如何处理？', a:'研究阶段支出全部费用化；开发阶段满足5个条件可资本化：①技术可行 ②有完成意图 ③能使用或出售 ④能产生经济利益 ⑤有足够资源支持。' },
+  { subject:'会计', topic:'accounting', q:'投资性房地产有哪两种计量模式？', a:'①成本模式：按固定资产/无形资产规定计提折旧或摊销，期末公允价值变动不确认 ②公允价值模式：不计提折旧/摊销，公允价值变动计入当期损益。同一企业只能采用一种模式。' },
+  { subject:'会计', topic:'accounting', q:'长期股权投资成本法的适用条件？', a:'投资方对被投资方无控制、无共同控制、无重大影响(通常持股<20%)。成本法下：投资按初始成本计量，收到现金股利确认投资收益。' },
+  { subject:'会计', topic:'accounting', q:'长期股权投资权益法的适用条件？', a:'投资方对被投资方有重大影响(通常持股20%-50%)或共同控制。权益法下：投资按被投资方净利润份额调整，投资收益 = 被投资方净利润 × 持股比例。' },
+  { subject:'会计', topic:'accounting', q:'金融资产三分类的标准？', a:'①AC(摊余成本)：业务模式为收取合同现金流+现金流仅为本金和利息 ②FVOCI：业务模式为收取+出售，或指定 ③FVTPL：其他情况。SPPI测试是关键。' },
+  { subject:'会计', topic:'accounting', q:'收入确认的五步法模型？', a:'①识别与客户的合同 ②识别合同中的单独履约义务 ③确定交易价格(可变对价需估计) ④将交易价格分摊至各单独履约义务 ⑤在履行履约义务时(或过程中)确认收入。' },
+  { subject:'会计', topic:'accounting', q:'什么是暂时性差异和永久性差异？', a:'暂时性差异：资产/负债账面价值与计税基础的差异，未来会转回，产生递延所得税。永久性差异：会计和税法确认口径不同，不会转回，如国债利息收入免税。' },
+  { subject:'会计', topic:'accounting', q:'递延所得税资产和负债如何确认？', a:'递延所得税负债(DTL)：应纳税暂时性差异×税率，一般应确认。递延所得税资产(DTA)：可抵扣暂时性差异×税率，需以未来很可能取得的应纳税所得额为限确认。' },
+  { subject:'会计', topic:'accounting', q:'合并报表的合并范围如何确定？', a:'以控制为基础。控制三要素：①拥有对被投资方的权力 ②因参与被投资方相关活动而享有可变回报 ③有能力运用权力影响回报金额。特殊目的实体也需纳入合并。' },
+  { subject:'会计', topic:'accounting', q:'合并报表中的抵销分录有哪些？', a:'①长期股权投资与子公司所有者权益的抵销 ②内部债权债务的抵销 ③内部商品交易的抵销(未实现内部销售损益) ④内部固定资产/无形资产交易的抵销。' },
+  { subject:'会计', topic:'accounting', q:'租赁的识别标准是什么？', a:'同时满足：①存在一项可识别资产 ②客户有权获得使用期间几乎全部经济利益 ③客户有权主导资产的使用。不满足则为服务合同。' },
+  { subject:'会计', topic:'accounting', q:'使用权资产如何初始计量？', a:'按成本计量：①租赁负债的初始计量金额 ②在租赁期开始日或之前支付的租赁付款额(扣除已享受的租赁激励) ③承租人发生的初始直接费用 ④预计将发生的服务成本。' },
+  { subject:'会计', topic:'accounting', q:'每股收益如何计算？', a:'基本EPS = 归属于普通股股东的当期净利润 / 当期发行在外普通股的加权平均数。稀释EPS需考虑可转债、认股权证等潜在普通股的稀释影响。' },
+  { subject:'会计', topic:'accounting', q:'或有事项的确认条件？', a:'与或有事项相关的义务同时满足：①该义务是企业承担的现时义务 ②履行该义务很可能导致经济利益流出企业 ③该义务的金额能够可靠计量。确认为预计负债。' },
+  { subject:'会计', topic:'accounting', q:'股份支付有哪两种类型？', a:'①以权益结算的股份支付：授予员工权益工具(如股票期权)，按授予日公允价值计量 ②以现金结算的股份支付：授予员工现金(如现金股票增值权)，按资产负债表日公允价值重新计量。' },
+  { subject:'会计', topic:'accounting', q:'什么是公允价值？分几个层次？', a:'公允价值是市场参与者在计量日的有序交易中出售资产/转移负债的价格。三个层次：①活跃市场报价(最优先) ②可观察输入值 ③不可观察输入值(最末)。' },
+  { subject:'会计', topic:'accounting', q:'借款费用资本化的条件？', a:'同时满足：①资产支出已经发生 ②借款费用已经发生 ③为使资产达到预定可使用状态所必要的购建或者生产活动已经开始。暂停资本化：非正常中断连续超过3个月。' },
+  { subject:'会计', topic:'accounting', q:'资产减值损失如何转回？', a:'固定资产、无形资产、商誉、长期股权投资等长期资产减值损失一经确认不得转回。存货跌价准备、应收账款坏账准备可以转回。' },
+  { subject:'会计', topic:'accounting', q:'关联方关系的认定标准？', a:'一方控制、共同控制另一方或对另一方施加重大影响；两方或多方受同一方控制/共同控制。关联方交易类型：购买/销售商品、资产转让、提供/接受劳务、担保等。' },
+  { subject:'会计', topic:'accounting', q:'外币折算的处理方法？', a:'外币交易：初始确认时采用交易发生日即期汇率。资产负债表日：货币性项目按期末即期汇率折算，差额计入财务费用；非历史成本计量的非货币性项目按公允价值折算。' },
+  { subject:'会计', topic:'accounting', q:'资产负债表日后事项如何处理？', a:'调整事项：影响报表的事项，需调整报告年度报表(如已证实资产减值)。非调整事项：不影响报表但需披露(如发生重大灾害)。' },
+  { subject:'会计', topic:'accounting', q:'持有待售类别如何分类？', a:'同时满足：①在当前状况下即可立即出售 ②出售极可能发生(已作出决议+找到买手+预计1年内完成)。按账面价值与公允价值减去出售费用后的净额孰低计量。' },
+  { subject:'会计', topic:'accounting', q:'政府会计的特点是什么？', a:'双功能(预算会计+财务会计)、双基础(收付实现制+权责发生制)、双报告(决算报告+财务报告)。预算会计与财务会计适度分离又相互衔接。' },
+  { subject:'会计', topic:'accounting', q:'2027年可持续发展披露的要求？', a:'新增：可持续发展报告框架、ESG信息的确认计量披露、气候相关财务信息(TCFD框架)、可持续发展对传统会计确认计量的影响。' },
+  // ═══════ 审计(25张) ═══════
+  { subject:'审计', topic:'audit', q:'审计的定义和目标是什么？', a:'审计是注册会计师对财务报表是否在所有重大方面按照适用的财务报告编制基础编制发表审计意见。总体目标：①对财务报表整体是否不存在重大错报获取合理保证 ②按照审计准则的规定出具审计报告。' },
+  { subject:'审计', topic:'audit', q:'审计风险模型是什么？', a:'AR = IR × CR × DR。审计风险=固有风险×控制风险×检查风险。审计师评估IR和CR后，确定可接受的DR水平，然后设计审计程序将DR降至可接受水平。' },
+  { subject:'审计', topic:'audit', q:'重要性水平如何确定？', a:'整体重要性 = 基准(税前利润/营业收入/总资产等) × 百分比(5%-10%)。实际执行的重要性 = 整体重要性 × 50%-75%。明显微小错报临界值 = 整体重要性 × 3%-5%。' },
+  { subject:'审计', topic:'audit', q:'审计证据的充分性和适当性？', a:'充分性：证据的数量。适当性：证据的相关性和可靠性。充分性与适当性相互关联。审计证据的来源和性质影响可靠性(外部>内部，直接>间接，文件>口头)。' },
+  { subject:'审计', topic:'audit', q:'函证程序适用于哪些情形？', a:'适用：银行存款、应收账款、应收票据、其他应收款、预付账款等。银行存款必须函证。应收账款：金额大/账龄长/与债务人有纠纷/关联方/单项金额重大。' },
+  { subject:'审计', topic:'audit', q:'内部控制的五要素？', a:'①控制环境(治理结构/管理层理念/员工素质) ②风险评估过程(识别经营风险) ③信息系统与沟通 ④控制活动(授权/业绩评价/实物控制等) ⑤对控制的监督。' },
+  { subject:'审计', topic:'audit', q:'审计报告有哪几种意见类型？', a:'①无保留意见：财务报表在所有重大方面公允 ②保留意见：错报重大但不广泛/无法获取充分证据但不广泛 ③否定意见：错报重大且广泛 ④无法表示意见：无法获取充分证据且可能产生的影响重大且广泛。' },
+  { subject:'审计', topic:'audit', q:'什么是关键审计事项？', a:'审计师根据职业判断认为对当期审计最为重要的事项。从与治理层沟通过的事项中选取。要求：描述+应对。仅在上市公司审计报告中包含。' },
+  { subject:'审计', topic:'audit', q:'分析程序在审计中的运用？', a:'三个阶段：①风险评估阶段(必须运用) ②实质性程序阶段(可选择运用) ③总体复核阶段(必须运用)。分析程序的精确度低于细节测试。' },
+  { subject:'审计', topic:'audit', q:'舞弊审计的特殊考虑？', a:'管理层舞弊比员工舞弊更难发现。关注：收入确认舞弊风险、管理层凌驾于控制之上。审计程序：①测试日记账分录 ②复核会计估计 ③评价重大交易的商业理由。' },
+  { subject:'审计', topic:'audit', q:'集团审计的特殊考虑？', a:'①组成部分重要性由集团项目组确定 ②与组成部分注册会计师沟通(确定工作方向/通报重要性) ③评价审计证据的充分性和适当性 ④参与组成部分注册会计师的工作。' },
+  { subject:'审计', topic:'audit', q:'审计抽样的类型和适用范围？', a:'①属性抽样：估计总体偏差率(控制测试) ②变量抽样：估计总体金额(细节测试)。统计抽样(随机选样+量化风险) vs 非统计抽样(职业判断选样)。' },
+  { subject:'审计', topic:'audit', q:'持续经营假设的审计考虑？', a:'审计师需评估管理层运用持续经营假设的适当性。关注：财务方面(亏损/债务违约)、经营方面(法律诉讼/关键人员流失)。若存在重大不确定性，需在审计报告中添加强调事项段。' },
+  { subject:'审计', topic:'audit', q:'关联方审计的特殊风险？', a:'关联方交易可能被用来粉饰报表。审计程序：①识别所有关联方 ②检查重大关联方交易 ③评价关联方交易的商业理由 ④检查关联方交易的会计处理。' },
+  { subject:'审计', topic:'audit', q:'期后事项如何处理？', a:'第一时段(资产负债表日至审计报告日)：审计师有主动识别责任。第二时段(审计报告日后至报出日)：若知悉且影响报表，需修改。第三时段(报出日后)：若事实表明报表需修改，与管理层讨论。' },
+  { subject:'审计', topic:'audit', q:'管理层书面声明的作用？', a:'书面声明不能替代审计证据，但可：①确认管理层的责任 ②为审计师已获取充分适当证据提供补充证据。管理层拒绝提供书面声明→对审计意见的影响。' },
+  { subject:'审计', topic:'audit', q:'利用他人的工作需要考虑什么？', a:'利用内部审计：评估其独立性/客观性/胜任能力/工作质量。利用专家工作：评估专家的胜任能力/客观性/工作范围。审计师仍对审计意见负责。' },
+  { subject:'审计', topic:'audit', q:'审计工作底稿的目的？', a:'①提供充分适当的记录作为审计报告的基础 ②提供证据证明审计师按照审计准则执行了审计工作。底稿应清晰、完整、易于理解。保存期限至少10年。' },
+  { subject:'审计', topic:'audit', q:'控制测试和实质性程序的区别？', a:'控制测试：测试内部控制运行的有效性(问、看、查、重新执行)。实质性程序：发现认定层次的重大错报(细节测试+实质性分析程序)。控制有效→减少实质性程序范围。' },
+  { subject:'审计', topic:'audit', q:'审计师如何处理舞弊？', a:'①重新评估舞弊导致的重大错报风险 ②设计和实施进一步审计程序 ③评价审计证据 ④考虑对审计报告的影响。若发现舞弊涉及管理层，应考虑解除业务约定。' },
+  { subject:'审计', topic:'audit', q:'信息系统审计的关注点？', a:'①IT一般控制(程序变更/程序开发/程序操作/访问控制) ②IT应用控制(输入/处理/输出控制) ③IT依赖程度越高，审计师需测试IT控制。' },
+  { subject:'审计', topic:'audit', q:'质量管理的六大要素？', a:'①领导责任与治理 ②相关职业道德要求 ③客户关系和业务的承接与保持 ④业务执行 ⑤资源配置 ⑥信息与沟通。事务所应建立质量管理体系。' },
+  { subject:'审计', topic:'audit', q:'审计师的独立性要求？', a:'实质上的独立(心态独立)和形式上的独立(外在表现)。禁止：①在客户中拥有经济利益 ②与客户关键管理人员有近亲属关系 ③为客户提供非审计服务影响独立性。' },
+  { subject:'审计', topic:'audit', q:'审计程序的类型有哪些？', a:'检查、观察、询问、函证、重新计算、重新执行、分析程序。这些程序可单独或组合使用，贯穿于风险评估、控制测试和实质性程序。' },
+  { subject:'审计', topic:'audit', q:'2027年审计新增内容？', a:'数据分析技术在审计中的应用、区块链技术对审计的影响、人工智能在风险评估中的应用、持续审计与实时审计。' },
+  // ═══════ 税法(25张) ═══════
+  { subject:'税法', topic:'tax', q:'增值税的征税范围？', a:'在中国境内销售货物、提供加工修理修配劳务、销售服务、无形资产、不动产、进口货物。营改增后覆盖交通运输、建筑、金融、现代服务等。' },
+  { subject:'税法', topic:'tax', q:'增值税一般纳税人的税率？', a:'13%：销售/进口货物(一般)、加工修理修配 9%：交通运输/建筑/不动产/农产品/天然气等 6%：现代服务/金融/生活服务 0%：出口货物(零税率)。' },
+  { subject:'税法', topic:'tax', q:'增值税进项税额抵扣规则？', a:'凭票抵扣：增值税专用发票、海关进口增值税专用缴款书、农产品收购发票。计算抵扣：农产品(9%或扣除率)。不得抵扣：简易计税/免税项目/集体福利/个人消费/非正常损失。' },
+  { subject:'税法', topic:'tax', q:'增值税视同销售的情形？', a:'①将货物交付他人代销 ②销售代销货物 ③设有两个以上机构并统一核算的纳税人，将货物从一个机构移送其他机构(非同一县市) ④将自产/委托加工/购进的货物用于无偿赠送/投资/分配/非应税项目。' },
+  { subject:'税法', topic:'tax', q:'消费税的计税方法？', a:'从价计征：应纳税额 = 销售额 × 比例税率。从量计征：应纳税额 = 销售数量 × 单位税额。复合计征：两者结合(白酒：20%+0.5元/500g；卷烟：56%+0.003元/支)。' },
+  { subject:'税法', topic:'tax', q:'企业所得税的税率和优惠？', a:'基本税率25%。小型微利企业：实际税率5%-10%。高新技术企业：15%。西部大开发鼓励类产业：15%。研发费用加计扣除100%。' },
+  { subject:'税法', topic:'tax', q:'企业所得税税前扣除标准？', a:'业务招待费：min(发生额×60%, 营业收入×5‰) 广告费：营业收入×15%(超出部分结转) 职工福利费：工资总额×14% 职工教育经费：工资总额×8% 工会经费：工资总额×2%。' },
+  { subject:'税法', topic:'tax', q:'个人所得税综合所得包括哪些？', a:'①工资薪金所得 ②劳务报酬所得 ③稿酬所得 ④特许权使用费所得。按纳税年度合并计算，适用3%-45%七级超额累进税率。基本减除费用6万元/年。' },
+  { subject:'税法', topic:'tax', q:'专项附加扣除有哪些？', a:'①子女教育(每个子女2000元/月) ②继续教育(400元/月或3600元/年) ③大病医疗(限额8万元/年) ④住房贷款利息(1000元/月) ⑤住房租金(800-1500元/月) ⑥赡养老人(3000元/月) ⑦婴幼儿照护(2000元/月)。' },
+  { subject:'税法', topic:'tax', q:'土地增值税的计算步骤？', a:'①计算转让收入 ②确定扣除项目金额(5项) ③计算增值额 = 转让收入 - 扣除项目 ④计算增值率 = 增值额/扣除项目 ⑤按四级超率累进税率计算应纳税额。' },
+  { subject:'税法', topic:'tax', q:'关税的完税价格如何确定？', a:'进口货物：以成交价格为基础(货价+运费+保险费)。出口货物：以海关审定的离岸价格(FOB)扣除出口关税。特殊进口货物(租赁/加工等)有特别规定。' },
+  { subject:'税法', topic:'tax', q:'什么是增值税简易计税？', a:'一般纳税人可以选择简易计税的情形：①县级以下小型水力发电单位 ②建筑用砂土石料 ③以水泥为原料的商品混凝土 ④营改增前已取得不动产等。征收率3%或5%。' },
+  { subject:'税法', topic:'tax', q:'出口退税的计算方法？', a:'免抵退税法(生产企业)：①免征出口环节增值税 ②进项税额抵减内销应纳税额 ③不足抵减部分退税。免退税法(外贸企业)：按购进货物的增值税专用发票注明的金额计算退税。' },
+  { subject:'税法', topic:'tax', q:'资源税的计税依据？', a:'从价计征：应纳税额 = 销售额 × 税率。从量计征：应纳税额 = 销售数量 × 单位税额。水资源税试点：从量计征，税额标准由省级政府确定。' },
+  { subject:'税法', topic:'tax', q:'房产税的两种计税方式？', a:'从价计征：应纳税额 = 房产原值 × (1-扣除比例) × 1.2%。从租计征：应纳税额 = 租金收入 × 12%(个人出租住房4%)。扣除比例10%-30%，由省级政府确定。' },
+  { subject:'税法', topic:'tax', q:'印花税的征收方式？', a:'比例税率：借款合同0.05‰、购销合同0.3‰、技术合同0.3‰、产权转移书据0.5‰。定额税率：其他营业账簿5元/件、权利许可证照5元/件。' },
+  { subject:'税法', topic:'tax', q:'城镇土地使用税的税额标准？', a:'按大城市/中等城市/小城市/县城等划分，每平方米年税额1.5-30元。经济落后地区可降低，但降低额不得超过规定最低税额的30%。' },
+  { subject:'税法', topic:'tax', q:'车船税的计税依据？', a:'乘用车按发动机排气量分档，客车按辆，货车按整备质量每吨，摩托车按辆，船舶按净吨位。节能新能源车船可减免。' },
+  { subject:'税法', topic:'tax', q:'契税的征税范围？', a:'国有土地使用权出让、土地使用权转让(出售/赠与/交换)、房屋买卖/赠与/交换。税率3%-5%，由省级政府确定。法定继承免征契税。' },
+  { subject:'税法', topic:'tax', q:'国际税收抵免的方法？', a:'分国(地区)不分项抵免法：分国计算抵免限额。综合不分项抵免法：综合计算抵免限额。抵免限额 = 境内外应纳税所得总额 × 境外所得/境内外所得总额 × 税率。' },
+  { subject:'税法', topic:'tax', q:'转让定价的调整方法？', a:'①可比非受控价格法 ②再销售价格法 ③成本加成法 ④交易净利润法 ⑤利润分割法。税务机关有权按照合理方法调整不符合独立交易原则的关联交易。' },
+  { subject:'税法', topic:'tax', q:'税务行政复议的适用范围？', a:'必经复议：对征税行为(确认纳税主体/征税对象/税率/税额/纳税期限等)不服。选择复议：对征税行为以外的其他行为(处罚/强制等)不服，可直接起诉或申请复议。' },
+  { subject:'税法', topic:'tax', q:'税收保全和强制执行的区别？', a:'税收保全(预防性)：在纳税期前责令提供担保，不提供则冻结存款/扣押财产。强制执行(事后性)：逾期未缴税，强制扣缴存款/扣押/拍卖财产。' },
+  { subject:'税法', topic:'tax', q:'2027年税法新增内容？', a:'ESG相关税收优惠政策、绿色低碳企业所得税优惠。具体包括对清洁能源企业、碳减排项目的税收支持政策。' },
+  // ═══════ 财管(25张) ═══════
+  { subject:'财管', topic:'fm', q:'货币时间价值的基本公式？', a:'复利终值FV = PV(1+i)ⁿ 复利现值PV = FV(1+i)⁻ⁿ 年金终值FVA = A[(1+i)ⁿ-1]/i 年金现值PVA = A[1-(1+i)⁻ⁿ]/i。这是所有价值评估的基础。' },
+  { subject:'财管', topic:'fm', q:'资本资产定价模型(CAPM)？', a:'R = Rf + β(Rm-Rf)。Rf=无风险利率(国债利率)，β=系统性风险系数(β>1风险高于市场)，Rm=市场组合收益率，(Rm-Rf)=市场风险溢价。' },
+  { subject:'财管', topic:'fm', q:'加权平均资本成本(WACC)如何计算？', a:'WACC = Wd×Kd×(1-T) + We×Ke。Wd=债务比重，Kd=税前债务成本，T=税率，We=股权比重，Ke=股权成本。Kd需税后处理，Ke不需要。' },
+  { subject:'财管', topic:'fm', q:'净现值(NPV)和内含报酬率(IRR)？', a:'NPV = Σ[CFt/(1+r)ᵗ] - 初始投资。NPV>0→项目可行。IRR是使NPV=0的折现率。IRR>必要报酬率→项目可行。互斥项目应以NPV为准。' },
+  { subject:'财管', topic:'fm', q:'经营杠杆系数(DOL)和财务杠杆系数(DFL)？', a:'DOL = 边际贡献/息税前利润 = M/(M-F)。DFL = 息税前利润/(息税前利润-利息) = EBIT/(EBIT-I)。DTL = DOL × DFL。杠杆系数衡量风险放大效应。' },
+  { subject:'财管', topic:'fm', q:'杜邦分析体系如何分解ROE？', a:'ROE = 净利润率 × 资产周转率 × 权益乘数 = (净利润/销售收入) × (销售收入/总资产) × (总资产/股东权益)。分解为盈利能力、营运能力、财务杠杆三个维度。' },
+  { subject:'财管', topic:'fm', q:'本量利分析的基本公式？', a:'利润 = 销量×(单价-单位变动成本) - 固定成本 = Q(P-V) - F。盈亏临界点销量Q = F/(P-V)。安全边际率 = (实际销量-盈亏点销量)/实际销量。' },
+  { subject:'财管', topic:'fm', q:'企业自由现金流(FCFF)如何计算？', a:'FCFF = EBIT(1-T) + 折旧摊销 - 资本支出 - 营运资本增加。也可以：FCFF = 经营活动现金流 + 利息费用(1-T) - 资本支出。FCFF归属于全部资本提供者。' },
+  { subject:'财管', topic:'fm', q:'股权自由现金流(FCFE)如何计算？', a:'FCFE = 净利润 + 折旧摊销 - 资本支出 - 营运资本增加 + 新增借款 - 偿还债务。也可以：FCFE = FCFF - 利息费用(1-T) + 新增借款 - 偿还债务。FCFE归属于股东。' },
+  { subject:'财管', topic:'fm', q:'市盈率(P/E)和市净率(P/B)？', a:'P/E = 每股市价/每股收益。适用于盈利稳定的企业。P/B = 每股市价/每股净资产。适用于重资产企业或资不抵债企业。可比公司法下，目标公司价值 = 可比P/E × 目标EPS。' },
+  { subject:'财管', topic:'fm', q:'债券价值如何评估？', a:'债券价值 = Σ[票面利息/(1+折现率)ᵗ] + 面值/(1+折现率)ⁿ。折现率>票面利率→折价发行；折现率<票面利率→溢价发行；折现率=票面利率→平价发行。' },
+  { subject:'财管', topic:'fm', q:'股票价值评估的股利折现模型？', a:'零增长模型：P = D/Rs。固定增长模型：P = D₁/(Rs-g) = D₀(1+g)/(Rs-g)。两阶段模型：先高速增长后稳定增长，分别折现求和。' },
+  { subject:'财管', topic:'fm', q:'期权的BS定价模型？', a:'C = S₀N(d₁) - Xe⁻ʳᵗN(d₂)。d₁ = [ln(S₀/X) + (r+σ²/2)t] / (σ√t)。d₂ = d₁ - σ√t。期权价值受标的价格、执行价格、到期时间、波动率、无风险利率影响。' },
+  { subject:'财管', topic:'fm', q:'成本计算的三种方法？', a:'品种法：大量大批单步骤生产(如发电)。分批法：单件小批生产(如造船)。分步法：大量大批多步骤生产(如纺织)。逐步结转分步法和平行结转分步法。' },
+  { subject:'财管', topic:'fm', q:'标准成本法的差异分析？', a:'直接材料：价格差异=(实际价格-标准价格)×实际数量；数量差异=(实际数量-标准数量)×标准价格。直接人工：工资率差异+效率差异。制造费用：耗费差异+效率差异。' },
+  { subject:'财管', topic:'fm', q:'作业成本法的核心思想？', a:'产品消耗作业，作业消耗资源。通过作业将间接费用更准确地分配到产品。关键：识别作业→确定成本动因→计算作业成本分配率→分配到产品。' },
+  { subject:'财管', topic:'fm', q:'全面预算的编制起点？', a:'销售预算(起点) → 生产预算 → 直接材料/直接人工/制造费用预算 → 销售及管理费用预算 → 现金预算 → 预计利润表 → 预计资产负债表。' },
+  { subject:'财管', topic:'fm', q:'经济增加值(EVA)如何计算？', a:'EVA = 税后净营业利润(NOPAT) - 资本成本总额 × 加权平均资本成本(WACC)。EVA>0→创造价值；EVA<0→毁灭价值。EVA比会计利润更能反映真实价值创造。' },
+  { subject:'财管', topic:'fm', q:'平衡计分卡的四个维度？', a:'①财务维度(收入增长/成本降低/资产利用) ②客户维度(满意度/市场份额/客户保留) ③内部业务流程(运营效率/创新流程/售后服务) ④学习与成长(员工能力/信息系统/激励机制)。' },
+  { subject:'财管', topic:'fm', q:'营运资本管理的目标？', a:'在流动性和盈利性之间寻求平衡。流动资产：现金管理(最佳现金持有量)、应收账款管理(信用政策)、存货管理(经济订货量)。流动负债：短期借款/商业信用。' },
+  { subject:'财管', topic:'fm', q:'资本结构理论有哪些？', a:'MM理论(无税/有税)：有税下负债越多价值越高。权衡理论：负债收益(税盾)与成本(财务困境)平衡。优序融资理论：内部融资→债务融资→股权融资。' },
+  { subject:'财管', topic:'fm', q:'股利政策的类型？', a:'剩余股利政策(先满足投资需求)、固定或持续增长股利、固定股利支付率、低正常加额外股利。影响因素：法律/投资机会/筹资能力/盈利稳定性/债务契约/股东偏好。' },
+  { subject:'财管', topic:'fm', q:'项目现金流估计的注意事项？', a:'①考虑机会成本(非沉没成本) ②考虑营运资本需求 ③考虑项目对公司其他业务的影响(协同效应/侵蚀效应) ④税后现金流 ⑤不包括利息费用(融资成本在折现率中体现)。' },
+  { subject:'财管', topic:'fm', q:'存货管理的经济订货量(EOQ)？', a:'EOQ = √(2KD/Kc)。K=每次订货成本，D=年需求量，Kc=单位储存成本。经济订货量下总成本最低。再订货点 = 日均需求 × 提前期 + 安全库存。' },
+  { subject:'财管', topic:'fm', q:'2027年财管新增内容？', a:'可持续发展指标在管理会计中的应用、ESG成本核算。将环境和社会成本纳入管理会计体系。' },
+  // ═══════ 战略(20张) ═══════
+  { subject:'战略', topic:'strategy', q:'五力分析模型包括哪些？', a:'①现有竞争者的竞争强度 ②潜在进入者的威胁(进入壁垒) ③替代品的威胁 ④供应商的议价能力 ⑤购买者的议价能力。五力共同决定行业盈利潜力。' },
+  { subject:'战略', topic:'strategy', q:'PEST分析的内容？', a:'P(政治法律环境)、E(经济环境)、S(社会文化环境)、T(技术环境)。用于分析宏观环境对企业的外部影响。' },
+  { subject:'战略', topic:'strategy', q:'SWOT分析如何应用？', a:'S(内部优势)、W(内部劣势)、O(外部机会)、T(外部威胁)。SO战略(利用优势抓住机会)、WO战略(利用机会克服劣势)、ST战略(利用优势应对威胁)、WT战略(减少劣势回避威胁)。' },
+  { subject:'战略', topic:'strategy', q:'价值链分析包括哪些活动？', a:'基本活动：内部后勤→生产经营→外部后勤→市场营销→服务。支持活动：采购管理→技术开发→人力资源管理→企业基础设施。竞争优势来源于价值链上的差异化或成本优势。' },
+  { subject:'战略', topic:'strategy', q:'三种基本竞争战略？', a:'①成本领先战略：成为行业最低成本生产者 ②差异化战略：提供独特产品/服务 ③集中化战略：聚焦细分市场(成本集中或差异化集中)。由迈克尔·波特提出。' },
+  { subject:'战略', topic:'strategy', q:'波士顿矩阵(BCG矩阵)？', a:'横轴=相对市场份额，纵轴=市场增长率。①明星(高增长高份额)→投资 ②现金牛(低增长高份额)→收割 ③问题(高增长低份额)→选择性投资或放弃 ④瘦狗(低增长低份额)→放弃或清算。' },
+  { subject:'战略', topic:'strategy', q:'产业生命周期的四个阶段？', a:'①导入期(销量小、成本高、竞争少) ②成长期(销量快速增长、竞争加剧) ③成熟期(销量稳定、竞争激烈、利润下降) ④衰退期(销量下降、退出者增多)。不同阶段战略不同。' },
+  { subject:'战略', topic:'strategy', q:'核心竞争力的判断标准？', a:'①有价值(能利用机会/抵御威胁) ②稀缺性(少数企业拥有) ③难以模仿(历史独特/因果模糊/社会复杂) ④不可替代(没有战略等价物)。满足四个条件才能持续竞争优势。' },
+  { subject:'战略', topic:'strategy', q:'公司治理的模式有哪些？', a:'①英美模式(市场主导型：股权分散、独立董事、信息披露) ②日德模式(银行主导型：股权集中、监事会、银行交叉持股) ③东亚模式(家族控制型)。' },
+  { subject:'战略', topic:'strategy', q:'风险管理的基本流程？', a:'①收集风险管理初始信息 ②风险评估(识别+分析+评价) ③风险应对(规避/转移/减轻/接受) ④风险监控与报告 ⑤风险管理的监督与改进。' },
+  { subject:'战略', topic:'strategy', q:'内部控制的COSO五要素？', a:'①控制环境(诚信/治理结构/组织结构/权责分配) ②风险评估(目标设定/风险识别/风险分析) ③控制活动(授权审批/调节复核/职责分离) ④信息与沟通 ⑤监控(持续监控/单独评价)。' },
+  { subject:'战略', topic:'strategy', q:'组织结构的类型有哪些？', a:'①创业型(简单结构) ②职能型(按职能划分) ③事业部制(M型：按产品/地区) ④矩阵型(职能+项目双重汇报) ⑤战略业务单位(SBU) ⑥控股公司(H型)。' },
+  { subject:'战略', topic:'strategy', q:'企业文化的类型？', a:'①权力导向型(个人决策) ②角色导向型(规章制度) ③任务导向型(以任务为中心) ④人员导向型(以人为本)。文化是控制的重要手段，影响战略实施效果。' },
+  { subject:'战略', topic:'strategy', q:'国际化战略的类型？', a:'①国际战略(母国中心) ②多国本土化战略(东道国中心) ③全球战略(全球整合) ④跨国战略(全球整合+本地响应)。选择取决于行业压力和本地响应需求。' },
+  { subject:'战略', topic:'strategy', q:'平衡计分卡在战略实施中的作用？', a:'将战略转化为可衡量的目标，从四个维度：①财务(战略的财务成果) ②客户(价值主张) ③内部流程(关键流程) ④学习与成长(无形资产)。因果关系链连接各维度。' },
+  { subject:'战略', topic:'strategy', q:'战略变革的类型？', a:'①技术变革(工作方法/设备) ②产品和服务变革 ③结构和体系变革(管理系统/政策) ④人员变革(员工态度/技能)。变革阻力来自个人(习惯/安全)和组织(结构/文化)。' },
+  { subject:'战略', topic:'strategy', q:'风险管理技术方法有哪些？', a:'①头脑风暴法 ②德尔菲法(匿名专家意见) ③情景分析法 ④敏感性分析 ⑤决策树法 ⑥蒙特卡洛模拟 ⑦风险矩阵(概率×影响)。' },
+  { subject:'战略', topic:'strategy', q:'战略钟模型(竞争战略选择)？', a:'①低价低值(成本集中) ②低价(成本领先) ③混合(性价比) ④高值(差异化) ⑤高价高值(集中差异化)。企业在价格和附加值两个维度选择定位。' },
+  { subject:'战略', topic:'strategy', q:'钻石模型(国家竞争优势)？', a:'①要素条件(生产要素) ②需求条件(国内需求) ③相关和支持产业 ④企业战略/结构/竞争。政府和机遇是两个辅助因素。由迈克尔·波特提出。' },
+  { subject:'战略', topic:'strategy', q:'2027年战略新增内容？', a:'ESG战略框架(环境/社会/治理)、可持续发展战略与企业价值创造、ESG风险管理、绿色金融与可持续投资、数字化转型战略、数据安全与隐私保护。' },
 ];
 
 let fcIndex = 0;
