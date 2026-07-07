@@ -240,6 +240,97 @@ body {
 .quiz-result .label { font-size:16px; color:var(--text2); margin-top:8px; }
 .quiz-result .detail { font-size:14px; color:var(--text3); margin-top:16px; }
 
+/* ═══ Formula Tabs ═══ */
+.formula-tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.formula-tab {
+  padding:8px 16px; border-radius:12px; border:1.5px solid var(--separator);
+  background:transparent; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s;
+}
+.formula-tab.active { background:var(--purple); color:#fff; border-color:var(--purple); }
+
+/* ═══ Formula Cards ═══ */
+.formula-group { display:none; animation:fadeUp 0.3s ease; }
+.formula-group.active { display:block; }
+.formula-card {
+  background:var(--card); border-radius:var(--card-radius); overflow:hidden; margin-bottom:12px;
+  box-shadow:var(--shadow); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+}
+.formula-card-header {
+  display:flex; align-items:center; gap:8px; padding:14px 16px;
+  background:rgba(175,82,222,0.06); border-bottom:0.5px solid var(--separator);
+  font-weight:600; font-size:15px;
+}
+.formula-icon { font-size:18px; }
+.formula-items { padding:8px 0; }
+.formula-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 16px; border-bottom:0.5px solid var(--separator);
+}
+.formula-item:last-child { border-bottom:none; }
+.formula-name { font-size:13px; color:var(--text2); font-weight:500; }
+.formula-expr {
+  font-size:13px; color:var(--text); font-family:'SF Mono','Menlo',monospace;
+  background:rgba(175,82,222,0.06); padding:4px 10px; border-radius:8px;
+  max-width:60%; text-align:right; word-break:break-all;
+}
+
+/* ═══ Flashcard ═══ */
+.flashcard-tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.flashcard-tab {
+  padding:8px 16px; border-radius:12px; border:1.5px solid var(--separator);
+  background:transparent; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s;
+}
+.flashcard-tab.active { background:var(--red); color:#fff; border-color:var(--red); }
+.flashcard-container { perspective:1000px; margin-bottom:20px; }
+.flashcard-wrapper { position:relative; width:100%; min-height:280px; cursor:pointer; transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
+.flashcard-wrapper.flipped { transform:rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position:absolute; top:0; left:0; right:0; min-height:280px;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  background:var(--card); border-radius:var(--card-radius); padding:24px;
+  box-shadow:var(--shadow); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  text-align:center;
+}
+.flashcard-front::before, .flashcard-back::before {
+  content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.3),transparent 50%);
+  pointer-events:none;
+}
+.flashcard-back { transform:rotateY(180deg); }
+.flashcard-label {
+  font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:12px; position:relative;
+}
+.flashcard-label.front { color:var(--red); }
+.flashcard-label.back { color:var(--green); }
+.flashcard-subject {
+  font-size:12px; color:var(--text3); margin-bottom:16px; padding:4px 12px;
+  background:rgba(118,118,128,0.08); border-radius:20px; position:relative;
+}
+.flashcard-question {
+  font-size:20px; font-weight:700; line-height:1.5; color:var(--text);
+  position:relative; max-width:90%;
+}
+.flashcard-answer {
+  font-size:16px; line-height:1.7; color:var(--text2); position:relative;
+  max-width:90%;
+}
+.flashcard-hint {
+  font-size:12px; color:var(--text3); margin-top:20px; position:relative;
+}
+.flashcard-nav { display:flex; gap:12px; justify-content:center; align-items:center; margin-top:16px; }
+.flashcard-nav-btn {
+  width:48px; height:48px; border-radius:50%; border:none; cursor:pointer;
+  background:rgba(118,118,128,0.1); font-size:20px; display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s;
+}
+.flashcard-nav-btn:active { transform:scale(0.9); }
+.flashcard-nav-btn.primary { background:var(--red); color:#fff; width:56px; height:56px; }
+.flashcard-counter { font-size:14px; font-weight:600; color:var(--text2); min-width:60px; text-align:center; }
+.flashcard-progress { height:4px; border-radius:2px; background:rgba(118,118,128,0.12); margin-bottom:20px; overflow:hidden; }
+.flashcard-progress-bar { height:100%; background:var(--red); border-radius:2px; transition:width 0.3s; }
+
 /* ═══ Footer ═══ */
 .footer { text-align:center; padding:20px 16px; font-size:12px; color:var(--text3); }
 
@@ -290,6 +381,8 @@ body {
       <button class="tab-btn" onclick="switchTab('fm')">财管</button>
       <button class="tab-btn" onclick="switchTab('strategy')">战略</button>
       <button class="tab-btn" onclick="switchTab('comprehensive')">综合</button>
+      <button class="tab-btn" onclick="switchTab('formulas')" style="background:rgba(175,82,222,0.12);color:var(--purple);">📐 公式</button>
+      <button class="tab-btn" onclick="switchTab('flashcard')" style="background:rgba(255,59,48,0.12);color:var(--red);">🃏 卡片</button>
       <button class="tab-btn" onclick="switchTab('favorites')" style="background:rgba(255,149,0,0.12);color:var(--orange);">⭐ 收藏</button>
     </div>
   </div>
@@ -334,6 +427,250 @@ body {
     <p style="font-size:13px;margin-top:4px;">点击知识点右侧的 ☆ 按钮收藏</p>
   </div>
   <div class="knowledge-group" id="favList"></div>
+</div>
+
+<!-- ═══ 公式速查 ═══ -->
+<div class="subject-section" id="sec-formulas">
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--purple)">📐</div>
+    <h2>常用公式速查</h2>
+  </div>
+  <div class="formula-tabs">
+    <button class="formula-tab active" onclick="switchFormulaTab(this,'fmo')">财管</button>
+    <button class="formula-tab" onclick="switchFormulaTab(this,'fm')">会计</button>
+    <button class="formula-tab" onclick="switchFormulaTab(this,'tax')">税法</button>
+    <button class="formula-tab" onclick="switchFormulaTab(this,'aud')">审计</button>
+  </div>
+
+  <!-- 财管公式 -->
+  <div class="formula-group active" id="fg-fmo">
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">💰</span><span>货币时间价值</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">复利终值</div><div class="formula-expr">FV = PV × (1+i)ⁿ</div></div>
+        <div class="formula-item"><div class="formula-name">复利现值</div><div class="formula-expr">PV = FV × (1+i)⁻ⁿ</div></div>
+        <div class="formula-item"><div class="formula-name">年金终值</div><div class="formula-expr">FVA = A × [(1+i)ⁿ-1]/i</div></div>
+        <div class="formula-item"><div class="formula-name">年金现值</div><div class="formula-expr">PVA = A × [1-(1+i)⁻ⁿ]/i</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">📊</span><span>风险与报酬</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">资本资产定价模型</div><div class="formula-expr">R = Rf + β(Rm-Rf)</div></div>
+        <div class="formula-item"><div class="formula-name">标准差</div><div class="formula-expr">σ = √[Σ(Xi-μ)²×Pi]</div></div>
+        <div class="formula-item"><div class="formula-name">变异系数</div><div class="formula-expr">CV = σ/μ</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">📈</span><span>资本成本</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">债务资本成本</div><div class="formula-expr">Kd = 税前成本×(1-T)</div></div>
+        <div class="formula-item"><div class="formula-name">股权资本成本(CAPM)</div><div class="formula-expr">Ke = Rf + β(Rm-Rf)</div></div>
+        <div class="formula-item"><div class="formula-name">加权平均资本成本</div><div class="formula-expr">WACC = Wd×Kd(1-T) + We×Ke</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">📉</span><span>项目投资</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">净现值(NPV)</div><div class="formula-expr">NPV = Σ[CFt/(1+r)ᵗ] - 初始投资</div></div>
+        <div class="formula-item"><div class="formula-name">内含报酬率(IRR)</div><div class="formula-expr">使NPV=0的折现率r</div></div>
+        <div class="formula-item"><div class="formula-name">会计收益率</div><div class="formula-expr">ARR = 年均净利/年均投资</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">⚖️</span><span>资本结构</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">经营杠杆系数</div><div class="formula-expr">DOL = M/(M-F)</div></div>
+        <div class="formula-item"><div class="formula-name">财务杠杆系数</div><div class="formula-expr">DFL = EBIT/(EBIT-I)</div></div>
+        <div class="formula-item"><div class="formula-name">总杠杆系数</div><div class="formula-expr">DTL = DOL × DFL</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">💹</span><span>本量利分析</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">利润公式</div><div class="formula-expr">利润 = Q(P-V) - F</div></div>
+        <div class="formula-item"><div class="formula-name">盈亏临界点销量</div><div class="formula-expr">Q = F/(P-V)</div></div>
+        <div class="formula-item"><div class="formula-name">安全边际率</div><div class="formula-expr">MSR = (实际销量-盈亏点)/实际销量</div></div>
+        <div class="formula-item"><div class="formula-name">边际贡献率</div><div class="formula-expr">CMR = (P-V)/P</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">🏢</span><span>企业估值</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">FCFF</div><div class="formula-expr">FCFF = EBIT(1-T) + D&A - FCInv - WCInv</div></div>
+        <div class="formula-item"><div class="formula-name">FCFE</div><div class="formula-expr">FCFE = NI + D&A - FCInv - WCInv + NetBorrow</div></div>
+        <div class="formula-item"><div class="formula-name">市盈率</div><div class="formula-expr">P/E = 每股市价/每股收益</div></div>
+        <div class="formula-item"><div class="formula-name">市净率</div><div class="formula-expr">P/B = 每股市价/每股净资产</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">📊</span><span>财务报表分析</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">流动比率</div><div class="formula-expr">流动资产/流动负债</div></div>
+        <div class="formula-item"><div class="formula-name">速动比率</div><div class="formula-expr">(流动资产-存货)/流动负债</div></div>
+        <div class="formula-item"><div class="formula-name">资产负债率</div><div class="formula-expr">总负债/总资产</div></div>
+        <div class="formula-item"><div class="formula-name">权益乘数</div><div class="formula-expr">总资产/股东权益</div></div>
+        <div class="formula-item"><div class="formula-name">杜邦分析</div><div class="formula-expr">ROE = 净利率×周转率×权益乘数</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 会计公式 -->
+  <div class="formula-group" id="fg-fm">
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">📒</span><span>存货</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">移动加权平均法</div><div class="formula-expr">单价 = (期初金额+入库金额)/(期初数量+入库数量)</div></div>
+        <div class="formula-item"><div class="formula-name">存货跌价准备</div><div class="formula-expr">应计提 = 成本 - 可变现净值</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">固定资产</span><span>固定资产</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">年限平均法</div><div class="formula-expr">年折旧 = (原值-预计净残值)/预计使用年限</div></div>
+        <div class="formula-item"><div class="formula-name">双倍余额递减法</div><div class="formula-expr">年折旧 = 期初净值 × 2/预计使用年限</div></div>
+        <div class="formula-item"><div class="formula-name">年数总和法</div><div class="formula-expr">年折旧 = (原值-净残值) × 尚可使用年限/年数总和</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">📈</span><span>金融工具</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">摊余成本</div><div class="formula-expr">期初摊余成本 + 实际利息 - 票面利息</div></div>
+        <div class="formula-item"><div class="formula-name">实际利率法</div><div class="formula-expr">利息 = 摊余成本 × 实际利率</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">💼</span><span>所得税</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">应纳税所得额</div><div class="formula-expr">利润总额 ± 纳税调整</div></div>
+        <div class="formula-item"><div class="formula-name">递延所得税</div><div class="formula-expr">递延所得税 = 可抵扣/应纳税暂时性差异 × 税率</div></div>
+        <div class="formula-item"><div class="formula-name">所得税费用</div><div class="formula-expr">当期所得税 + 递延所得税费用</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">🔄</span><span>合并报表</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">长期股权投资抵销</div><div class="formula-expr">借：实收资本/资本公积等<br>贷：长期股权投资/少数股东权益</div></div>
+        <div class="formula-item"><div class="formula-name">内部交易抵销</div><div class="formula-expr">借：营业收入<br>贷：营业成本/存货(未实现利润)</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">💰</span><span>每股收益</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">基本每股收益</div><div class="formula-expr">EPS = 归属净利润/加权平均股数</div></div>
+        <div class="formula-item"><div class="formula-name">稀释每股收益</div><div class="formula-expr">考虑可转债、期权等稀释性潜在普通股</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 税法公式 -->
+  <div class="formula-group" id="fg-tax">
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">💼</span><span>增值税</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">一般纳税人应纳税额</div><div class="formula-expr">应纳税额 = 销项税额 - 进项税额</div></div>
+        <div class="formula-item"><div class="formula-name">销项税额</div><div class="formula-expr">销项 = 不含税销售额 × 税率</div></div>
+        <div class="formula-item"><div class="formula-name">组成计税价格</div><div class="formula-expr">组成价格 = 关税完税价格+关税+消费税</div></div>
+        <div class="formula-item"><div class="formula-name">简易计税</div><div class="formula-expr">应纳税额 = 不含税销售额 × 征收率</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">🛒</span><span>消费税</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">从价计征</div><div class="formula-expr">应纳税额 = 销售额 × 比例税率</div></div>
+        <div class="formula-item"><div class="formula-name">从量计征</div><div class="formula-expr">应纳税额 = 销售数量 × 单位税额</div></div>
+        <div class="formula-item"><div class="formula-name">复合计征</div><div class="formula-expr">应纳税额 = 销售额×比例税率 + 销售数量×单位税额</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">🏢</span><span>企业所得税</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">应纳税额</div><div class="formula-expr">应纳税额 = 应纳税所得额 × 税率 - 减免税额</div></div>
+        <div class="formula-item"><div class="formula-name">广告费扣除</div><div class="formula-expr">限额 = 营业收入 × 15%（超出部分结转）</div></div>
+        <div class="formula-item"><div class="formula-name">业务招待费扣除</div><div class="formula-expr">min(发生额×60%, 营业收入×5‰)</div></div>
+        <div class="formula-item"><div class="formula-name">研发费用加计扣除</div><div class="formula-expr">加计扣除比例100%（2027年）</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">👤</span><span>个人所得税</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">综合所得应纳税额</div><div class="formula-expr">(收入-60000-专项扣除-专项附加扣除)×税率-速算扣除数</div></div>
+        <div class="formula-item"><div class="formula-name">经营所得应纳税额</div><div class="formula-expr">(收入-成本-费用-损失)×税率-速算扣除数</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">🏠</span><span>土地增值税</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">增值额</div><div class="formula-expr">增值额 = 转让收入 - 扣除项目金额</div></div>
+        <div class="formula-item"><div class="formula-name">增值率</div><div class="formula-expr">增值率 = 增值额/扣除项目金额</div></div>
+        <div class="formula-item"><div class="formula-name">应纳税额</div><div class="formula-expr">应纳税额 = 增值额×税率 - 扣除项目×速算扣除系数</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 审计公式 -->
+  <div class="formula-group" id="fg-aud">
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">🔍</span><span>审计重要性</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">整体重要性</div><div class="formula-expr">基准 × 百分比</div></div>
+        <div class="formula-item"><div class="formula-name">实际执行的重要性</div><div class="formula-expr">整体重要性 × 50%~75%</div></div>
+        <div class="formula-item"><div class="formula-name">明显微小错报临界值</div><div class="formula-expr">整体重要性 × 3%~5%</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">📊</span><span>审计抽样</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">样本规模</div><div class="formula-expr">与可接受抽样风险、总体变异性成反比</div></div>
+        <div class="formula-item"><div class="formula-name">总体偏差率</div><div class="formula-expr">样本偏差数量/样本规模</div></div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-card-header"><span class="formula-icon">⚠️</span><span>审计风险模型</span></div>
+      <div class="formula-items">
+        <div class="formula-item"><div class="formula-name">审计风险</div><div class="formula-expr">AR = IR × CR × DR</div></div>
+        <div class="formula-item"><div class="formula-name">固有风险(IR)</div><div class="formula-expr">在不考虑内部控制情况下，某项认定发生重大错报的可能性</div></div>
+        <div class="formula-item"><div class="formula-name">控制风险(CR)</div><div class="formula-expr">内部控制未能及时防止或发现错报的可能性</div></div>
+        <div class="formula-item"><div class="formula-name">检查风险(DR)</div><div class="formula-expr">审计程序未能发现错报的可能性</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 知识卡片 ═══ -->
+<div class="subject-section" id="sec-flashcard">
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--red)">🃏</div>
+    <h2>知识卡片</h2>
+  </div>
+  <div class="flashcard-tabs">
+    <button class="flashcard-tab active" onclick="filterFlashcards(this,'all')">全部</button>
+    <button class="flashcard-tab" onclick="filterFlashcards(this,'accounting')">会计</button>
+    <button class="flashcard-tab" onclick="filterFlashcards(this,'audit')">审计</button>
+    <button class="flashcard-tab" onclick="filterFlashcards(this,'tax')">税法</button>
+    <button class="flashcard-tab" onclick="filterFlashcards(this,'fm')">财管</button>
+    <button class="flashcard-tab" onclick="filterFlashcards(this,'strategy')">战略</button>
+  </div>
+  <div class="flashcard-progress"><div class="flashcard-progress-bar" id="fcProgressBar" style="width:0%"></div></div>
+  <div class="flashcard-container" onclick="flipCard()">
+    <div class="flashcard-wrapper" id="flashcardWrapper">
+      <div class="flashcard-front">
+        <div class="flashcard-label front">QUESTION</div>
+        <div class="flashcard-subject" id="fcSubject"></div>
+        <div class="flashcard-question" id="fcQuestion"></div>
+        <div class="flashcard-hint">点击翻转查看答案</div>
+      </div>
+      <div class="flashcard-back">
+        <div class="flashcard-label back">ANSWER</div>
+        <div class="flashcard-answer" id="fcAnswer"></div>
+      </div>
+    </div>
+  </div>
+  <div class="flashcard-nav">
+    <button class="flashcard-nav-btn" onclick="prevCard()">◀</button>
+    <div class="flashcard-counter" id="fcCounter">1 / 1</div>
+    <button class="flashcard-nav-btn primary" onclick="nextCard()">▶</button>
+  </div>
 </div>
 
 <!-- ═══ 会计 ═══ -->
@@ -547,7 +884,7 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   const sec = document.getElementById('sec-' + id);
   if (sec) sec.classList.add('active');
-  const tabMap = { 'overview':'总览','accounting':'会计','audit':'审计','tax':'税法','law':'经济法','fm':'财管','strategy':'战略','comprehensive':'综合','favorites':'⭐ 收藏' };
+  const tabMap = { 'overview':'总览','accounting':'会计','audit':'审计','tax':'税法','law':'经济法','fm':'财管','strategy':'战略','comprehensive':'综合','formulas':'📐 公式','flashcard':'🃏 卡片','favorites':'⭐ 收藏' };
   document.querySelectorAll('.tab-btn').forEach(b => { if (b.textContent.includes(tabMap[id])) b.classList.add('active'); });
   if (id === 'favorites') renderFavorites();
   document.getElementById('header').scrollIntoView({behavior:'smooth'});
@@ -682,6 +1019,108 @@ function doSearch(query) {
 
 function exportPDF() { window.print(); }
 
+function switchFormulaTab(btn, id) {
+  document.querySelectorAll('.formula-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.formula-group').forEach(g => g.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('fg-' + id).classList.add('active');
+}
+
+// ═══ Flashcard ═══
+const flashcards = [
+  // 会计
+  { subject:'会计', topic:'accounting', q:'什么是会计基本假设？', a:'会计主体、持续经营、会计分期、货币计量。这是会计核算的前提条件。' },
+  { subject:'会计', topic:'accounting', q:'存货期末计量原则？', a:'成本与可变现净值孰低。可变现净值 = 估计售价 - 至完工估计成本 - 估计销售费用。' },
+  { subject:'会计', topic:'accounting', q:'固定资产折旧方法有哪些？', a:'年限平均法、工作量法、双倍余额递减法、年数总和法。注意：折旧方法一经确定不得随意变更。' },
+  { subject:'会计', topic:'accounting', q:'长期股权投资成本法与权益法的区别？', a:'成本法：投资方对被投资方无控制/共同控制/重大影响。权益法：有重大影响或共同控制。成本法下投资按成本计量，权益法下按被投资方净利润份额调整。' },
+  { subject:'会计', topic:'accounting', q:'金融资产三分类是什么？', a:'AC（以摊余成本计量）、FVOCI（以公允价值计量且其变动计入其他综合收益）、FVTPL（以公允价值计量且其变动计入当期损益）。' },
+  { subject:'会计', topic:'accounting', q:'收入确认五步法模型？', a:'①识别合同 ②识别履约义务 ③确定交易价格 ④分摊交易价格 ⑤履行履约义务时确认收入。' },
+  { subject:'会计', topic:'accounting', q:'什么是暂时性差异？', a:'资产/负债的账面价值与其计税基础之间的差异，会在未来期间转回。分为应纳税暂时性差异和可抵扣暂时性差异。' },
+  { subject:'会计', topic:'accounting', q:'合并报表的合并范围如何确定？', a:'以控制为基础确定。控制 = 拥有对被投资方的权力 + 享有可变回报 + 能运用权力影响回报。' },
+  { subject:'会计', topic:'accounting', q:'使用权资产如何计量？', a:'按成本计量 = 租赁负债初始计量金额 + 预付租金 + 初始直接费用 + 预计拆卸成本。' },
+  { subject:'会计', topic:'accounting', q:'每股收益的稀释如何计算？', a:'考虑可转债、认股权证等潜在普通股的稀释作用。假设在期初转换，调整归属于普通股的净利润和加权平均股数。' },
+  // 审计
+  { subject:'审计', topic:'audit', q:'审计风险模型是什么？', a:'AR = IR × CR × DR（审计风险 = 固有风险 × 控制风险 × 检查风险）。审计师通过评估IR和CR来确定可接受的DR水平。' },
+  { subject:'审计', topic:'audit', q:'什么是重要性？', a:'错报单独或汇总起来可能影响报表使用者经济决策的金额。整体重要性 × 50%~75% = 实际执行的重要性。' },
+  { subject:'审计', topic:'audit', q:'函证的适用范围？', a:'主要用于银行存款、应收账款、应收票据等。函证是获取外部证据的重要程序，证明力较强。' },
+  { subject:'审计', topic:'audit', q:'审计报告有哪几种意见类型？', a:'无保留意见、保留意见、否定意见、无法表示意见。关键审计事项段仅在无保留意见报告中可能包含。' },
+  { subject:'审计', topic:'audit', q:'什么是分析程序？', a:'通过分析财务数据之间、财务数据与非财务数据之间的内在关系，评估财务信息。用于风险评估、实质性程序和总体复核。' },
+  { subject:'审计', topic:'audit', q:'内部控制五要素？', a:'控制环境、风险评估过程、信息系统与沟通、控制活动、对控制的监督。' },
+  { subject:'审计', topic:'audit', q:'集团审计的特殊考虑？', a:'组成部分重要性由集团项目组确定；与组成部分注册会计师沟通；评价审计证据的充分性和适当性。' },
+  // 税法
+  { subject:'税法', topic:'tax', q:'增值税一般纳税人税率？', a:'13%（销售货物/加工修理修配）、9%（交通运输/建筑/不动产等）、6%（现代服务/金融等）。小规模纳税人征收率3%。' },
+  { subject:'税法', topic:'tax', q:'消费税计税方法？', a:'从价计征（销售额×税率）、从量计征（销售数量×单位税额）、复合计征（两者结合）。白酒和卷烟采用复合计征。' },
+  { subject:'税法', topic:'tax', q:'企业所得税税前扣除标准？', a:'业务招待费：min(发生额×60%, 营收×5‰)；广告费：营收×15%（超出结转）；福利费：工资总额×14%；教育经费：工资总额×8%。' },
+  { subject:'税法', topic:'tax', q:'个人所得税综合所得包括哪些？', a:'工资薪金所得、劳务报酬所得、稿酬所得、特许权使用费所得。按纳税年度合并计算，适用3%~45%超额累进税率。' },
+  { subject:'税法', topic:'tax', q:'什么是增值税进项税额转出？', a:'已抵扣进项税额的购进货物/服务，发生非正常损失或改变用途用于简易计税/免税/集体福利/个人消费时，需将进项税额转出。' },
+  { subject:'税法', topic:'tax', q:'土地增值税的扣除项目？', a:'取得土地使用权所支付金额、开发成本、开发费用（利息+其他扣除）、与转让有关的税金、加计扣除（前两项之和的20%）。' },
+  // 财管
+  { subject:'财管', topic:'fm', q:'CAPM公式是什么？', a:'R = Rf + β(Rm-Rf)。其中Rf为无风险利率，β为系统性风险系数，Rm为市场组合收益率，(Rm-Rf)为市场风险溢价。' },
+  { subject:'财管', topic:'fm', q:'WACC如何计算？', a:'WACC = Wd×Kd×(1-T) + We×Ke。其中Wd/We为债务/股权比重，Kd为债务成本，Ke为股权成本，T为税率。' },
+  { subject:'财管', topic:'fm', q:'NPV和IRR的关系？', a:'NPV = Σ[CFt/(1+r)ᵗ] - 初始投资。IRR是使NPV=0的折现率。当NPV>0时，IRR>必要报酬率。' },
+  { subject:'财管', topic:'fm', q:'杜邦分析体系的核心公式？', a:'ROE = 净利润率 × 资产周转率 × 权益乘数。分解为盈利能力、营运能力和财务杠杆三个维度。' },
+  { subject:'财管', topic:'fm', q:'本量利分析的基本公式？', a:'利润 = Q(P-V) - F。盈亏临界点销量 Q = F/(P-V)。安全边际率 = (实际销量-盈亏点)/实际销量。' },
+  { subject:'财管', topic:'fm', q:'经营杠杆系数和财务杠杆系数？', a:'DOL = M/(M-F) = 边际贡献/息税前利润。DFL = EBIT/(EBIT-I)。DTL = DOL × DFL。' },
+  { subject:'财管', topic:'fm', q:'FCFF和FCFE的区别？', a:'FCFF（企业自由现金流）= EBIT(1-T) + 折旧 - 资本支出 - 营运资本增加。FCFE（股权自由现金流）= NI + 折旧 - 资本支出 - 营运资本增加 + 净借款。' },
+  // 战略
+  { subject:'战略', topic:'strategy', q:'五力模型包括哪些？', a:'①现有竞争者之间的竞争 ②潜在进入者的威胁 ③替代品的威胁 ④供应商的议价能力 ⑤购买者的议价能力。' },
+  { subject:'战略', topic:'strategy', q:'SWOT分析是什么？', a:'S(优势)、W(劣势)、O(机会)、T(威胁)。内部因素(S/W)与外部因素(O/T)的匹配分析，用于制定战略。' },
+  { subject:'战略', topic:'strategy', q:'三种基本竞争战略？', a:'成本领先战略、差异化战略、集中化战略（成本集中或差异化集中）。由迈克尔·波特提出。' },
+  { subject:'战略', topic:'strategy', q:'价值链分析包括哪些活动？', a:'基本活动：内部后勤→生产经营→外部后勤→市场营销→服务。支持活动：采购、技术开发、人力资源管理、企业基础设施。' },
+  { subject:'战略', topic:'strategy', q:'什么是ESG？', a:'E(环境Environment)、S(社会Social)、G(治理Governance)。2027年CPA新增考点，关注企业可持续发展信息披露。' },
+  { subject:'战略', topic:'strategy', q:'风险管理基本流程？', a:'①收集风险管理初始信息 ②风险评估 ③风险应对 ④风险监控 ⑤风险管理监督与改进。' },
+  { subject:'战略', topic:'strategy', q:'内部控制五要素？', a:'控制环境、风险评估、控制活动、信息与沟通、监控。与COSO框架一致。' },
+];
+
+let fcIndex = 0;
+let fcCards = [...flashcards];
+
+function initFlashcards() {
+  shuffleArray(fcCards);
+  renderCard();
+}
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function renderCard() {
+  if (fcCards.length === 0) return;
+  const card = fcCards[fcIndex];
+  document.getElementById('fcSubject').textContent = card.subject;
+  document.getElementById('fcQuestion').textContent = card.q;
+  document.getElementById('fcAnswer').textContent = card.a;
+  document.getElementById('fcCounter').textContent = `${fcIndex + 1} / ${fcCards.length}`;
+  document.getElementById('fcProgressBar').style.width = ((fcIndex + 1) / fcCards.length * 100) + '%';
+  document.getElementById('flashcardWrapper').classList.remove('flipped');
+}
+
+function flipCard() {
+  document.getElementById('flashcardWrapper').classList.toggle('flipped');
+}
+
+function nextCard() {
+  fcIndex = (fcIndex + 1) % fcCards.length;
+  renderCard();
+}
+
+function prevCard() {
+  fcIndex = (fcIndex - 1 + fcCards.length) % fcCards.length;
+  renderCard();
+}
+
+function filterFlashcards(btn, topic) {
+  document.querySelectorAll('.flashcard-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  fcCards = topic === 'all' ? [...flashcards] : flashcards.filter(c => c.topic === topic);
+  shuffleArray(fcCards);
+  fcIndex = 0;
+  renderCard();
+}
+
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('scrollTop');
   if (window.scrollY > 400) btn.classList.add('show');
@@ -690,6 +1129,7 @@ window.addEventListener('scroll', () => {
 
 updateStats();
 loadNotes();
+initFlashcards();
 </script>
 </body>
 </html>
