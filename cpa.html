@@ -26,10 +26,12 @@
 .fi{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:0.5px solid var(--sep)}.fi:last-child{border-bottom:none}.fin{font-size:12px;color:var(--text2);font-weight:500}.fie{font-size:12px;font-family:'SF Mono',monospace;background:rgba(175,82,222,0.06);padding:4px 10px;border-radius:8px}
 .tcc{background:var(--card);border-radius:var(--r);overflow:hidden;margin-bottom:10px;box-shadow:var(--sh)}.tcch{padding:12px 14px;background:rgba(255,149,0,0.06);border-bottom:0.5px solid var(--sep);font-weight:600;font-size:14px}
 .tti{display:flex;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--sep)}.tti:last-child{border-bottom:none}.ttn{width:24px;height:24px;border-radius:50%;background:rgba(255,149,0,0.12);color:var(--orange);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}.ttc{font-size:12px;color:var(--text2);line-height:1.6}.ttc strong{color:var(--text)}
-.fc-box{margin-bottom:20px;cursor:pointer;border-radius:var(--r);padding:28px 24px;box-shadow:var(--sh);text-align:center;min-height:220px;transition:all .4s}
-.fc-front{background:linear-gradient(145deg,rgba(255,255,255,0.9),rgba(240,240,245,0.8));display:flex;flex-direction:column;justify-content:center;align-items:center}
-.fc-back{background:linear-gradient(145deg,rgba(200,230,200,0.9),rgba(180,220,180,0.8));display:none;flex-direction:column;justify-content:center;align-items:center}
-.fc-box.flipped .fc-front{display:none}.fc-box.flipped .fc-back{display:flex}
+.fc-wrap{perspective:800px;margin-bottom:20px;cursor:pointer}
+.fc-box{border-radius:var(--r);text-align:center;min-height:220px;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(.4,0,.2,1)}
+.fc-box.flipped{transform:rotateY(180deg)}
+.fc-front,.fc-back{border-radius:var(--r);padding:28px 24px;box-shadow:var(--sh);display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:220px;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.fc-front{background:linear-gradient(145deg,rgba(255,255,255,0.95),rgba(240,240,245,0.9))}
+.fc-back{background:linear-gradient(145deg,rgba(200,230,200,0.95),rgba(180,220,180,0.9));position:absolute;top:0;left:0;width:100%;transform:rotateY(180deg)}
 .fcl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}.fcl.fr{color:var(--red)}.fcl.bk{color:var(--green)}
 .fcs{font-size:12px;color:var(--text3);margin-bottom:14px;padding:4px 12px;background:rgba(118,118,128,0.08);border-radius:14px}
 .fcq{font-size:20px;font-weight:700;line-height:1.4;max-width:90%}.fca{font-size:16px;line-height:1.7;color:var(--text2);max-width:90%}
@@ -246,7 +248,7 @@
 <div class="fg" id="fg-tax">
 <div class="fcard"><div class="fch">💼 增值税</div><div><div class="fi"><div class="fin">一般计税</div><div class="fie">应纳税额 = 销项税额 - 进项税额</div></div></div></div>
 <div class="fcard"><div class="fch">🏢 企业所得税</div><div><div class="fi"><div class="fin">招待费</div><div class="fie">min(发生额×60%, 营业收入×5‰)</div></div><div class="fi"><div class="fin">广告费</div><div class="fie">营业收入 × 15%</div></div><div class="fi"><div class="fin">福利费</div><div class="fie">工资总额 × 14%</div></div></div></div>
-</div></div>
+</div></div></div>
 <!-- 会计分录重点 -->
 <div class="sec" id="sec-journal"><div class="sh"><div class="si" style="background:var(--green)">📒</div><h2>会计分录重点</h2></div>
 <div class="tcc"><div class="tcch">采购业务</div>
@@ -313,10 +315,10 @@
 <button class="ftb" onclick="filterFlashcards(this,'经济法')" style="background:var(--purple);color:#fff;border-color:var(--purple)">经济法</button>
 </div>
 <div class="fcp"><div class="fcpb" id="fcProgressBar" style="width:0%"></div></div>
-<div class="fc-box" id="fcBox" onclick="flipCard()">
+<div class="fc-wrap"><div class="fc-box" id="fcBox" onclick="flipCard()">
 <div class="fc-front"><div class="fcl fr">QUESTION</div><div class="fcs" id="fcSubject"></div><div class="fcq" id="fcQuestion"></div><div class="fch2">点击卡片查看答案</div></div>
 <div class="fc-back"><div class="fcl bk">ANSWER</div><div class="fca" id="fcAnswer"></div><div class="fch2">点击卡片返回问题</div></div>
-</div>
+</div></div>
 <div class="fcn"><button class="fcnb" onclick="prevCard()">◀</button><div class="fcc2" id="fcCounter">1 / 1</div><button class="fcnb pri" onclick="nextCard()">▶</button></div></div>
 </div>
 <div class="ft"><p>数据来源：中国注册会计师协会 · 2026年考试大纲</p></div>
@@ -390,6 +392,16 @@ var flashcards=[
 {subject:'会计',q:'股份支付两种类型？',a:'权益结算(授予日公允价值)、现金结算(资产负债表日公允价值)。'},
 {subject:'会计',q:'或有事项确认条件？',a:'现时义务+很可能流出+金额可靠→预计负债。'},
 {subject:'会计',q:'资产减值可收回金额？',a:'公允价值减处置费用 vs 未来现金流量现值，取较高者。'},
+{subject:'会计',q:'同一控制vs非同一控制企业合并？',a:'同一控制：账面价值法。非同一控制：购买法，确认商誉。'},
+{subject:'会计',q:'无形资产研发支出？',a:'研究阶段全部费用化；开发阶段满足5个条件可资本化。'},
+{subject:'会计',q:'投资性房地产后续计量？',a:'成本模式(计提折旧摊销) vs 公允价值模式(不计提折旧)。'},
+{subject:'会计',q:'公允价值层次？',a:'第一层次：活跃市场报价。第二层次：可观察输入值。第三层次：不可观察输入值。'},
+{subject:'会计',q:'每股收益计算？',a:'基本EPS=净利润÷加权平均普通股数。稀释EPS考虑可转债/认股权证。'},
+{subject:'会计',q:'政府补助处理方法？',a:'总额法(递延收益分期确认)；净额法(冲减资产账面价值或成本费用)。'},
+{subject:'会计',q:'会计政策变更vs估计变更？',a:'政策变更→追溯调整法。估计变更→未来适用法。'},
+{subject:'会计',q:'合并报表抵销分录？',a:'长投与所有者权益抵销、内部交易抵销、内部债权债务抵销。'},
+{subject:'会计',q:'可抵扣vs应纳税暂时性差异？',a:'可抵扣：资产账面<计税基础→DTA。应纳税：资产账面>计税基础→DTL。'},
+{subject:'会计',q:'资产组减值如何分配？',a:'先抵减商誉→再按各资产组账面价值比重分配减值损失。'},
 {subject:'审计',q:'审计风险模型？',a:'AR=IR×CR×DR。'},
 {subject:'审计',q:'重要性水平？',a:'基准×百分比(5-10%)。实际执行=整体×50-75%。'},
 {subject:'审计',q:'内部控制五要素？',a:'控制环境、风险评估、信息沟通、控制活动、监督。'},
@@ -406,6 +418,12 @@ var flashcards=[
 {subject:'审计',q:'控制测试vs实质性程序？',a:'控制测试：测试内控运行有效性。实质性程序：发现认定层次重大错报。'},
 {subject:'审计',q:'质量管理六大要素？',a:'领导责任、职业道德、承接保持、业务执行、资源配置、信息沟通。'},
 {subject:'审计',q:'审计师独立性要求？',a:'实质独立(心态)和形式独立(外在)。'},
+{subject:'审计',q:'审计证据充分性和适当性？',a:'充分性=数量；适当性=质量(相关性+可靠性)。'},
+{subject:'审计',q:'IT一般控制和应用控制？',a:'一般控制：程序变更/开发/操作/访问控制。应用控制：输入/处理/输出控制。'},
+{subject:'审计',q:'舞弊审计三大风险？',a:'编制虚假报告、侵占资产、管理层凌驾控制之上。'},
+{subject:'审计',q:'审计程序7种类型？',a:'检查、观察、询问、函证、重新计算、重新执行、分析程序。'},
+{subject:'审计',q:'持续经营审计考虑？',a:'评估管理层运用持续经营假设的适当性。重大不确定性→强调事项段。'},
+{subject:'审计',q:'利用专家工作的考虑？',a:'评价专家胜任能力、客观性、工作范围。审计师仍对意见负责。'},
 {subject:'税法',q:'增值税税率？',a:'13%(货物)、9%(建筑/交通/不动产)、6%(服务/金融)。'},
 {subject:'税法',q:'进项税额不得抵扣？',a:'简易计税、免税项目、集体福利、个人消费。'},
 {subject:'税法',q:'企业所得税扣除标准？',a:'招待费min(60%,5‰)、广告费15%、福利费14%、教育经费8%。'},
@@ -416,6 +434,15 @@ var flashcards=[
 {subject:'税法',q:'土地增值税税率？',a:'四级超率累进税率(30%-60%)。'},
 {subject:'税法',q:'房产税税率？',a:'从价1.2%、从租12%(个人出租住房4%)。'},
 {subject:'税法',q:'企业所得税优惠？',a:'高新15%、小微5%-10%、研发费用加计扣除100%。'},
+{subject:'税法',q:'增值税视同销售？',a:'将货物用于无偿赠送/投资/分配/非应税项目。'},
+{subject:'税法',q:'出口退税方法？',a:'免抵退税法(生产企业)、免退税法(外贸企业)。'},
+{subject:'税法',q:'增值税计税方法？',a:'一般计税(销项-进项)；简易计税(征收率3%/5%)。'},
+{subject:'税法',q:'个税经营所得？',a:'5%-35%五级累进税率。'},
+{subject:'税法',q:'土地增值税扣除项目？',a:'取得土地价款+开发成本+开发费用+税金+加计扣除20%。'},
+{subject:'税法',q:'税收保全vs强制执行？',a:'保全：冻结存款/扣押商品。强制：扣缴税款/拍卖财产。'},
+{subject:'税法',q:'印花税征收方式？',a:'比例税率(合同0.3‰)或定额税率(账簿5元/件)。'},
+{subject:'税法',q:'关税完税价格？',a:'成交价格+运费+保险费(进口)。'},
+{subject:'税法',q:'增值税进项税额抵扣凭证？',a:'增值税专用发票、海关进口缴款书、农产品收购发票。'},
 {subject:'财管',q:'CAPM公式？',a:'R = Rf + β(Rm-Rf)。'},
 {subject:'财管',q:'WACC计算？',a:'WACC = Wd×Kd(1-T) + We×Ke。'},
 {subject:'财管',q:'NPV和IRR？',a:'NPV=Σ[CFt/(1+r)^t]-初始投资。IRR使NPV=0。'},
@@ -424,6 +451,18 @@ var flashcards=[
 {subject:'财管',q:'DOL和DFL？',a:'DOL=M/(M-F)。DFL=EBIT/(EBIT-I)。DTL=DOL×DFL。'},
 {subject:'财管',q:'FCFF和FCFE？',a:'FCFF=EBIT(1-T)+D&A-FCInv-WCInv。FCFE=NI+D&A-FCInv-WCInv+NetBorrow。'},
 {subject:'财管',q:'EVA计算？',a:'EVA = NOPAT - 资本成本总额×WACC。'},
+{subject:'财管',q:'EOQ经济订货量？',a:'EOQ=√(2KD/Kc)。'},
+{subject:'财管',q:'可持续增长率？',a:'g=ROE×利润留存率/(1-ROE×利润留存率)。'},
+{subject:'财管',q:'债券价值评估？',a:'债券价值 = Σ[票面利息/(1+折现率)^t] + 面值/(1+折现率)^n。'},
+{subject:'财管',q:'股票固定增长模型？',a:'P = D1/(Rs-g)。'},
+{subject:'财管',q:'标准成本差异分析？',a:'价格差异=(实际价-标准价)×实际量。数量差异=(实际量-标准量)×标准价。'},
+{subject:'财管',q:'经营杠杆含义？',a:'DOL衡量销量变动对EBIT的放大效应。F越大，DOL越大。'},
+{subject:'财管',q:'三种股利政策？',a:'剩余股利、固定或持续增长股利、固定支付率。'},
+{subject:'财管',q:'产品成本计算方法？',a:'品种法(单步骤)、分批法(单件小批)、分步法(多步骤)。'},
+{subject:'财管',q:'作业成本法原理？',a:'产品消耗作业，作业消耗资源。间接费用按作业动因分配。'},
+{subject:'财管',q:'投资中心评价指标？',a:'投资报酬率=利润/投资额；剩余收益=利润-投资额×资本成本。'},
+{subject:'财管',q:' BS期权定价模型？',a:'C = S0N(d1) - Xe^(-rT)N(d2)。'},
+{subject:'财管',q:'相对价值法？',a:'P/E、P/B、P/S。选择可比企业，按驱动因素调整。'},
 {subject:'战略',q:'五力模型？',a:'现有竞争者/潜在进入者/替代品/供应商议价/购买者议价。'},
 {subject:'战略',q:'SWOT分析？',a:'S优势、W劣势、O机会、T威胁。'},
 {subject:'战略',q:'三种竞争战略？',a:'成本领先、差异化、集中化。'},
@@ -434,6 +473,13 @@ var flashcards=[
 {subject:'战略',q:'平衡计分卡四维度？',a:'财务、客户、内部流程、学习与成长。'},
 {subject:'战略',q:'核心竞争力VRIN？',a:'有价值(V)、稀缺性(R)、难以模仿(I)、不可替代(N)。'},
 {subject:'战略',q:'2027新增ESG？',a:'E环境、S社会、G治理。可持续发展、数字化转型。'},
+{subject:'战略',q:'国际化战略四种？',a:'国际战略、多国本土化、全球战略、跨国战略。'},
+{subject:'战略',q:'组织结构类型？',a:'创业型、职能型、事业部(M型)、矩阵型、H型。'},
+{subject:'战略',q:'企业文化四类型？',a:'权力导向、角色导向、任务导向、人员导向。'},
+{subject:'战略',q:'PEST分析内容？',a:'P政治法律、E经济、S社会文化、T技术环境。'},
+{subject:'战略',q:'产业生命周期？',a:'导入期、成长期、成熟期、衰退期。'},
+{subject:'战略',q:'总体战略三种？',a:'发展战略(一体化/多元化)、稳定战略、收缩战略。'},
+{subject:'战略',q:'战略变革管理？',a:'高层支持、愿景沟通、阶段推进、克服阻力。'},
 {subject:'经济法',q:'诉讼时效？',a:'普通3年，最长20年。'},
 {subject:'经济法',q:'物权变动？',a:'公示原则：交付(动产)/登记(不动产)。'},
 {subject:'经济法',q:'合伙企业？',a:'普通合伙(无限连带)、有限合伙(出资额为限)。'},
@@ -442,5 +488,12 @@ var flashcards=[
 {subject:'经济法',q:'反垄断行为？',a:'垄断协议、滥用市场支配地位、经营者集中。'},
 {subject:'经济法',q:'破产原因？',a:'不能清偿到期债务+资不抵债/明显缺乏清偿能力。'},
 {subject:'经济法',q:'票据行为？',a:'出票、背书、承兑、保证。'},
+{subject:'经济法',q:'合同抗辩权？',a:'同时履行抗辩权、先履行抗辩权、不安抗辩权。'},
+{subject:'经济法',q:'保证方式？',a:'一般保证(先诉抗辩权)、连带责任保证。'},
+{subject:'经济法',q:'公司治理结构？',a:'股东会(权力)→董事会(决策)→监事会(监督)。'},
+{subject:'经济法',q:'有限责任vs股份有限公司？',a:'有限责任：股东≤50人。股份有限：发起人2-200人。'},
+{subject:'经济法',q:'内幕交易禁止？',a:'内幕信息知情人在信息公开前不得买卖证券。'},
+{subject:'经济法',q:'注册制核心？',a:'以信息披露为核心，交易所审核，证监会注册。'},
+{subject:'经济法',q:'国有独资公司？',a:'不设股东会，由国资委行使股东会职权。'},
 ];
 </script></body></html>
