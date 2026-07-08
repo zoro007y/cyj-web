@@ -42,6 +42,17 @@
 .mmct{font-weight:600;font-size:15px;color:var(--teal)}.mmcc{display:none;padding-top:8px;border-top:1px solid rgba(90,200,250,0.2)}.mmc.op .mmcc{display:block}
 .mmci{font-size:13px;color:var(--text2);padding:6px 0;line-height:1.7;border-bottom:1px solid rgba(90,200,250,0.1)}.mmci:last-child{border-bottom:none}.mmci strong{color:var(--text)}
 .ft{text-align:center;padding:20px 16px;font-size:11px;color:var(--text3)}.st{position:fixed;bottom:24px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;box-shadow:0 2px 12px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:all .3s;z-index:99}.st.show{opacity:1}
+/* Tree Mindmap CSS */
+.mm-tree-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:10px 0 10px 4px}
+.mm-tree{display:inline-flex;align-items:center;min-width:max-content}
+.mm-tr{display:inline-flex;align-items:center;padding:10px 20px;border-radius:24px;font-size:14px;font-weight:700;white-space:nowrap;flex-shrink:0;color:#fff}
+.mm-bl{display:flex;flex-direction:column;gap:14px;margin-left:0;padding-left:24px;border-left:3px solid var(--bc,#5ac8fa)}
+.mm-bn{display:flex;align-items:center;gap:0;position:relative}
+.mm-bn::before{content:'';position:absolute;left:-24px;top:50%;width:24px;height:3px;background:var(--bc,#5ac8fa)}
+.mm-l1{display:inline-block;padding:7px 16px;border-radius:18px;font-size:13px;font-weight:600;white-space:nowrap;border:2px solid var(--bc,#5ac8fa);background:rgba(255,255,255,0.95);color:var(--bc,#5ac8fa)}
+.mm-sl{display:flex;flex-direction:column;gap:8px;margin-left:0;padding-left:20px;border-left:2px solid var(--bc2,rgba(90,200,250,0.3));margin-top:0}
+.mm-l2{display:inline-block;padding:4px 12px;border-radius:12px;font-size:12px;white-space:nowrap;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.08);color:var(--text2);position:relative}
+.mm-l2::before{content:'';position:absolute;left:-20px;top:50%;width:20px;height:2px;background:var(--bc2,rgba(90,200,250,0.3))}
 </style></head><body>
 <div class="hd"><div class="hd-left"><h1>CPA 2027</h1><div class="sub">注册会计师考试大纲 · 知识点全览（基于2026官方大纲）</div></div>
 <div class="hd-right"><button class="back-btn" id="backBtn" onclick="switchTab('overview')">← 返回</button></div></div>
@@ -190,45 +201,9 @@
 <div class="ki" onclick="this.classList.toggle('exp')"><div class="kh"><div class="kd n"></div><div class="kb">第7章 ESG战略(2027新增)</div><div class="ka">▶</div></div><div class="kd2"><p><strong>ESG：</strong>E环境/S社会/G治理</p><p><strong>数字化转型：</strong>利用数字技术重塑业务模式</p></div></div>
 </div></div><!-- 思维导图 -->
 <div class="sec" id="sec-mindmap"><div class="sh"><div class="si" style="background:var(--teal)">🧠</div><h2>思维导图（要点速记）</h2></div>
-<div class="ft2"><button class="ftb act" onclick="switchMindmap(this,'mm-acc')">会计</button><button class="ftb" onclick="switchMindmap(this,'mm-aud')">审计</button><button class="ftb" onclick="switchMindmap(this,'mm-tax')">税法</button><button class="ftb" onclick="switchMindmap(this,'mm-fm')">财管</button><button class="ftb" onclick="switchMindmap(this,'mm-str')">战略</button></div>
-<div class="fg act" id="mm-acc">
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第1章 总论</div><div class="mmcc"><div class="mmci">假设：主体/持续经营/分期/货币</div><div class="mmci">质量要求：8项</div><div class="mmci">要素：6要素</div><div class="mmci">计量：5种属性</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第2章 会计政策变更</div><div class="mmcc"><div class="mmci">政策变更→追溯调整法</div><div class="mmci">估计变更→未来适用法</div><div class="mmci">差错更正→追溯重述法</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第3章 存货</div><div class="mmcc"><div class="mmci">发出：先进先出/移动加权/月末加权/个别计价</div><div class="mmci">期末：成本与可变现净值孰低</div><div class="mmci">跌价准备可转回</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第4章 固定资产</div><div class="mmcc"><div class="mmci">折旧4法</div><div class="mmci">减值不得转回</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第5章 无形资产</div><div class="mmcc"><div class="mmci">研发：研究费用化/开发满足条件资本化</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第6章 投资性房地产</div><div class="mmcc"><div class="mmci">成本模式 vs 公允价值模式</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第7章 长期股权投资</div><div class="mmcc"><div class="mmci">成本法：控制→初始成本</div><div class="mmci">权益法：重大影响→按份额调整</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第8章 资产减值</div><div class="mmcc"><div class="mmci">可收回金额取较高者</div><div class="mmci">长期资产减值不得转回</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第9-12章</div><div class="mmcc"><div class="mmci">负债/职工薪酬/借款费用/股份支付</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第13-16章</div><div class="mmcc"><div class="mmci">或有事项/金融工具/租赁/收入(五步法)</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第17-22章</div><div class="mmcc"><div class="mmci">政府补助/所得税/外币/日后事项/企业合并/合并报表</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第23-30章</div><div class="mmcc"><div class="mmci">每股收益/公允价值/政府会计/持有待售/关联方/金融工具列报/综合案例/ESG(2027新增)</div></div></div>
+<div class="ft2"><button class="ftb act" onclick="switchMindmap(this,'acc')">会计</button><button class="ftb" onclick="switchMindmap(this,'aud')">审计</button><button class="ftb" onclick="switchMindmap(this,'tax')">税法</button><button class="ftb" onclick="switchMindmap(this,'fm')">财管</button><button class="ftb" onclick="switchMindmap(this,'str')">战略</button></div>
+<div id="mindmapContent"></div>
 </div>
-<div class="fg" id="mm-aud">
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第1-4章</div><div class="mmcc"><div class="mmci">概述/计划/证据/抽样</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第5-8章</div><div class="mmcc"><div class="mmci">信息技术/工作底稿/风险评估/风险应对</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第9-18章</div><div class="mmcc"><div class="mmci">各业务循环/舞弊/沟通/集团审计/完成审计</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第19章 审计报告</div><div class="mmcc"><div class="mmci">4种意见：无保留/保留/否定/无法表示</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第20-23章</div><div class="mmcc"><div class="mmci">质量管理/职业道德/数据分析(2027新增)</div></div></div>
-</div>
-<div class="fg" id="mm-tax">
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第1-3章</div><div class="mmcc"><div class="mmci">税法总论/增值税(13%/9%/6%)/消费税</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第4-5章</div><div class="mmcc"><div class="mmci">企业所得税(25%/15%/5%)/个人所得税(3%-45%)</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第6-11章</div><div class="mmcc"><div class="mmci">城建税/关税/资源税/土地使用税/房产税/车船税</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第12-14章</div><div class="mmcc"><div class="mmci">国际税收/征管法/行政法制</div></div></div>
-</div>
-<div class="fg" id="mm-fm">
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第1-3章</div><div class="mmcc"><div class="mmci">CAPM/WACC/杜邦ROE</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第4-8章</div><div class="mmcc"><div class="mmci">资本成本/NPV/IRR/期权/估值</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第9-12章</div><div class="mmcc"><div class="mmci">DOL/DFL/DTL/筹资/股利/营运资本</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第13-21章</div><div class="mmcc"><div class="mmci">成本/标准成本/作业成本/本量利/预算/EVA</div></div></div>
-</div>
-<div class="fg" id="mm-str">
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第1-2章</div><div class="mmcc"><div class="mmci">PEST/五力/价值链/BCG/SWOT</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第3-4章</div><div class="mmcc"><div class="mmci">总体战略/差异化/国际化/平衡计分卡</div></div></div>
-<div class="mmc" onclick="this.classList.toggle('op')"><div class="mmct">第5-7章</div><div class="mmcc"><div class="mmci">风险管理/COSO五要素/ESG(2027新增)</div></div></div>
-</div></div>
 <!-- 公式速查 -->
 <div class="sec" id="sec-formulas"><div class="sh"><div class="si" style="background:var(--purple)">📐</div><h2>公式速查</h2></div>
 <div class="ft2"><button class="ftb act" onclick="switchFormulaTab(this,'fmo')">财管</button><button class="ftb" onclick="switchFormulaTab(this,'fma')">会计</button><button class="ftb" onclick="switchFormulaTab(this,'tax')">税法</button></div>
@@ -333,6 +308,7 @@ if(sec)sec.classList.add('active');
 var m={accounting:'会计',audit:'审计',tax:'税法',law:'经济法',fm:'财管',strategy:'战略',mindmap:'导图',formulas:'公式',journal:'分录',tips:'技巧',flashcard:'卡片'};
 document.querySelectorAll('.tb').forEach(function(b){if(b.textContent.indexOf(m[id])>=0)b.classList.add('active')});
 if(id==='flashcard'){fcCards=flashcards.slice();shuffleArray(fcCards);fcIndex=0;renderCard()}
+if(id==='mindmap'){var mc=document.getElementById('mindmapContent');if(!mc.innerHTML)switchMindmap(document.querySelector('.ftb.act'),'acc')}
 var backBtn=document.getElementById('backBtn');
 if(id!=='overview'){backBtn.classList.add('show')}else{backBtn.classList.remove('show')}
 window.scrollTo({top:0,behavior:'smooth'});
@@ -496,4 +472,110 @@ var flashcards=[
 {subject:'经济法',q:'注册制核心？',a:'以信息披露为核心，交易所审核，证监会注册。'},
 {subject:'经济法',q:'国有独资公司？',a:'不设股东会，由国资委行使股东会职权。'},
 ];
+// Mindmap data and renderer
+var mmData={
+acc:[
+{t:'第1章 总论',b:[{l:'会计假设',s:['会计主体','持续经营','会计分期','货币计量']},{l:'质量要求',s:['可靠性','相关性','可比性','实质重于形式','谨慎性']},{l:'会计要素',s:['资产','负债','所有者权益','收入','费用','利润']},{l:'计量属性',s:['历史成本','重置成本','可变现净值','现值','公允价值']}]},
+{t:'第2章 会计政策变更',b:[{l:'政策变更',s:['追溯调整法','视为初次采用']},{l:'估计变更',s:['未来适用法','变更当期确认']},{l:'差错更正',s:['重要差错→追溯重述','不重要→未来适用']}]},
+{t:'第3章 存货',b:[{l:'初始计量',s:['采购成本','加工成本','其他成本']},{l:'发出计量',s:['先进先出','移动加权','月末加权','个别计价']},{l:'期末计量',s:['成本与可变现净值孰低','跌价准备可转回']}]},
+{t:'第4章 固定资产',b:[{l:'折旧方法',s:['年限平均法','工作量法','双倍余额递减法','年数总和法']},{l:'后续支出',s:['资本化(改扩建)','费用化(日常维修)']},{l:'减值',s:['一经确认不得转回']}]},
+{t:'第5章 无形资产',b:[{l:'研发支出',s:['研究→全部费用化','开发→满足5条件资本化']},{l:'摊销',s:['有限寿命→系统摊销','不确定→不摊销']}]},
+{t:'第6章 投资性房地产',b:[{l:'成本模式',s:['计提折旧/摊销','减值准备']},{l:'公允价值模式',s:['不计提折旧','公允价值变动→损益']},{l:'转换',s:['成本→公允：追溯调整']}]},
+{t:'第7章 长期股权投资',b:[{l:'成本法(控制)',s:['初始成本计量','宣告股利→投资收益']},{l:'权益法(重大影响)',s:['初始成本调整','净利润份额→投资收益']},{l:'核算转换',s:['成本法→权益法：追溯调整']}]},
+{t:'第8章 资产减值',b:[{l:'可收回金额',s:['公允价值-处置费用','未来现金流量现值','取较高者']},{l:'减值转回',s:['长期资产减值不得转回']}]},
+{t:'第9章 负债',b:[{l:'流动负债',s:['短期借款','应付账款','应付职工薪酬','应交税费']},{l:'非流动负债',s:['长期借款','应付债券','长期应付款']}]},
+{t:'第10章 职工薪酬',b:[{l:'短期薪酬',s:['工资奖金','福利费','社保公积金']},{l:'离职后福利',s:['设定提存计划','设定受益计划']},{l:'辞退福利',s:['解除劳动关系补偿']}]},
+{t:'第11章 借款费用',b:[{l:'资本化条件',s:['资产支出已发生','借款费用已发生','购建活动已开始']},{l:'暂停与停止',s:['非正常中断>3月→暂停','达到预定状态→停止']}]},
+{t:'第12章 股份支付',b:[{l:'权益结算',s:['授予日公允价值','等待期估计可行权数量']},{l:'现金结算',s:['资产负债表日重新计量']}]},
+{t:'第13章 或有事项',b:[{l:'预计负债确认',s:['现时义务','很可能流出','金额可靠']},{l:'最佳估计数',s:['连续范围→中间值','单项目→最可能金额','多项目→概率计算']}]},
+{t:'第14章 金融工具',b:[{l:'三分类',s:['AC(摊余成本)','FVOCI(其他综合收益)','FVTPL(当期损益)']},{l:'SPPI测试',s:['合同现金流=本金+利息→AC/FVOCI']},{l:'减值ECL',s:['12个月ECL','整个存续期ECL']}]},
+{t:'第15章 租赁',b:[{l:'识别',s:['已识别资产','获得几乎全部经济利益','主导资产使用']},{l:'承租人处理',s:['使用权资产=成本','租赁负债=现值']}]},
+{t:'第16章 收入',b:[{l:'五步法',s:['识别合同','识别履约义务','确定交易价格','分摊','确认收入']},{l:'特殊交易',s:['销售退回','质量保证','主要责任人vs代理人']}]},
+{t:'第17章 政府补助',b:[{l:'总额法',s:['递延收益','分期计入其他收益']},{l:'净额法',s:['冲减资产账面价值']}]},
+{t:'第18章 所得税',b:[{l:'暂时性差异',s:['DTL(应纳税)','DTA(可抵扣)']},{l:'所得税费用',s:['当期所得税+递延所得税']},{l:'计量',s:['暂时性差异×税率']}]},
+{t:'第19章 外币折算',b:[{l:'货币性项目',s:['期末即期汇率折算','差额→财务费用']},{l:'非货币性',s:['历史成本→交易日汇率']}]},
+{t:'第20章 日后事项',b:[{l:'调整事项',s:['资产负债表日已存在','调整报告年度报表']},{l:'非调整事项',s:['日后发生','附注披露']}]},
+{t:'第21章 企业合并',b:[{l:'同一控制',s:['账面价值法','差额→资本公积']},{l:'非同一控制',s:['购买法','商誉=合并成本-公允价值份额']}]},
+{t:'第22章 合并报表',b:[{l:'合并范围',s:['控制=权力+可变回报+影响']},{l:'抵销分录',s:['长投vs所有者权益','内部交易','内部债权债务']}]},
+{t:'第23-30章',b:[{l:'每股收益',s:['基本EPS','稀释EPS']},{l:'公允价值',s:['三层次计量']},{l:'2027新增',s:['政府会计','ESG信息披露']}]},
+],
+aud:[
+{t:'第1章 审计概述',b:[{l:'合理保证',s:['高水平保证但非绝对']},{l:'总体目标',s:['财务报表整体不存在重大错报']}]},
+{t:'第2章 审计计划',b:[{l:'重要性',s:['整体=基准×5%-10%','实际执行=整体×50-75%']},{l:'审计策略',s:['范围/时间/方向/资源']}]},
+{t:'第3章 审计证据',b:[{l:'充分性',s:['数量衡量']},{l:'适当性',s:['相关性+可靠性']},{l:'可靠性排序',s:['外部>内部','直接>间接','文件>口头']}]},
+{t:'第4章 审计抽样',b:[{l:'属性抽样',s:['控制测试','估计总体偏差率']},{l:'变量抽样',s:['细节测试','估计总体金额']}]},
+{t:'第5章 IT审计(2027变动)',b:[{l:'一般控制',s:['程序变更/开发/操作','访问控制']},{l:'应用控制',s:['输入/处理/输出控制']},{l:'2027新增',s:['AI/区块链审计']}]},
+{t:'第6章 工作底稿',b:[{l:'归档',s:['审计报告日后60天内']},{l:'保存',s:['至少10年']}]},
+{t:'第7章 风险评估',b:[{l:'了解被审计单位',s:['行业状况','法律环境','被审计单位性质']},{l:'了解内控五要素',s:['控制环境','风险评估','信息系统','控制活动','监督']},{l:'特别风险',s:['舞弊风险','管理层凌驾']}]},
+{t:'第8章 风险应对',b:[{l:'总体应对',s:['职业怀疑','经验人员','督导']},{l:'控制测试',s:['测试内控运行有效性']},{l:'实质性程序',s:['细节测试','实质性分析']}]},
+{t:'第9-12章 业务循环',b:[{l:'销售与收款',s:['营业收入','应收账款函证']},{l:'采购与付款',s:['应付账款','未入账负债']},{l:'生产与存货',s:['存货监盘','计价测试']},{l:'货币资金',s:['银行存款必函','库存现金突击盘点']}]},
+{t:'第13章 舞弊',b:[{l:'舞弊类型',s:['虚假报告','侵占资产']},{l:'管理层凌驾应对',s:['测试日记账','复核估计','评价交易']}]},
+{t:'第14-15章 沟通与利用',b:[{l:'与治理层沟通',s:['审计责任','范围','重大问题']},{l:'利用他人',s:['内部审计→独立性','专家工作→胜任力']}]},
+{t:'第16章 集团审计',b:[{l:'组成部分重要性',s:['低于集团整体']},{l:'沟通',s:['确定方向','通报重要性']}]},
+{t:'第17-18章 完成审计',b:[{l:'关联方',s:['识别全部','检查交易']},{l:'期后事项',s:['第一时段→主动识别','第二时段→知悉修改']},{l:'书面声明',s:['确认责任','不能替代证据']}]},
+{t:'第19章 审计报告',b:[{l:'四种意见',s:['无保留','保留','否定','无法表示']},{l:'关键审计事项',s:['治理层沟通事项中选取']}]},
+{t:'第20-23章',b:[{l:'内部控制审计',s:['整合审计']},{l:'质量管理',s:['六大要素']},{l:'职业道德',s:['实质+形式独立']},{l:'2027新增',s:['数据分析','区块链审计']}]},
+],
+tax:[
+{t:'第1章 税法总论',b:[{l:'税法要素',s:['纳税义务人','征税对象','税率']},{l:'基本原则',s:['税收法定','公平','实质课税']}]},
+{t:'第2章 增值税',b:[{l:'税率',s:['13% 货物','9% 建筑/交通/不动产','6% 服务/金融']},{l:'一般计税',s:['销项税额','进项税额抵扣','应纳=销项-进项']},{l:'不得抵扣',s:['简易计税','免税项目','集体福利']}]},
+{t:'第3章 消费税',b:[{l:'从价计征',s:['销售额×比例税率']},{l:'从量计征',s:['销售数量×单位税额']},{l:'复合计征',s:['白酒/卷烟']}]},
+{t:'第4章 企业所得税',b:[{l:'税率',s:['基本25%','高新15%','小微5%']},{l:'扣除标准',s:['福利费≤14%','广告费≤15%','招待费min(60%,5‰)','研发加计100%']}]},
+{t:'第5章 个人所得税',b:[{l:'综合所得',s:['工资+劳务+稿酬+特许','3%-45%七级累进']},{l:'专项附加扣除',s:['子女教育2000/月','房贷1000/月','赡养老人3000/月']}]},
+{t:'第6-11章 小税种',b:[{l:'城建税',s:['市区7%/县镇5%/其他1%']},{l:'房产税',s:['从价1.2%/从租12%']},{l:'土地增值税',s:['四级超率累进30%-60%']},{l:'印花税',s:['比例/定额']}]},
+{t:'第12-14章',b:[{l:'国际税收',s:['抵免法/免税法']},{l:'征管法',s:['保全/强制执行']},{l:'行政法制',s:['必经复议']}]},
+],
+fm:[
+{t:'第1-3章 基础',b:[{l:'财务管理目标',s:['股东财富最大化']},{l:'杜邦分析',s:['ROE=净利率×周转率×权益乘数']},{l:'CAPM',s:['R=Rf+β(Rm-Rf)']},{l:'WACC',s:['WACC=Wd×Kd(1-T)+We×Ke']}]},
+{t:'第4-5章 投资',b:[{l:'资本成本',s:['税后债务成本','CAPM/股利增长模型']},{l:'NPV',s:['Σ[CFt/(1+r)^t]-初始投资']},{l:'IRR',s:['使NPV=0的折现率']}]},
+{t:'第6-8章 估值',b:[{l:'债券估值',s:['利息现值+面值现值']},{l:'股票估值',s:['P=D1/(Rs-g)']},{l:'期权BS模型',s:['C=S0N(d1)-Xe^(-rT)N(d2)']},{l:'企业估值',s:['FCFF/FCFE','P/E P/B P/S']}]},
+{t:'第9-11章 筹资与分配',b:[{l:'DOL',s:['M/(M-F)']},{l:'DFL',s:['EBIT/(EBIT-I)']},{l:'股利政策',s:['剩余/固定/固定支付率']}]},
+{t:'第12章 营运资本',b:[{l:'EOQ',s:['√(2KD/Kc)']}]},
+{t:'第13-21章 成本管理',b:[{l:'成本计算',s:['品种法/分批法/分步法']},{l:'标准成本',s:['价格差异/数量差异']},{l:'本量利',s:['利润=Q(P-V)-F','盈亏点Q=F/(P-V)']},{l:'EVA',s:['NOPAT-资本成本×WACC']}]},
+],
+str:[
+{t:'第1章 战略管理',b:[{l:'战略层次',s:['公司战略','业务单位战略','职能战略']},{l:'管理过程',s:['分析→选择→实施']}]},
+{t:'第2章 战略分析',b:[{l:'PEST',s:['政治/经济/社会/技术']},{l:'五力模型',s:['竞争者/进入者/替代品/供应商/购买者']},{l:'价值链',s:['基本活动+支持活动']},{l:'VRIN',s:['有价值/稀缺/难模仿/不可替代']},{l:'BCG',s:['明星/现金牛/问题/瘦狗']},{l:'SWOT',s:['S优势/W劣势/O机会/T威胁']}]},
+{t:'第3章 战略选择',b:[{l:'总体战略',s:['发展(一体化/多元化)','稳定','收缩']},{l:'业务单位',s:['成本领先/差异化/集中化']},{l:'国际化',s:['国际/多国本土化/全球/跨国']}]},
+{t:'第4章 战略实施',b:[{l:'组织结构',s:['职能型/M型/矩阵型/H型']},{l:'平衡计分卡',s:['财务/客户/内部流程/学习成长']},{l:'企业文化',s:['权力/角色/任务/人员导向']}]},
+{t:'第5章 风险管理',b:[{l:'风险类型',s:['战略/财务/市场/操作']},{l:'管理流程',s:['收集→评估→应对→监控']},{l:'应对策略',s:['规避/转移/减轻/接受']}]},
+{t:'第6章 内部控制',b:[{l:'COSO五要素',s:['控制环境','风险评估','控制活动','信息沟通','监督']}]},
+{t:'第7章 ESG(2027新增)',b:[{l:'ESG框架',s:['E环境/S社会/G治理']},{l:'数字化转型',s:['数字技术重塑业务']}]},
+]
+};
+
+var mmColors={acc:'#5ac8fa',aud:'#ff9500',tax:'#34c759',fm:'#af52de',str:'#ff2d55'};
+var mmNames={acc:'会计',aud:'审计',tax:'税法',fm:'财管',str:'战略'};
+
+function renderMindmap(key){
+var data=mmData[key];
+var color=mmColors[key];
+var html='<div class="mm-tree-wrap"><div class="mm-tree" style="--bc:'+color+';--bc2:'+color+'44">';
+data.forEach(function(ch){
+html+='<div style="margin-right:40px;display:flex;flex-direction:column;align-items:flex-start">';
+html+='<div class="mm-tr" style="background:'+color+'">'+ch.t+'</div>';
+html+='<div class="mm-bl" style="--bc:'+color+'">';
+ch.b.forEach(function(br){
+html+='<div class="mm-bn" style="--bc:'+color+'">';
+html+='<div class="mm-l1" style="--bc:'+color+';color:'+color+';border-color:'+color+'">'+br.l+'</div>';
+html+='<div class="mm-sl">';
+br.s.forEach(function(s){
+html+='<div class="mm-l2" style="--bc2:'+color+'44">'+s+'</div>';
+});
+html+='</div></div>';
+});
+html+='</div></div>';
+});
+html+='</div></div>';
+return html;
+}
+
+function switchMindmap(btn,key){
+var parent=btn.parentElement;
+parent.querySelectorAll('.ftb').forEach(function(b){b.classList.remove('act')});
+btn.classList.add('act');
+var container=document.getElementById('mindmapContent');
+container.innerHTML=renderMindmap(key);
+}
+
 </script></body></html>
