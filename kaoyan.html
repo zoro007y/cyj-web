@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>11408 深大作战计划</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:oklch(98.5% 0.004 95);
+  --bg-card:oklch(100% 0 0 / 0.78);
+  --text-primary:oklch(18% 0.008 265);
+  --text-secondary:oklch(38% 0.012 260);
+  --text-muted:oklch(55% 0.015 120);
+  --cream:oklch(58% 0.13 78);
+  --mint:oklch(55% 0.13 170);
+  --pink:oklch(52% 0.15 5);
+  --lavender:oklch(48% 0.11 290);
+  --peach:oklch(56% 0.14 45);
+  --sky:oklch(52% 0.1 235);
+  --border:oklch(88% 0.01 90);
+  --radius:clamp(14px,3vw,22px);
+  --radius-sm:clamp(10px,2vw,14px);
+  --shadow-sm:0 1px 3px oklch(0% 0 0 / .06),0 2px 8px oklch(0% 0 0 / .04);
+  --shadow-md:0 2px 6px oklch(0% 0 0 / .08),0 6px 20px oklch(0% 0 0 / .06);
+  --font-display:'Playfair Display','Noto Serif SC',serif;
+  --font-body:'DM Sans',-apple-system,'PingFang SC',sans-serif;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,16px);
+  --tab-h:clamp(56px,12vw,68px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;height:100%}
+body{
+  background:var(--bg);color:var(--text-primary);
+  font-family:var(--font-body);line-height:1.55;height:100%;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ═══ SCROLL AREA ═══ */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--tab-h) + 8px)}
+
+/* ═══ HERO ═══ */
+.hero{
+  position:relative;min-height:clamp(240px,36dvh,340px);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:clamp(16px,3vw,28px) clamp(16px,4vw,24px) clamp(20px,4vw,32px);
+  overflow:hidden;isolation:isolate;
+  background:linear-gradient(170deg,oklch(22% .02 258) 0%,oklch(14% .018 265) 55%,oklch(9% .012 275) 100%);
+}
+.hero-art{
+  position:absolute;inset:0;z-index:0;opacity:.4;
+  background:radial-gradient(ellipse 65% 50% at 80% 20%,oklch(78% .13 80 / .15) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 35% at 18% 68%,oklch(65% .14 5 / .08) 0%,transparent 60%);
+}
+.hero-art::before{
+  content:'';position:absolute;bottom:0;left:4%;right:4%;height:40%;
+  background:linear-gradient(to top,oklch(26% .018 258 / .4) 0%,oklch(24% .015 260 / .18) 100%) 6% 100%/15% 70% no-repeat,
+    linear-gradient(to top,oklch(30% .022 258 / .45) 0%,oklch(26% .016 262 / .2) 100%) 36% 100%/26% 52% no-repeat,
+    linear-gradient(to top,oklch(24% .02 255 / .45) 0%,oklch(20% .014 258 / .18) 100%) 70% 100%/12% 78% no-repeat,
+    linear-gradient(to top,oklch(22% .012 255 / .3) 0%,transparent 100%) 48% 100%/82% 22% no-repeat;
+}
+.hero-art::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:60%;
+  background:linear-gradient(to top,oklch(14% .018 265 / .92) 0%,oklch(14% .018 265 / .45) 45%,transparent 100%);
+}
+.hero-dots{
+  position:absolute;inset:0;z-index:0;opacity:.45;
+  background-image:radial-gradient(2px 2px at 14% 28%,oklch(92% .02 85 / .65),transparent),
+    radial-gradient(1.5px 1.5px at 26% 16%,oklch(90% .02 85 / .5),transparent),
+    radial-gradient(2px 2px at 56% 22%,oklch(92% .02 85 / .55),transparent),
+    radial-gradient(1.5px 1.5px at 72% 14%,oklch(90% .02 85 / .5),transparent),
+    radial-gradient(2px 2px at 84% 32%,oklch(92% .02 85 / .5),transparent),
+    radial-gradient(1.5px 1.5px at 38% 38%,oklch(88% .01 200 / .4),transparent),
+    radial-gradient(2px 2px at 64% 30%,oklch(88% .01 200 / .45),transparent);
+}
+.hero-content{position:relative;z-index:1}
+.hero-badge{
+  display:inline-block;padding:clamp(4px,.8vw,6px) clamp(10px,1.8vw,14px);
+  background:oklch(32% .05 5 / .5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:999px;font-size:clamp(.68rem,1.3vw,.78rem);font-weight:600;
+  color:var(--pink);letter-spacing:.04em;margin-bottom:clamp(10px,1.5vw,14px);
+  border:1px solid oklch(40% .05 5 / .25);
+}
+.hero h1{font-family:var(--font-display);font-size:clamp(1.6rem,5vw,2.3rem);font-weight:700;letter-spacing:-.015em;line-height:1.15;color:oklch(96% .003 90);margin-bottom:clamp(3px,.8vw,6px)}
+.hero h1 span{color:var(--cream)}
+.hero-sub{font-size:clamp(.76rem,1.7vw,.9rem);color:oklch(72% .008 120);margin-bottom:clamp(12px,2.5vw,18px)}
+.hero-stats{display:flex;gap:clamp(8px,2vw,16px);flex-wrap:wrap}
+.hero-stat{text-align:center;padding:clamp(8px,1.5vw,12px) clamp(10px,2vw,16px);background:oklch(22% .015 265 / .45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius-sm);border:1px solid oklch(32% .012 265 / .3);min-width:clamp(52px,12vw,72px)}
+.hero-stat-val{font-family:var(--font-display);font-size:clamp(1.05rem,2.6vw,1.4rem);font-weight:700;color:var(--cream);line-height:1.1}
+.hero-stat-lbl{font-size:clamp(.58rem,1.15vw,.7rem);color:oklch(66% .01 120);margin-top:2px}
+
+/* ═══ EXAM SCHEDULE ═══ */
+.exam-sch{background:oklch(20% .018 260);color:oklch(96% .003 90);padding:clamp(14px,2.5vw,20px) clamp(16px,4vw,24px);text-align:center}
+.exam-sch-title{font-family:var(--font-display);font-size:clamp(.88rem,1.8vw,1rem);margin-bottom:clamp(10px,1.5vw,14px);color:var(--cream)}
+.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(6px,1.2vw,8px);max-width:400px;margin:0 auto}
+.exam-day{border:1px solid oklch(32% .012 265 / .4);border-radius:var(--radius-sm);padding:clamp(8px,1.5vw,12px);text-align:left}
+.exam-day-label{font-size:clamp(.56rem,1.05vw,.64rem);color:oklch(62% .01 200);margin-bottom:3px;letter-spacing:.04em;text-transform:uppercase}
+.exam-day-date{font-size:clamp(.62rem,1.2vw,.72rem);margin-bottom:6px;color:oklch(82% .005 200)}
+.exam-slot{display:flex;justify-content:space-between;align-items:center;padding:clamp(4px,.8vw,6px) 0;border-bottom:1px solid oklch(26% .01 260 / .6);font-size:clamp(.66rem,1.25vw,.76rem)}
+.exam-slot:last-child{border-bottom:none}
+.exam-slot-time{color:oklch(60% .01 200);font-size:clamp(.56rem,1.05vw,.64rem);white-space:nowrap;margin-right:6px}
+
+/* ═══ SHELL ═══ */
+.shell{max-width:480px;margin:0 auto;padding:0 clamp(14px,3.5vw,22px)}
+
+/* ═══ SECTION ═══ */
+.section{margin-bottom:clamp(18px,3.5vw,28px)}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:clamp(12px,2vw,16px)}
+.sec-head h2{font-family:var(--font-display);font-size:clamp(1rem,2.3vw,1.25rem);font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.sec-head .hl{flex:1;height:1px;background:var(--border)}
+
+/* ═══ CARD ═══ */
+.card{background:var(--bg-card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,22px);transition:all .3s cubic-bezier(.22,.61,.36,1)}
+.card:active{box-shadow:var(--shadow-md);transform:scale(.988)}
+
+/* ═══ STAT ROW ═══ */
+.sr{display:flex;align-items:center;gap:8px;padding:clamp(8px,1.5vw,10px) 0;border-bottom:1px solid oklch(92% .006 90)}
+.sr:last-child{border-bottom:none}
+.sr-ico{width:clamp(28px,5.5vw,34px);height:clamp(28px,5.5vw,34px);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:clamp(.7rem,1.35vw,.8rem);font-weight:700}
+.sr-info{flex:1;min-width:0}
+.sr-name{font-size:clamp(.76rem,1.5vw,.86rem);font-weight:600}
+.sr-detail{font-size:clamp(.66rem,1.2vw,.74rem);color:var(--text-muted);margin-top:1px}
+.sr-pct{font-family:var(--font-display);font-size:clamp(.88rem,1.7vw,1rem);font-weight:600;flex-shrink:0}
+.sr-bar-wrap{flex:1;min-width:30px;height:5px;background:oklch(92% .008 90);border-radius:3px;overflow:hidden}
+.sr-bar{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.22,.61,.36,1)}
+
+/* ═══ DATA BOX ═══ */
+.db{display:grid;grid-template-columns:1fr 1fr;gap:clamp(6px,1.2vw,8px)}
+.db-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:clamp(10px,1.8vw,14px);text-align:center}
+.db-item h4{font-size:clamp(.64rem,1.2vw,.72rem);color:var(--text-muted);margin-bottom:5px}
+.db-item .db-val{font-family:var(--font-display);font-size:clamp(.95rem,1.8vw,1.15rem);font-weight:700}
+.db-item .db-sub{font-size:clamp(.56rem,1vw,.64rem);color:var(--text-muted);margin-top:1px}
+
+/* ═══ PILLS ═══ */
+.pills{display:flex;flex-wrap:wrap;gap:clamp(5px,1.2vw,8px);margin-top:clamp(10px,2vw,14px)}
+.pill{padding:clamp(5px,.8vw,7px) clamp(10px,1.6vw,14px);border-radius:999px;font-size:clamp(.64rem,1.2vw,.72rem);font-weight:500;background:oklch(95% .008 90);border:1px solid var(--border);color:var(--text-secondary)}
+
+/* ═══ SUBJECT TABS ═══ */
+.sub-tabs{display:flex;gap:4px;margin-bottom:clamp(10px,2vw,14px);overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.sub-tab{padding:clamp(6px,1.2vw,8px) clamp(12px,2vw,16px);border-radius:999px;font-size:clamp(.68rem,1.3vw,.76rem);font-weight:500;border:1px solid var(--border);background:var(--bg);color:var(--text-secondary);cursor:pointer;white-space:nowrap;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.sub-tab.active{color:#fff;border-color:transparent}
+.sub-tab.math.active{background:var(--cream)}.sub-tab.cs.active{background:var(--mint)}.sub-tab.eng.active{background:var(--peach)}.sub-tab.pol.active{background:var(--lavender)}
+
+/* ═══ MONTHLY PLAN TABLE ═══ */
+.mp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px}
+.mp-table{width:100%;min-width:540px;border-collapse:collapse;font-size:clamp(.66rem,1.25vw,.74rem)}
+.mp-table th{text-align:left;padding:clamp(7px,1.3vw,10px) 6px;font-weight:600;color:var(--text-muted);font-size:clamp(.6rem,1.05vw,.68rem);letter-spacing:.04em;border-bottom:1px solid var(--border);white-space:nowrap}
+.mp-table td{padding:clamp(7px,1.3vw,10px) 6px;border-bottom:1px solid oklch(94% .005 90);color:var(--text-secondary);vertical-align:top;line-height:1.55}
+.mp-table td:first-child{font-weight:700;white-space:nowrap}
+.mp-table tr:active td{background:oklch(96% .006 90)}
+
+/* ═══ PHASE CARDS ═══ */
+.pg{display:flex;flex-direction:column;gap:clamp(8px,1.5vw,12px)}
+.pc{background:var(--bg-card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,18px);transition:all .3s;position:relative;overflow:hidden}
+.pc:active{transform:scale(.988)}
+.pc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 3px 3px 0}
+.pc.p1::before{background:var(--pink)}.pc.p2::before{background:var(--mint)}.pc.p3::before{background:var(--sky)}
+.pc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:clamp(8px,1.5vw,12px)}
+.pc-title{font-family:var(--font-display);font-size:clamp(.88rem,1.8vw,1rem);font-weight:600}
+.pc-date{font-size:clamp(.62rem,1.15vw,.7rem);color:var(--text-muted)}
+.pc-chip{display:inline-flex;align-items:center;gap:4px;padding:clamp(3px,.6vw,5px) clamp(8px,1.4vw,10px);border-radius:999px;font-size:clamp(.6rem,1.1vw,.68rem);margin:2px 2px 2px 0;background:oklch(96% .008 90);border:1px solid var(--border);color:var(--text-secondary)}
+
+/* ═══ CALENDAR ═══ */
+.cal-tabs{display:flex;gap:4px;margin-bottom:clamp(8px,1.5vw,12px);overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.cal-tab{padding:clamp(6px,1.2vw,8px) clamp(12px,2vw,16px);border-radius:999px;font-size:clamp(.68rem,1.3vw,.76rem);font-weight:500;border:1px solid var(--border);background:var(--bg);color:var(--text-secondary);cursor:pointer;white-space:nowrap;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.cal-tab.active{background:oklch(22% .02 260);color:oklch(96% .003 90);border-color:oklch(22% .02 260)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(2px,.6vw,4px)}
+.cal-dow{text-align:center;font-size:clamp(.56rem,1vw,.64rem);color:var(--text-muted);font-weight:600;padding:clamp(3px,.6vw,5px) 0}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:50%;font-size:clamp(.64rem,1.2vw,.72rem);font-weight:500;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;color:var(--text-secondary);min-height:clamp(30px,7vw,38px)}
+.cal-day:active{transform:scale(.88)}
+.cal-day.empty{pointer-events:none;color:oklch(80% .005 90)}
+.cal-day.today{font-weight:700;color:var(--pink)}
+.cal-day.has-hours{background:oklch(95% .02 80)}
+.cal-day.has-hours.mid{background:oklch(90% .04 80)}
+.cal-day.has-hours.high{background:oklch(85% .06 80)}
+.cal-hours{font-size:clamp(.44rem,.8vw,.5rem);color:var(--text-muted);line-height:1}
+.cal-total{text-align:center;font-size:clamp(.66rem,1.25vw,.74rem);color:var(--text-muted);margin-top:clamp(8px,1.5vw,12px)}
+.cal-total strong{color:var(--cream);font-family:var(--font-display);font-size:clamp(.8rem,1.5vw,.9rem)}
+.cal-modal{position:fixed;inset:0;background:oklch(0% 0 0 / .35);z-index:999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.cal-modal.show{display:flex}
+.cal-modal-card{background:var(--bg-card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:clamp(18px,3vw,24px);width:min(300px,82vw);text-align:center}
+.cal-modal-card h4{font-size:clamp(.84rem,1.6vw,.94rem);font-weight:600;margin-bottom:14px}
+.cal-modal-card input{width:100%;padding:clamp(7px,1.2vw,9px) clamp(10px,1.8vw,14px);border-radius:var(--radius-sm);border:1px solid var(--border);font-size:clamp(.76rem,1.4vw,.86rem);font-family:var(--font-body);text-align:center;outline:none;background:var(--bg)}
+.cal-modal-card input:focus{border-color:var(--cream);box-shadow:0 0 0 3px oklch(80% .08 80 / .2)}
+.cal-modal-btns{display:flex;gap:6px;margin-top:12px}
+.cal-modal-btns button{flex:1;padding:clamp(7px,1.2vw,9px);border-radius:999px;border:none;font-size:clamp(.7rem,1.3vw,.78rem);font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all .18s}
+.btn-cancel{background:oklch(94% .008 90);color:var(--text-secondary)}
+.btn-save{background:oklch(22% .02 260);color:oklch(96% .003 90)}
+
+/* ═══ DAILY TASKS ═══ */
+.dg{display:flex;flex-direction:column;gap:clamp(8px,1.5vw,12px)}
+.dc{background:var(--bg-card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:clamp(14px,2.5vw,18px);transition:all .3s}
+.dc:active{transform:scale(.988)}
+.dc.math{border-left:3px solid var(--cream)}.dc.cs{border-left:3px solid var(--mint)}.dc.eng{border-left:3px solid var(--peach)}.dc.pol{border-left:3px solid var(--lavender)}
+.dc-head{display:flex;align-items:center;gap:8px;margin-bottom:clamp(8px,1.5vw,12px);padding-bottom:clamp(6px,1.2vw,10px);border-bottom:1px solid oklch(92% .006 90)}
+.dc-dot{width:clamp(26px,5vw,32px);height:clamp(26px,5vw,32px);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:clamp(.68rem,1.3vw,.78rem);font-weight:700}
+.dc-name{font-family:var(--font-display);font-size:clamp(.86rem,1.7vw,.96rem);font-weight:600}
+.dc-hr{font-size:clamp(.64rem,1.2vw,.72rem);color:var(--text-muted);margin-left:auto}
+.dc-list{display:flex;flex-direction:column;gap:clamp(4px,.8vw,6px)}
+.dc-item{display:flex;align-items:flex-start;gap:8px;padding:clamp(6px,1vw,8px) 0;border-bottom:1px solid oklch(94% .005 90);cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;transition:opacity .2s}
+.dc-item:last-child{border-bottom:none}
+.dc-item.done{opacity:.38}
+.dc-item.done .dc-text{text-decoration:line-through;text-decoration-color:oklch(55% .08 80 / .5)}
+.dc-check{width:clamp(18px,3.5vw,22px);height:clamp(18px,3.5vw,22px);border-radius:50%;flex-shrink:0;margin-top:1px;border:2px solid oklch(78% .01 90);transition:all .25s;display:flex;align-items:center;justify-content:center}
+.dc-item.done .dc-check{background:var(--mint);border-color:var(--mint)}
+.dc-item.done .dc-check::after{content:'';width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-1px}
+.dc-text{font-size:clamp(.74rem,1.4vw,.82rem);color:var(--text-secondary);flex:1;min-width:0}
+
+/* ═══ EBBINGHAUS ═══ */
+.eb-wrap{-webkit-overflow-scrolling:touch;overflow-x:auto;margin:0 -14px;padding:0 14px}
+.eb-table{width:100%;min-width:520px;border-collapse:collapse;font-size:clamp(.64rem,1.2vw,.72rem)}
+.eb-table th{text-align:left;padding:clamp(8px,1.4vw,10px) 6px;font-weight:600;color:var(--text-muted);font-size:clamp(.58rem,1vw,.66rem);letter-spacing:.04em;border-bottom:1px solid var(--border);white-space:nowrap}
+.eb-table td{padding:clamp(8px,1.4vw,10px) 6px;border-bottom:1px solid oklch(94% .005 90);color:var(--text-secondary)}
+.eb-table tr:active td{background:oklch(96% .006 90)}
+.eb-check{display:inline-block;width:clamp(16px,3vw,20px);height:clamp(16px,3vw,20px);border-radius:4px;border:1.5px solid oklch(70% .01 90);cursor:pointer;transition:all .18s;vertical-align:middle}
+.eb-check.checked{background:var(--mint);border-color:var(--mint);position:relative}
+.eb-check.checked::after{content:'';position:absolute;left:5px;top:1px;width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.eb-ds{font-size:clamp(.54rem,.95vw,.62rem);color:var(--text-muted);display:block}
+
+/* ═══ FOCUS ═══ */
+.fg{display:flex;flex-direction:column;gap:clamp(6px,1.2vw,10px)}
+.fi{background:var(--bg-card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm);padding:clamp(12px,2vw,16px);display:flex;align-items:center;gap:clamp(10px,2vw,14px);transition:all .3s}
+.fi:active{transform:scale(.988)}
+.fi-emoji{font-size:clamp(1.25rem,2.4vw,1.6rem);flex-shrink:0;width:clamp(34px,7vw,42px);text-align:center}
+.fi-text h5{font-size:clamp(.78rem,1.5vw,.86rem);font-weight:600;margin-bottom:1px}
+.fi-text p{font-size:clamp(.68rem,1.3vw,.76rem);color:var(--text-muted);line-height:1.5}
+
+/* ═══ QUOTE ═══ */
+.quote-block{text-align:center;padding:clamp(22px,4vw,34px) clamp(16px,3vw,24px);background:var(--bg-card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.quote-block q{font-family:var(--font-display);font-size:clamp(.88rem,1.7vw,1rem);font-style:italic;color:var(--text-secondary);line-height:1.8;quotes:none}
+.qh{color:var(--cream);font-style:normal;font-weight:600}
+
+/* ═══ BOTTOM TAB BAR ═══ */
+.tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:900;display:flex;background:oklch(100% 0 0 / .85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding:clamp(4px,.8vw,6px) 8px var(--safe-bottom);height:var(--tab-h);max-width:480px;margin:0 auto;left:50%;transform:translateX(-50%);justify-content:space-around;align-items:flex-start}
+.tab-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:clamp(3px,.6vw,5px) clamp(4px,.8vw,8px);cursor:pointer;-webkit-tap-highlight-color:transparent;border:none;background:none;font-family:var(--font-body);color:var(--text-muted);transition:all .2s;min-width:clamp(48px,10vw,64px);font-weight:500;font-size:clamp(.52rem,.95vw,.6rem);line-height:1}
+.tab-btn svg{width:clamp(20px,4vw,24px);height:clamp(20px,4vw,24px);transition:all .2s}
+.tab-btn.active{color:oklch(22% .02 260)}
+.tab-btn.active svg{color:oklch(22% .02 260)}
+
+/* ═══ PAGE VISIBILITY ═══ */
+.page{display:none}
+.page.active{display:block}
+.page-total .hero,.page-total .exam-sch{display:block}
+
+/* ═══ FOOTER ═══ */
+footer{text-align:center;padding:clamp(18px,3.5vw,28px) 0;font-size:clamp(.6rem,1.1vw,.68rem);color:var(--text-muted);opacity:.55}
+
+/* ═══ ANIM ═══ */
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ani{animation:fi .45s cubic-bezier(.22,.61,.36,1) both}
+.a1{animation-delay:.03s}.a2{animation-delay:.08s}.a3{animation-delay:.13s}.a4{animation-delay:.18s}.a5{animation-delay:.23s}
+
+@supports(padding-top:env(safe-area-inset-top)){.hero{padding-top:calc(clamp(16px,3vw,28px) + env(safe-area-inset-top))}}
+@media(hover:hover){.card:hover,.pc:hover,.dc:hover,.fi:hover{box-shadow:var(--shadow-md)}}
+@media(max-width:374px){
+  .hero-stats{gap:5px}.hero-stat{padding:6px 8px;min-width:44px}
+  .mp-table{min-width:460px}.eb-table{min-width:460px}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-area" id="scrollArea">
+
+<!-- ======== PAGE 0: 总览 ======== -->
+<div class="page page-total active" id="page-total">
+  <header class="hero">
+    <div class="hero-art"></div><div class="hero-dots"></div>
+    <div class="hero-content ani">
+      <div class="hero-badge">目标锁定</div>
+      <h1>深圳大学<span> · 计算机技术</span></h1>
+      <p class="hero-sub">085404 · 11408 统考 · 计软学院 / 光明实验室 · 2027</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val">347</div><div class="hero-stat-lbl">计软复试线</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">358.4</div><div class="hero-stat-lbl">计软平均分</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="countdown">--</div><div class="hero-stat-lbl">剩余天数</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">360</div><div class="hero-stat-lbl">个人目标</div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="exam-sch ani a1">
+    <div class="exam-sch-title">初试日程 · 12.19 – 12.20</div>
+    <div class="exam-grid">
+      <div class="exam-day"><div class="exam-day-label">Day 1</div><div class="exam-day-date">12月19日</div><div class="exam-slot"><span>政治</span><span class="exam-slot-time">8:30-11:30</span></div><div class="exam-slot"><span>英语一</span><span class="exam-slot-time">14:00-17:00</span></div></div>
+      <div class="exam-day"><div class="exam-day-label">Day 2</div><div class="exam-day-date">12月20日</div><div class="exam-slot"><span>数学一</span><span class="exam-slot-time">8:30-11:30</span></div><div class="exam-slot"><span>408专业课</span><span class="exam-slot-time">14:00-17:00</span></div></div>
+    </div>
+  </div>
+
+  <div class="shell">
+    <section class="section ani a2">
+      <div class="sec-head"><h2>26 录取数据</h2><div class="hl"></div></div>
+      <div class="db">
+        <div class="db-item"><h4 style="color:var(--pink)">计软学院</h4><div class="db-val" style="color:var(--pink)">347 / 358.4</div><div class="db-sub">复试线/平均 · 录29人</div></div>
+        <div class="db-item"><h4 style="color:var(--sky)">光明实验室</h4><div class="db-val" style="color:var(--sky)">317 / 349.4</div><div class="db-sub">复试线/平均 · 录19人</div></div>
+      </div>
+    </section>
+
+    <section class="section ani a2">
+      <div class="sec-head"><h2>冲刺目标</h2><div class="hl"></div><span style="font-size:clamp(.64rem,1.15vw,.7rem);color:var(--text-muted)">370</span></div>
+      <div class="card">
+        <div class="sr"><div class="sr-ico" style="background:oklch(72% .12 80 / .18);color:var(--cream)">M</div><div class="sr-info"><div class="sr-name">数学一</div><div class="sr-detail">选择50′ + 填空30′ + 解答70′</div></div><span class="sr-pct" style="color:var(--cream)">115</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:77%;background:var(--cream)"></div></div></div>
+        <div class="sr"><div class="sr-ico" style="background:oklch(70% .12 170 / .18);color:var(--mint)">408</div><div class="sr-info"><div class="sr-name">408 专业课</div><div class="sr-detail">单选80′ + 综合应用70′</div></div><span class="sr-pct" style="color:var(--mint)">105</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:70%;background:var(--mint)"></div></div></div>
+        <div class="sr"><div class="sr-ico" style="background:oklch(68% .12 45 / .18);color:var(--peach)">En</div><div class="sr-info"><div class="sr-name">英语一</div><div class="sr-detail">阅读40′是核心 · 作文有模板</div></div><span class="sr-pct" style="color:var(--peach)">75</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:75%;background:var(--peach)"></div></div></div>
+        <div class="sr"><div class="sr-ico" style="background:oklch(64% .1 295 / .18);color:var(--lavender)">政</div><div class="sr-info"><div class="sr-name">政治</div><div class="sr-detail">选择38+ → 主观背肖四</div></div><span class="sr-pct" style="color:var(--lavender)">75</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:75%;background:var(--lavender)"></div></div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:clamp(8px,1.5vw,12px);padding-top:clamp(6px,1.2vw,10px);border-top:1px solid var(--border)">
+          <span style="font-size:clamp(.72rem,1.3vw,.8rem);color:var(--text-muted)">总分目标</span>
+          <span style="font-family:var(--font-display);font-size:clamp(1.1rem,2.3vw,1.35rem);font-weight:700;color:var(--pink)">= 370</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ani a2">
+      <div class="sec-head"><h2>当前进度</h2><div class="hl"></div></div>
+      <div class="card">
+        <div class="sr"><div class="sr-ico" style="background:oklch(72% .12 80 / .18);color:var(--cream)">M</div><div class="sr-info"><div class="sr-name">数学一</div><div class="sr-detail">高数✓ 线代✓ → 概率论 ▸ 全概率公式</div></div><span class="sr-pct" style="color:var(--cream)">78%</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:78%;background:var(--cream)"></div></div></div>
+        <div class="sr"><div class="sr-ico" style="background:oklch(70% .12 170 / .18);color:var(--mint)">408</div><div class="sr-info"><div class="sr-name">408 专业课</div><div class="sr-detail">DS✓ → 计组 ▸ 参数传递</div></div><span class="sr-pct" style="color:var(--mint)">42%</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:42%;background:var(--mint)"></div></div></div>
+        <div class="sr"><div class="sr-ico" style="background:oklch(68% .12 45 / .18);color:var(--peach)">En</div><div class="sr-info"><div class="sr-name">英语一</div><div class="sr-detail">每日背词 · 六级未过但别慌</div></div><span class="sr-pct" style="color:var(--peach)">35%</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:35%;background:var(--peach)"></div></div></div>
+        <div class="sr"><div class="sr-ico" style="background:oklch(64% .1 295 / .18);color:var(--lavender)">政</div><div class="sr-info"><div class="sr-name">政治</div><div class="sr-detail">8月中旬启动 · 别怕记不住</div></div><span class="sr-pct" style="color:var(--lavender)">0%</span><div class="sr-bar-wrap"><div class="sr-bar" style="width:3%;background:var(--lavender)"></div></div></div>
+        <div class="pills">
+          <span class="pill" style="color:var(--pink)">进度偏慢</span>
+          <span class="pill" style="color:var(--peach)">跨考吃力</span>
+          <span class="pill" style="color:var(--cream)">遗忘严重</span>
+          <span class="pill" style="color:var(--lavender)">易分心</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ani a3">
+      <div class="card" style="border-left:3px solid var(--pink);font-size:clamp(.74rem,1.4vw,.82rem);color:var(--text-secondary);line-height:1.7">
+        <strong style="color:var(--pink)">跨考提醒：</strong>408 每天至少 <strong style="color:var(--mint)">5h</strong>。计组与OS对照学，画思维导图。至少 <strong style="color:var(--cream)">三轮</strong>。
+        <strong style="color:var(--peach)">六级：</strong>考研英语不考听力，阅读占比60%，六级没过也能65+。
+        <strong style="color:var(--lavender)">政治：</strong>全短期记忆，8月刷选择、12月背肖四，不需要"记住"只需要"见过"。
+      </div>
+    </section>
+
+    <section class="section ani a4">
+      <div class="quote-block">
+        <q>跨考不是劣势——材料学思维带来不一样视角。<br><span class="qh">科学的重复比天赋更重要。</span><br>每天9小时，154天，你完全来得及。</q>
+      </div>
+    </section>
+
+    <footer>计软学院/光明实验室 · 倒计时每日自动更新</footer>
+  </div>
+</div>
+
+<!-- ======== PAGE 1: 月计划 ======== -->
+<div class="page" id="page-monthly">
+  <div class="shell" style="padding-top:clamp(12px,2vw,18px)">
+    <section class="section">
+      <div class="sec-head"><h2>月计划</h2><div class="hl"></div></div>
+      <div class="sub-tabs" id="subTabs">
+        <span class="sub-tab math active" onclick="switchSubTab('math')">数学一 · 115</span>
+        <span class="sub-tab cs" onclick="switchSubTab('cs')">408 · 105</span>
+        <span class="sub-tab eng" onclick="switchSubTab('eng')">英语一 · 75</span>
+        <span class="sub-tab pol" onclick="switchSubTab('pol')">政治 · 75</span>
+      </div>
+      <div class="card" style="padding:clamp(6px,1.2vw,10px)">
+        <!-- Math -->
+        <div class="mp-wrap sub-panel" id="panel-math"><table class="mp-table"><thead><tr><th>月</th><th>核心任务</th><th>资料</th><th>里程碑</th></tr></thead><tbody>
+          <tr><td>7月</td><td>完成概率论一轮 + 高数线代强化启动</td><td>王式安概率 + 张宇18讲</td><td>概率论课后题全部过完</td></tr>
+          <tr><td>8月</td><td>概率论强化 + 高数线代二轮 + 开始《660》</td><td>《660》+《880》</td><td>660 完成 300 题</td></tr>
+          <tr><td>9月</td><td>660+880 错题整理 + 真题 00-10</td><td>真题 00-10</td><td>错题本第一轮归类完成</td></tr>
+          <tr><td>10月</td><td>真题 11-22 逐套限时 + 错题二刷</td><td>真题 11-22</td><td>10/31 前刷完 12 套</td></tr>
+          <tr><td>11月</td><td>真题 23-26 + 李林 6 套卷</td><td>李林 6+4</td><td>11/20 前完成 6 套模拟</td></tr>
+          <tr><td>12月</td><td>李林 4 套卷 + 回归基础 + 错题回顾</td><td>李林 4 + 错题本</td><td>考前 3 天只翻笔记</td></tr>
+        </tbody></table></div>
+        <!-- 408 -->
+        <div class="mp-wrap sub-panel" id="panel-cs" style="display:none"><table class="mp-table"><thead><tr><th>月</th><th>核心任务</th><th>资料</th><th>里程碑</th></tr></thead><tbody>
+          <tr><td>7月</td><td>完成计组 + 操作系统起步（内存管理）</td><td>王道视频 + 课本</td><td>计组课后选择全部做完</td></tr>
+          <tr><td>8月</td><td>完成 OS + 计算机网络一轮</td><td>王道视频 + 思维导图</td><td>8/25 前四科一轮全部结束</td></tr>
+          <tr><td>9月</td><td>二轮地毯复习 + 王道课后大题</td><td>王道课后题 + 真题分类</td><td>四科课后大题过完</td></tr>
+          <tr><td>10月</td><td>真题 09-19 按科目分类逐刷</td><td>408 真题 09-19</td><td>10/31 前刷完 11 套</td></tr>
+          <tr><td>11月</td><td>整套真题模拟 20-26 + 错题回顾</td><td>408 真题 20-26</td><td>每套限时 3h 对标考场</td></tr>
+          <tr><td>12月</td><td>查漏补缺 + 思维导图回顾</td><td>思维导图 + 错题本</td><td>考前一周只过导图</td></tr>
+        </tbody></table></div>
+        <!-- English -->
+        <div class="mp-wrap sub-panel" id="panel-eng" style="display:none"><table class="mp-table"><thead><tr><th>月</th><th>核心任务</th><th>资料</th><th>里程碑</th></tr></thead><tbody>
+          <tr><td>7月</td><td>每日100词 + 长难句5句 + 阅读Text精读</td><td>红宝书 + 田静 + 真题10-13</td><td>月底刷完 10-13 阅读</td></tr>
+          <tr><td>8月</td><td>阅读 Text 14-18 精读 + 单词二轮</td><td>真题 14-18</td><td>阅读正确率稳定 60%+</td></tr>
+          <tr><td>9月</td><td>阅读 19-22 + 新题型 + 翻译起步</td><td>真题 19-22 + 唐静翻译</td><td>新题型掌握方法论</td></tr>
+          <tr><td>10月</td><td>完形 + 翻译强化 + 阅读保持手感</td><td>真题完形 + 翻译</td><td>完形稳定 7+ 分</td></tr>
+          <tr><td>11月</td><td>作文模板（王江涛）+ 整套模考</td><td>王江涛作文 + 真题模拟</td><td>大小作文模板成型</td></tr>
+          <tr><td>12月</td><td>作文背诵 + 查漏补缺</td><td>作文模板 + 错题回顾</td><td>考前背熟 10 篇范文</td></tr>
+        </tbody></table></div>
+        <!-- Politics -->
+        <div class="mp-wrap sub-panel" id="panel-pol" style="display:none"><table class="mp-table"><thead><tr><th>月</th><th>核心任务</th><th>资料</th><th>里程碑</th></tr></thead><tbody>
+          <tr><td>8月</td><td>马原 1h/天 + 徐涛强化视频</td><td>徐涛核心考案 + 1000题</td><td>马原 1000 题做完</td></tr>
+          <tr><td>9月</td><td>毛中特 + 史纲 + 1000 题</td><td>1000 题</td><td>1000 题一刷完成 60%</td></tr>
+          <tr><td>10月</td><td>思修 + 时政 + 1000 题二刷错题</td><td>时政小册子 + 1000 题</td><td>1000 题错题清零</td></tr>
+          <tr><td>11月</td><td>肖八选择题 + 腿姐/徐涛模拟卷</td><td>肖八 + 腿4 + 徐6</td><td>选择题稳定 38+</td></tr>
+          <tr><td>12月</td><td>肖四大题背诵 + 时政押题</td><td>肖四 + 腿姐背诵手册</td><td>考前背熟肖四全部大题</td></tr>
+        </tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><h2>三阶段规划</h2><div class="hl"></div></div>
+      <div class="pg">
+        <div class="pc p1"><div class="pc-head"><span class="pc-title" style="color:var(--pink)">暑假强化</span><span class="pc-date">7.17–8.31 · 45天</span></div><span class="pc-chip">完成概率论 + 高数线代强化</span><span class="pc-chip">完成计组 + OS一轮</span><span class="pc-chip">开始计网</span><span class="pc-chip">每日100词 + 长难句</span><span class="pc-chip">8月中起马原</span></div>
+        <div class="pc p2"><div class="pc-head"><span class="pc-title" style="color:var(--mint)">真题突破</span><span class="pc-date">9.1–10.31 · 61天</span></div><span class="pc-chip">660+880+真题</span><span class="pc-chip">408二轮地毯复习</span><span class="pc-chip">历年408真题分类刷</span><span class="pc-chip">阅读逐篇精读</span><span class="pc-chip">毛中特+史纲</span></div>
+        <div class="pc p3"><div class="pc-head"><span class="pc-title" style="color:var(--sky)">冲刺模拟</span><span class="pc-date">11.1–12.18 · 48天</span></div><span class="pc-chip">21-26真题+李林6+4</span><span class="pc-chip">408整套全真模拟</span><span class="pc-chip">每周1套408</span><span class="pc-chip">作文+完形+模考</span><span class="pc-chip">肖八肖四+时政</span></div>
+      </div>
+    </section>
+    <footer>11408 · 深大计算机专硕</footer>
+  </div>
+</div>
+
+<!-- ======== PAGE 2: 日历 ======== -->
+<div class="page" id="page-calendar">
+  <div class="shell" style="padding-top:clamp(12px,2vw,18px)">
+    <section class="section">
+      <div class="sec-head"><h2>学习日历</h2><div class="hl"></div><span style="font-size:clamp(.64rem,1.15vw,.7rem);color:var(--text-muted)">点击日期记录时长</span></div>
+      <div class="card">
+        <div class="cal-tabs" id="calTabs"></div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-total" id="calTotal"></div>
+        <div class="cal-dow" style="display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(2px,.6vw,4px);margin-top:6px">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+      </div>
+    </section>
+    <footer>记录每一份努力</footer>
+  </div>
+</div>
+<div class="cal-modal" id="calModal">
+  <div class="cal-modal-card">
+    <h4 id="calModalTitle"></h4>
+    <input type="number" id="calInput" placeholder="学习时长（小时）" min="0" max="18" step="0.5" inputmode="decimal">
+    <div class="cal-modal-btns">
+      <button class="btn-cancel" onclick="closeCalModal()">取消</button>
+      <button class="btn-save" onclick="saveCalHours()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PAGE 3: 任务 ======== -->
+<div class="page" id="page-tasks">
+  <div class="shell" style="padding-top:clamp(12px,2vw,18px)">
+    <section class="section">
+      <div class="sec-head"><h2>每日任务</h2><div class="hl"></div><span style="font-size:clamp(.64rem,1.15vw,.7rem);color:var(--text-muted)">暑假强化 · 9-11h/天</span></div>
+      <div class="dg">
+        <div class="dc math"><div class="dc-head"><div class="dc-dot" style="background:oklch(72% .12 80 / .18);color:var(--cream)">M</div><div class="dc-name">数学一</div><div class="dc-hr">4h</div></div><div class="dc-list" onclick="toggleTask(event)"><div class="dc-item"><span class="dc-check"></span><span class="dc-text">概率论新课 1.5h（王式安视频）</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">高数强化刷题 1h</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">线代强化刷题 0.5h</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">错题整理 + 知识点默写 0.5h</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">睡前回顾公式定理 10min</span></div></div></div>
+        <div class="dc cs"><div class="dc-head"><div class="dc-dot" style="background:oklch(70% .12 170 / .18);color:var(--mint)">408</div><div class="dc-name">408 专业课</div><div class="dc-hr">5h</div></div><div class="dc-list" onclick="toggleTask(event)"><div class="dc-item"><span class="dc-check"></span><span class="dc-text">计组新课 2h（王道视频+课本）</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">DS复习回顾 1h（树/图/查找排序）</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">计组思维导图绘制 0.5h</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">王道课后选择题 1h</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">睡前过DS算法题思路</span></div></div></div>
+        <div class="dc eng"><div class="dc-head"><div class="dc-dot" style="background:oklch(68% .12 45 / .18);color:var(--peach)">En</div><div class="dc-name">英语一</div><div class="dc-hr">1.5h</div></div><div class="dc-list" onclick="toggleTask(event)"><div class="dc-item"><span class="dc-check"></span><span class="dc-text">背单词100个 + 复习旧词</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">长难句分析5句（田静）</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">真题阅读1篇精读</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">摘抄生词和好句</span></div></div></div>
+        <div class="dc pol"><div class="dc-head"><div class="dc-dot" style="background:oklch(64% .1 295 / .18);color:var(--lavender)">政</div><div class="dc-name">政治</div><div class="dc-hr">1h</div></div><div class="dc-list" onclick="toggleTask(event)"><div class="dc-item"><span class="dc-check"></span><span class="dc-text">徐涛强化课视频 0.5h</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">《1000题》对应章节 0.5h</span></div><div class="dc-item"><span class="dc-check"></span><span class="dc-text">错题标记+第二天回顾</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><h2>艾宾浩斯复习</h2><div class="hl"></div><span style="font-size:clamp(.64rem,1.15vw,.7rem);color:var(--text-muted)">1/2/4/7/15/30天</span></div>
+      <div class="card" style="padding:clamp(8px,1.5vw,14px)">
+        <div class="eb-wrap"><table class="eb-table"><thead><tr><th>日期</th><th>学习内容</th><th>1天</th><th>2天</th><th>4天</th><th>7天</th><th>15天</th><th>30天</th></tr></thead><tbody id="ebBody"></tbody></table></div>
+      </div>
+    </section>
+    <footer>科学的重复比天赋更重要</footer>
+  </div>
+</div>
+
+<!-- ======== PAGE 4: 专注 ======== -->
+<div class="page" id="page-focus">
+  <div class="shell" style="padding-top:clamp(12px,2vw,18px)">
+    <section class="section">
+      <div class="sec-head"><h2>专注力管理</h2><div class="hl"></div></div>
+      <div class="fg">
+        <div class="fi"><span class="fi-emoji">📵</span><div class="fi-text"><h5>物理隔绝手机</h5><p>学习时手机锁抽屉或 Forest 种树</p></div></div>
+        <div class="fi"><span class="fi-emoji">🎯</span><div class="fi-text"><h5>微目标拆分</h5><p>把"学完计组"拆成"今天学会6种寻址方式"</p></div></div>
+        <div class="fi"><span class="fi-emoji">🏃</span><div class="fi-text"><h5>每天运动30分钟</h5><p>晚饭后快走或慢跑，提升BDNF记忆力</p></div></div>
+        <div class="fi"><span class="fi-emoji">📊</span><div class="fi-text"><h5>可视化进度</h5><p>睡前在日历打勾，满屏的勾推你前进</p></div></div>
+        <div class="fi"><span class="fi-emoji">🧠</span><div class="fi-text"><h5>主动回忆法</h5><p>合上书用空白纸默写，效率比重复阅读高3倍</p></div></div>
+        <div class="fi"><span class="fi-emoji">⏰</span><div class="fi-text"><h5>固定作息</h5><p>7:00起 · 23:00睡。规律作息=稳定专注力</p></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><h2>六项注意</h2><div class="hl"></div></div>
+      <div class="card" style="font-size:clamp(.74rem,1.4vw,.82rem);color:var(--text-secondary);line-height:2">
+        <div><strong style="color:var(--pink)">1.</strong> 408 是最大分水岭，每天至少 5 小时</div>
+        <div><strong style="color:var(--mint)">2.</strong> 计组与OS对照学，画思维导图建立知识网络</div>
+        <div><strong style="color:var(--cream)">3.</strong> 408 至少三轮系统复习</div>
+        <div><strong style="color:var(--peach)">4.</strong> 考研英语不考听力，六级没过≠英语不行</div>
+        <div><strong style="color:var(--lavender)">5.</strong> 政治全短期记忆，8月刷选择、12月背肖四</div>
+        <div><strong style="color:var(--pink)">6.</strong> 遗忘是正常的——用艾宾浩斯对抗，别焦虑</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="quote-block">
+        <q>跨考不是劣势，是另一种优势——<br>材料学思维会给计算机带来不一样视角。<br><span class="qh">科学的重复比天赋更重要。</span><br>每天9小时，154天，你完全来得及。</q>
+      </div>
+    </section>
+    <footer>坚持154天 · 深大见</footer>
+  </div>
+</div>
+
+</div><!-- /scroll-area -->
+
+<!-- ═══ BOTTOM TAB BAR ═══ -->
+<nav class="tab-bar">
+  <button class="tab-btn active" onclick="switchPage('total',this)" data-page="total">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    总览
+  </button>
+  <button class="tab-btn" onclick="switchPage('monthly',this)" data-page="monthly">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="8 14 11 17 16 12"/></svg>
+    月计划
+  </button>
+  <button class="tab-btn" onclick="switchPage('calendar',this)" data-page="calendar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    日历
+  </button>
+  <button class="tab-btn" onclick="switchPage('tasks',this)" data-page="tasks">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    任务
+  </button>
+  <button class="tab-btn" onclick="switchPage('focus',this)" data-page="focus">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    专注
+  </button>
+</nav>
+
+<script>
+// ═══ PAGE SWITCHING ═══
+function switchPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('scrollArea').scrollTop=0;
+}
+
+// ═══ SUBJECT TABS (月计划内) ═══
+function switchSubTab(sub){
+  document.querySelectorAll('.sub-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.sub-tab.'+sub).classList.add('active');
+  document.querySelectorAll('.sub-panel').forEach(p=>p.style.display='none');
+  document.getElementById('panel-'+sub).style.display='block';
+}
+
+// ═══ COUNTDOWN ═══
+const examDate=new Date('2026-12-19T08:30:00+08:00');
+(function u(){const d=Math.max(0,Math.ceil((examDate-new Date())/(864e5)));const cd=document.getElementById('countdown');if(cd)cd.textContent=d+'天';setTimeout(u,6e4)})();
+
+// ═══ CALENDAR ═══
+const calData=JSON.parse(localStorage.getItem('cal11408')||'{}');
+let calYear=2026,calMonth=7,calSelDay=null;
+const months=['7月','8月','9月','10月','11月','12月'];
+const monthNums=[7,8,9,10,11,12];
+
+function renderCalTabs(){
+  const tabs=document.getElementById('calTabs');if(!tabs)return;
+  tabs.innerHTML=monthNums.map((m,i)=>`<span class="cal-tab${m===calMonth?' active':''}" onclick="switchCalMonth(${m})">${months[i]}</span>`).join('');
+}
+function switchCalMonth(m){calMonth=m;renderCalTabs();renderCalGrid()}
+function getMaxHue(h){if(h<=3)return'low';if(h<=7)return'mid';return'high'}
+function renderCalGrid(){
+  const grid=document.getElementById('calGrid');if(!grid)return;
+  const today=new Date();const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const firstDay=new Date(calYear,calMonth-1,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth,0).getDate();
+  let totalH=0,daysWithData=0,html='';
+  for(let i=0;i<firstDay;i++)html+='<div class="cal-day empty"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const key=`${calYear}-${String(calMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hrs=calData[key]||0;
+    if(hrs>0){totalH+=hrs;daysWithData++}
+    const isToday=key===todayStr;
+    let cls='cal-day';
+    if(isToday)cls+=' today';
+    if(hrs>0)cls+=' has-hours '+getMaxHue(hrs);
+    const hrDisplay=hrs>0?`<span class="cal-hours">${hrs}h</span>`:'';
+    html+=`<div class="${cls}" onclick="openCalDay('${key}','${calMonth}月${d}日',${hrs})">${d}${hrDisplay}</div>`;
+  }
+  grid.innerHTML=html;
+  const avgH=daysWithData>0?(totalH/daysWithData).toFixed(1):'0';
+  const totalEl=document.getElementById('calTotal');
+  if(totalEl)totalEl.innerHTML=`本月累计 <strong>${totalH}h</strong> · 学习 ${daysWithData} 天 · 日均 <strong>${avgH}h</strong>`;
+}
+function openCalDay(key,label,hrs){
+  calSelDay=key;
+  document.getElementById('calModalTitle').textContent=label;
+  document.getElementById('calInput').value=hrs||'';
+  document.getElementById('calModal').classList.add('show');
+  setTimeout(()=>document.getElementById('calInput').focus(),150);
+}
+function closeCalModal(){document.getElementById('calModal').classList.remove('show');calSelDay=null}
+function saveCalHours(){
+  const v=parseFloat(document.getElementById('calInput').value);
+  if(isNaN(v)||v<0){calData[calSelDay]=0;delete calData[calSelDay]}
+  else calData[calSelDay]=v;
+  localStorage.setItem('cal11408',JSON.stringify(calData));
+  closeCalModal();renderCalGrid();
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const modal=document.getElementById('calModal');
+  if(modal)modal.addEventListener('click',function(e){if(e.target===this)closeCalModal()});
+  const input=document.getElementById('calInput');
+  if(input)input.addEventListener('keydown',function(e){if(e.key==='Enter')saveCalHours()});
+  renderCalTabs();renderCalGrid();
+});
+
+// ═══ DAILY TASKS ═══
+function toggleTask(e){const el=e.target.closest('.dc-item');if(!el)return;el.classList.toggle('done');saveTasks()}
+function saveTasks(){const s=Array.from(document.querySelectorAll('.dc-item')).map(i=>i.classList.contains('done'));localStorage.setItem('daily11408',JSON.stringify(s))}
+(function loadTasks(){const s=JSON.parse(localStorage.getItem('daily11408')||'[]');document.querySelectorAll('.dc-item').forEach((el,i)=>{if(s[i])el.classList.add('done')})})();
+
+// ═══ EBBINGHAUS ═══
+(function(){
+  const today=new Date('2026-07-17'),ints=[1,2,4,7,15,30];
+  const subs=['概率论·随机变量分布','计组·数据通路','概率论·全概率公式','计组·指令流水线','英语·阅读Text1','高数强化·极限','DS·图算法回顾','概率论·大数定律','计组·存储层次','英语·阅读Text2','线代强化·特征值','OS·进程同步','高数强化·导数应用','计组·中断与DMA','英语·阅读Text3'];
+  const saved=JSON.parse(localStorage.getItem('eb11408')||'{}');
+  const ebBody=document.getElementById('ebBody');if(!ebBody)return;
+  let h='';
+  subs.forEach((s,i)=>{
+    const d=new Date(today);d.setDate(d.getDate()+i);
+    h+=`<tr><td style="white-space:nowrap">${d.toLocaleDateString('zh-CN',{month:'short',day:'numeric'})}</td><td>${s}</td>`;
+    ints.forEach(iv=>{const rd=new Date(d);rd.setDate(rd.getDate()+iv);const k=`${i}_${iv}`,ch=saved[k]?' checked':'';h+=`<td style="text-align:center"><span class="eb-ds">${rd.toLocaleDateString('zh-CN',{month:'short',day:'numeric'})}</span><span class="eb-check${ch}" onclick="ebTog('${k}',this)" style="margin-top:2px"></span></td>`});
+    h+='</tr>';
+  });
+  ebBody.innerHTML=h;
+})();
+function ebTog(k,el){el.classList.toggle('checked');const s=JSON.parse(localStorage.getItem('eb11408')||'{}');el.classList.contains('checked')?s[k]=1:delete s[k];localStorage.setItem('eb11408',JSON.stringify(s))}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',()=>{renderCalTabs();renderCalGrid();});
+</script>
+</body>
+</html>
