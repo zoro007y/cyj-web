@@ -29,7 +29,7 @@
   --font-body:'DM Sans',-apple-system,'PingFang SC',sans-serif;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,16px);
-  --tab-h:clamp(56px,12vw,68px);
+  --tab-h:clamp(52px,10vw,60px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;height:100%}
@@ -42,7 +42,7 @@ body{
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 /* ═══ SCROLL AREA ═══ */
-.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--tab-h) + 8px)}
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--tab-h) + clamp(20px,3vw,30px) + var(--safe-bottom))}
 
 /* ═══ HERO ═══ */
 .hero{
@@ -230,17 +230,60 @@ body{
 .fi-text h5{font-size:clamp(.78rem,1.5vw,.86rem);font-weight:600;margin-bottom:1px}
 .fi-text p{font-size:clamp(.68rem,1.3vw,.76rem);color:var(--text-muted);line-height:1.5}
 
+/* ═══ DAILY TIMELINE ═══ */
+.tl-row{display:flex;align-items:flex-start;gap:clamp(8px,1.5vw,12px)}
+.tl-time{font-family:var(--font-display);font-size:clamp(.68rem,1.3vw,.78rem);font-weight:600;color:var(--text-muted);min-width:clamp(38px,7vw,46px);padding-top:clamp(8px,1.4vw,10px);text-align:right;flex-shrink:0}
+.tl-card{flex:1;background:var(--bg-card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:var(--radius-sm);border:1px solid var(--border);border-left:3px solid var(--text-secondary);padding:clamp(7px,1.2vw,10px) clamp(10px,1.8vw,14px);box-shadow:var(--shadow-sm);position:relative;transition:all .25s}
+.tl-card:active{transform:scale(.985);box-shadow:var(--shadow-md)}
+.tl-408{border-left-color:var(--mint)}.tl-math{border-left-color:var(--cream)}
+.tl-act{font-size:clamp(.74rem,1.4vw,.82rem);font-weight:600;color:var(--text-primary);line-height:1.3}
+.tl-note{font-size:clamp(.62rem,1.15vw,.7rem);color:var(--text-muted);margin-top:2px;line-height:1.45}
+.tl-tag{position:absolute;right:clamp(8px,1.5vw,12px);top:50%;transform:translateY(-50%);font-size:clamp(.56rem,1vw,.64rem);font-weight:600;color:var(--text-muted);background:oklch(96% .006 90);padding:clamp(2px,.4vw,4px) clamp(6px,1vw,8px);border-radius:6px}
+
 /* ═══ QUOTE ═══ */
 .quote-block{text-align:center;padding:clamp(22px,4vw,34px) clamp(16px,3vw,24px);background:var(--bg-card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
 .quote-block q{font-family:var(--font-display);font-size:clamp(.88rem,1.7vw,1rem);font-style:italic;color:var(--text-secondary);line-height:1.8;quotes:none}
 .qh{color:var(--cream);font-style:normal;font-weight:600}
 
-/* ═══ BOTTOM TAB BAR ═══ */
-.tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:900;display:flex;background:oklch(100% 0 0 / .85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);padding:clamp(4px,.8vw,6px) 8px var(--safe-bottom);height:var(--tab-h);max-width:480px;margin:0 auto;left:50%;transform:translateX(-50%);justify-content:space-around;align-items:flex-start}
-.tab-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:clamp(3px,.6vw,5px) clamp(4px,.8vw,8px);cursor:pointer;-webkit-tap-highlight-color:transparent;border:none;background:none;font-family:var(--font-body);color:var(--text-muted);transition:all .2s;min-width:clamp(48px,10vw,64px);font-weight:500;font-size:clamp(.52rem,.95vw,.6rem);line-height:1}
-.tab-btn svg{width:clamp(20px,4vw,24px);height:clamp(20px,4vw,24px);transition:all .2s}
-.tab-btn.active{color:oklch(22% .02 260)}
-.tab-btn.active svg{color:oklch(22% .02 260)}
+/* ═══ BOTTOM TAB BAR – iOS glass floating pill ═══ */
+.tab-bar{
+  position:fixed;z-index:900;display:flex;align-items:center;justify-content:space-evenly;
+  bottom:calc(clamp(6px,1.2vw,10px) + var(--safe-bottom));
+  left:50%;transform:translateX(-50%);
+  width:calc(100% - clamp(24px,6vw,40px));max-width:432px;
+  height:var(--tab-h);
+  /* iOS 玻璃核心：低不透明 + 高饱和度模糊 */
+  background:oklch(100% 0 0 / .64);
+  backdrop-filter:blur(40px) saturate(200%);
+  -webkit-backdrop-filter:blur(40px) saturate(200%);
+  border-radius:clamp(26px,5vw,34px);
+  /* 玻璃高光边缘 + 柔和投影 */
+  box-shadow:
+    0 0 0 .5px oklch(100% 0 0 / .35),
+    inset 0 .5px 0 oklch(100% 0 0 / .4),
+    0 1px 3px oklch(0% 0 0 / .04),
+    0 4px 16px oklch(0% 0 0 / .05),
+    0 12px 48px oklch(0% 0 0 / .05);
+  padding:0 clamp(4px,.8vw,8px);
+}
+.tab-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  padding:clamp(4px,.7vw,6px) clamp(6px,1.5vw,10px);
+  cursor:pointer;-webkit-tap-highlight-color:transparent;border:none;background:none;
+  font-family:var(--font-body);color:var(--text-muted);transition:all .3s cubic-bezier(.22,.61,.36,1);
+  min-width:clamp(46px,9vw,58px);font-weight:500;font-size:clamp(.5rem,.9vw,.58rem);line-height:1;
+  position:relative;border-radius:clamp(16px,4vw,22px);
+}
+.tab-btn svg{width:clamp(18px,3.6vw,22px);height:clamp(18px,3.6vw,22px);transition:all .3s cubic-bezier(.22,.61,.36,1);stroke-width:2}
+.tab-btn.active{color:var(--text-primary)}
+.tab-btn.active svg{stroke:oklch(28% .03 262);stroke-width:2.2}
+/* iOS 风格选中态：淡色圆角底衬 + 图标微放大 */
+.tab-btn.active::before{
+  content:'';position:absolute;inset:2px clamp(4px,.8vw,6px);
+  background:oklch(28% .03 262 / .07);border-radius:clamp(14px,3vw,20px);z-index:-1;
+  animation:tabPopIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes tabPopIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
 
 /* ═══ PAGE VISIBILITY ═══ */
 .page{display:none}
@@ -418,11 +461,11 @@ footer{text-align:center;padding:clamp(18px,3.5vw,28px) 0;font-size:clamp(.6rem,
       <div class="sec-head"><h2>学习日历</h2><div class="hl"></div><span style="font-size:clamp(.64rem,1.15vw,.7rem);color:var(--text-muted)">点击日期记录时长</span></div>
       <div class="card">
         <div class="cal-tabs" id="calTabs"></div>
-        <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-total" id="calTotal"></div>
-        <div class="cal-dow" style="display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(2px,.6vw,4px);margin-top:6px">
+        <div class="cal-dow" style="display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(2px,.6vw,4px);margin-bottom:clamp(4px,.8vw,8px)">
           <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
         </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-total" id="calTotal"></div>
       </div>
     </section>
     <footer>记录每一份努力</footer>
@@ -462,36 +505,71 @@ footer{text-align:center;padding:clamp(18px,3.5vw,28px) 0;font-size:clamp(.6rem,
   </div>
 </div>
 
-<!-- ======== PAGE 4: 专注 ======== -->
+<!-- ======== PAGE 4: 作息 ======== -->
 <div class="page" id="page-focus">
   <div class="shell" style="padding-top:clamp(12px,2vw,18px)">
     <section class="section">
-      <div class="sec-head"><h2>专注力管理</h2><div class="hl"></div></div>
-      <div class="fg">
-        <div class="fi"><span class="fi-emoji">📵</span><div class="fi-text"><h5>物理隔绝手机</h5><p>学习时手机锁抽屉或 Forest 种树</p></div></div>
-        <div class="fi"><span class="fi-emoji">🎯</span><div class="fi-text"><h5>微目标拆分</h5><p>把"学完计组"拆成"今天学会6种寻址方式"</p></div></div>
-        <div class="fi"><span class="fi-emoji">🏃</span><div class="fi-text"><h5>每天运动30分钟</h5><p>晚饭后快走或慢跑，提升BDNF记忆力</p></div></div>
-        <div class="fi"><span class="fi-emoji">📊</span><div class="fi-text"><h5>可视化进度</h5><p>睡前在日历打勾，满屏的勾推你前进</p></div></div>
-        <div class="fi"><span class="fi-emoji">🧠</span><div class="fi-text"><h5>主动回忆法</h5><p>合上书用空白纸默写，效率比重复阅读高3倍</p></div></div>
-        <div class="fi"><span class="fi-emoji">⏰</span><div class="fi-text"><h5>固定作息</h5><p>7:00起 · 23:00睡。规律作息=稳定专注力</p></div></div>
+      <div class="sec-head"><h2>每日作息</h2><div class="hl"></div><span style="font-size:clamp(.64rem,1.15vw,.7rem);color:var(--text-muted)">9h · 10 个时段</span></div>
+
+      <!-- 上午 -->
+      <div style="margin-bottom:clamp(14px,2.5vw,20px)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:clamp(8px,1.5vw,12px)">
+          <span style="font-size:clamp(.76rem,1.4vw,.86rem)">☀️</span>
+          <span style="font-family:var(--font-display);font-size:clamp(.84rem,1.6vw,.94rem);font-weight:600">上午 · 408 主攻</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:clamp(3px,.6vw,5px)">
+          <div class="tl-row"><span class="tl-time">07:00</span><div class="tl-card"><div class="tl-act">起床</div><div class="tl-note">不碰手机，先洗漱喝水</div></div></div>
+          <div class="tl-row"><span class="tl-time">07:30</span><div class="tl-card"><div class="tl-act">背单词 + 长难句</div><div class="tl-note">100 词 + 田静 5 句 · 半小时</div></div></div>
+          <div class="tl-row"><span class="tl-time">08:00</span><div class="tl-card" style="border-left-color:oklch(84% .02 90)"><div class="tl-act" style="color:var(--text-muted)">早饭</div></div></div>
+          <div class="tl-row"><span class="tl-time">08:20</span><div class="tl-card tl-408"><div class="tl-act">408 · 计组新课</div><div class="tl-note">前 1.5h 啃新课 + 后 1h 选择题 + 末 20min 思维导图</div><div class="tl-tag">3h</div></div></div>
+          <div class="tl-row"><span class="tl-time">11:30</span><div class="tl-card" style="border-left-color:oklch(84% .02 90)"><div class="tl-act" style="color:var(--text-muted)">午饭 + 午休 20min</div><div class="tl-note">必须睡，下午脑子不糊</div></div></div>
+        </div>
+      </div>
+
+      <!-- 下午 -->
+      <div style="margin-bottom:clamp(14px,2.5vw,20px)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:clamp(8px,1.5vw,12px)">
+          <span style="font-size:clamp(.76rem,1.4vw,.86rem)">🌤️</span>
+          <span style="font-family:var(--font-display);font-size:clamp(.84rem,1.6vw,.94rem);font-weight:600">下午 · 数学主攻</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:clamp(3px,.6vw,5px)">
+          <div class="tl-row"><span class="tl-time">13:30</span><div class="tl-card tl-math"><div class="tl-act">数学 · 概率论新课</div><div class="tl-note">1.5h 王式安视频 + 笔记 → 高数线代刷题 1h → 错题 30min</div><div class="tl-tag">3.5h</div></div></div>
+          <div class="tl-row"><span class="tl-time">17:00</span><div class="tl-card" style="border-left-color:oklch(84% .02 90)"><div class="tl-act" style="color:var(--text-muted)">运动 30min</div><div class="tl-note">快走/慢跑，必须出门换气</div></div></div>
+          <div class="tl-row"><span class="tl-time">17:30</span><div class="tl-card" style="border-left-color:oklch(84% .02 90)"><div class="tl-act" style="color:var(--text-muted)">晚饭 + 洗澡</div></div></div>
+        </div>
+      </div>
+
+      <!-- 晚上 -->
+      <div style="margin-bottom:clamp(14px,2.5vw,20px)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:clamp(8px,1.5vw,12px)">
+          <span style="font-size:clamp(.76rem,1.4vw,.86rem)">🌙</span>
+          <span style="font-family:var(--font-display);font-size:clamp(.84rem,1.6vw,.94rem);font-weight:600">晚上 · 复习 + 收尾</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:clamp(3px,.6vw,5px)">
+          <div class="tl-row"><span class="tl-time">18:30</span><div class="tl-card tl-408"><div class="tl-act">408 · 第二轮</div><div class="tl-note">回顾上午没啃透的 + 王道课后大题</div><div class="tl-tag">2h</div></div></div>
+          <div class="tl-row"><span class="tl-time">20:30</span><div class="tl-card" style="border-left-color:var(--peach)"><div class="tl-act">英语 · 阅读精读</div><div class="tl-note">做题 20min → 逐句翻译 → 摘抄生词 → 总结错因</div><div class="tl-tag">1h</div></div></div>
+          <div class="tl-row"><span class="tl-time">21:30</span><div class="tl-card" style="border-left-color:var(--lavender)"><div class="tl-act">政治</div><div class="tl-note">徐涛视频 30min + 1000 题 · 8 月中启动</div><div class="tl-tag">1h</div></div></div>
+          <div class="tl-row"><span class="tl-time">22:30</span><div class="tl-card" style="border-left-color:oklch(22% .02 260 / .16)"><div class="tl-act">复盘 30min</div><div class="tl-note">今天完成了什么 · 哪里卡了 · 明天第一件事</div></div></div>
+          <div class="tl-row"><span class="tl-time">23:00</span><div class="tl-card" style="border-left-color:oklch(84% .02 90)"><div class="tl-act" style="color:var(--text-muted)">睡觉</div><div class="tl-note">手机扔客厅 · 7.5h 是底线</div></div></div>
+        </div>
       </div>
     </section>
 
     <section class="section">
-      <div class="sec-head"><h2>六项注意</h2><div class="hl"></div></div>
+      <div class="sec-head"><h2>在家专注法则</h2><div class="hl"></div></div>
       <div class="card" style="font-size:clamp(.74rem,1.4vw,.82rem);color:var(--text-secondary);line-height:2">
-        <div><strong style="color:var(--pink)">1.</strong> 408 是最大分水岭，每天至少 5 小时</div>
-        <div><strong style="color:var(--mint)">2.</strong> 计组与OS对照学，画思维导图建立知识网络</div>
-        <div><strong style="color:var(--cream)">3.</strong> 408 至少三轮系统复习</div>
-        <div><strong style="color:var(--peach)">4.</strong> 考研英语不考听力，六级没过≠英语不行</div>
-        <div><strong style="color:var(--lavender)">5.</strong> 政治全短期记忆，8月刷选择、12月背肖四</div>
-        <div><strong style="color:var(--pink)">6.</strong> 遗忘是正常的——用艾宾浩斯对抗，别焦虑</div>
+        <div><strong style="color:var(--pink)">1.</strong> 上午 8:00–11:30 手机锁抽屉，物理隔绝</div>
+        <div><strong style="color:var(--mint)">2.</strong> 每个时段只盯一件事，不要数学刷到一半切政治</div>
+        <div><strong style="color:var(--cream)">3.</strong> 学 50 分钟休息 10 分钟——站起来喝水看窗外，不是刷手机</div>
+        <div><strong style="color:var(--peach)">4.</strong> 某天实在不想学，允许自己"只学 4 小时"，但必须学满</div>
+        <div><strong style="color:var(--lavender)">5.</strong> 启动比坚持重要——最难的是坐下那 5 分钟</div>
+        <div><strong style="color:var(--pink)">6.</strong> 累就真的休息，别一边刷手机一边假装学习</div>
       </div>
     </section>
 
     <section class="section">
       <div class="quote-block">
-        <q>跨考不是劣势，是另一种优势——<br>材料学思维会给计算机带来不一样视角。<br><span class="qh">科学的重复比天赋更重要。</span><br>每天9小时，154天，你完全来得及。</q>
+        <q>在家最怕的不是学不会，<br>是手机就在手边、床就在身后。<br><span class="qh">你选择坐在这张桌子前，就已经赢了。</span></q>
       </div>
     </section>
     <footer>坚持154天 · 深大见</footer>
@@ -520,7 +598,7 @@ footer{text-align:center;padding:clamp(18px,3.5vw,28px) 0;font-size:clamp(.6rem,
   </button>
   <button class="tab-btn" onclick="switchPage('focus',this)" data-page="focus">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-    专注
+    作息
   </button>
 </nav>
 
